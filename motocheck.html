@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>فحص الموطور - MotoCheck</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        moto: { dark: '#121212', primary: '#FCA311', surface: '#1E1E1E' },
+                        status: { good: '#10B981', bad: '#EF4444', warn: '#F59E0B' }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out', 'slide-up': 'slideUp 0.4s ease-out' },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Cairo', sans-serif; background-color: #121212; color: white; }</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    // ================== 1. البيانات الشاملة (جميع المراحل) ==================
+    const inspectionLogic = [
+        {
+            id: 1, title: 'البطارية (Batterie)', icon: 'fa-car-battery',
+            instruction: 'دور الساروت مرة وحدة (Contact)، شعل الضو (Far)، وخليه شاعل 5 دقايق.',
+            options: [
+                { text: 'الضو طفا أو ضعف', status: 'bad', result: 'البطارية ميتة (Dead Battery).', advice: 'خاصك تنقص ثمن باتري جديد.', part: 'Batterie 12V', price: 150 },
+                { text: 'الضو بقا مجهد', status: 'good', result: 'البطارية ممتازة.', advice: 'الشارج مزيان.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 2, title: 'الكهرباء (Bougie/CDI)', icon: 'fa-bolt',
+            instruction: 'حيد البوجي، حطو على الحديد (Masse)، ودور الساروت وبرك على ديمارور.',
+            options: [
+                { text: 'مكايناش شرارة (Etincelle)', status: 'bad', result: 'مشكل فالضو (Allumage).', advice: 'بوجي، بوبينة أو CDI خاسرين.', part: 'Kit Allumage', price: 120 },
+                { text: 'شرارة زرقاء قوية', status: 'good', result: 'الكهرباء واصلة مزيان.', advice: 'نظام الإشعال سليم.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 3, title: 'الكاربيراتور (Carburateur)', icon: 'fa-filter',
+            instruction: 'ديماري، ريكل الـ Ralenti، كسيري وشوف الشاكمة.',
+            options: [
+                { text: 'دخان كحل / تقطع', status: 'warn', result: 'مشكل احتراق.', advice: 'خاص ريكلاج كاربيراتور وفيلتر الريح.', part: 'Nettoyage Carbu', price: 50 },
+                { text: 'صوت صافي ودخان عادي', status: 'good', result: 'الكاربيراتور مزيان.', advice: 'الموطور مريكل.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 4, title: 'الديمارور (Démarreur)', icon: 'fa-power-off',
+            instruction: 'طفي الموطور وعاود ديماري بالزر (Start) بلا كيك.',
+            options: [
+                { text: 'ثقيل أو مكيشدش', status: 'bad', result: 'الديمارور عيان.', advice: 'خاص يتبدلو الشاربونات أو الديمارور كامل.', part: 'Démarreur', price: 200 },
+                { text: 'ديمارا دغيا (نغزة)', status: 'good', result: 'الديمارور قوي.', advice: 'دوز للمرحلة الجاية.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 5, title: 'الدينامو (Charge)', icon: 'fa-charging-station',
+            instruction: 'ديماري وشعل الضو (Far) وخليه 5 دقايق.',
+            options: [
+                { text: 'الموطور بغا يسكت (فشل)', status: 'bad', result: 'الدينامو مكيشارجيش.', advice: 'مشكل فـ Table Allumage.', part: 'Stator (Bobinage)', price: 180 },
+                { text: 'بقا شاد (Ralenti Stable)', status: 'good', result: 'الدينامو خدام.', advice: 'الشارج كيرجع للباتري.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 6, title: 'الفيبروكان (Vilebrequin)', icon: 'fa-arrows-spin',
+            instruction: 'دور الساروت، وحرك المانيفيل (Manivelle) بيدك بشوية.',
+            options: [
+                { text: 'كنسمع طقطقة لداخل', status: 'bad', result: 'الفيبروكان كيضرب (Jeu).', advice: 'هذا إصلاح غالي، الماكينة خاصها تحل.', part: 'Vilebrequin', price: 600 },
+                { text: 'كادور رطب ومزير', status: 'good', result: 'الفيبروكان سليم.', advice: 'القلب ديال الموطور مزيان.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 7, title: 'لومبرياج (Embrayage)', icon: 'fa-circle-notch',
+            instruction: 'دوز بريمير (1ère)، نقص الرالونتي، وطلق الموطور يمشي بشوية.',
+            options: [
+                { text: 'الموطور كيغوت ومكيزيدش', status: 'bad', result: 'الديسكات ميتين (Patinaage).', advice: 'خاص تبدل ديسك لومبرياج.', part: 'Disques Embrayage', price: 150 },
+                { text: 'زاد الموطور عادي', status: 'good', result: 'لومبرياج شاد مزيان.', advice: 'العزم كيدوز للرويضة.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 8, title: 'علبة السرعة (Boîte Vitesse)', icon: 'fa-gears',
+            instruction: 'دوز 1, 2, 3, 4 وشوف واش كيدوزو بزربة (Rafale).',
+            options: [
+                { text: 'قاصحين أو كيتفلتو', status: 'bad', result: 'بواط فيتاس خاسرة.', advice: 'خاص تبدل بينيونات الداخل.', part: 'Boîte Vitesse', price: 400 },
+                { text: 'كيدوزو رطبين', status: 'good', result: 'الفيتاسات مزيانين.', advice: 'السيكتور خدام مزيان.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 9, title: 'كيت شين (Transmission)', icon: 'fa-link',
+            instruction: 'شوف السنسلة والبينيون واللوراني (Plateau).',
+            options: [
+                { text: 'السنان ماضيين (بحال القرش)', status: 'warn', result: 'الكيت شين ميت.', advice: 'خاص يتبدل كامل.', part: 'Kit Chaîne', price: 130 },
+                { text: 'السنان غلاض ومقادين', status: 'good', result: 'السنسلة باقا جديدة.', advice: 'غير دير لاغريس.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 10, title: 'المحرك (Cylindre)', icon: 'fa-engine',
+            instruction: 'كسيري بجهد وشوف الشاكمة.',
+            options: [
+                { text: 'دخان أبيض أو أزرق', status: 'bad', result: 'الموطور كيفيمي (Fumé).', advice: 'الزيت كتحرق. خاص سيلان وكيلاس.', part: 'Cylindre & Piston', price: 800 },
+                { text: 'دخان والو (نقبة)', status: 'good', result: 'الماكينة صحيحة.', advice: 'مكايناش كونسوماسيون د الزيت.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 11, title: 'تسربات الزيت (Fuites)', icon: 'fa-droplet',
+            instruction: 'طل تحت الكارتيرة، جهة السيلكتور، وجهة البينيون.',
+            options: [
+                { text: 'كاينة زيت خارجة', status: 'warn', result: 'جوانات عيانين.', advice: 'خاص تبدل Join Spi و Joint Carter.', part: 'Pochette Joints', price: 70 },
+                { text: 'الموطور ناشف', status: 'good', result: 'مكاينش تضيع الزيت.', advice: 'الكارتيرات مسدودين مزيان.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 12, title: 'الفرامل (Freinage)', icon: 'fa-hand-fist',
+            instruction: 'شوف الديسك القدامي واش محفور، والفيرودو اللوراني.',
+            options: [
+                { text: 'الديسك محفور / الفران ضعيف', status: 'bad', result: 'الفرانات عيانين.', advice: 'بدل البلاكيت والديسك.', part: 'Disque & Plaquettes', price: 150 },
+                { text: 'كيفراني مزيان', status: 'good', result: 'الفرانات مزيانين.', advice: 'الأمان موجود.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 13, title: 'العجلات (Pneus/Jantes)', icon: 'fa-life-ring',
+            instruction: 'دور الرويضة وشوف واش الجوانط عوجين أو البنو ممسوح.',
+            options: [
+                { text: 'الرويضة كترعد (voilé) أو ملسة', status: 'bad', result: 'الرويض خاصهم تبدال.', advice: 'الجانطا عوجة أو البنو ميت.', part: 'Pneu / Jante', price: 300 },
+                { text: 'الرويضة مقادة والنقش باين', status: 'good', result: 'الرويض جداد.', advice: 'طريق السلامة.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 14, title: 'نظام التعليق (Amortisseur)', icon: 'fa-arrows-up-down',
+            instruction: 'برك على الموطور وهبطو. شوف واش الزيت خارجة من المونتيسور.',
+            options: [
+                { text: 'خارجة الزيت أو قاصح', status: 'bad', result: 'المونتيسورات ميتين.', advice: 'بدلهم باش ماتاكلش الدق فالظهري.', part: 'Amortisseurs', price: 250 },
+                { text: 'كيرجع رطب', status: 'good', result: 'المونتيسور خدام.', advice: 'الراحة فالطريق.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 15, title: 'الشاسيه (Chassis)', icon: 'fa-road',
+            instruction: 'شوف "التية" (Tie) والحديد التحتاني واش فيه سودور (Soudure) أو عوج.',
+            options: [
+                { text: 'كاين سودور أو اعوجاج', status: 'bad', result: 'الشاسية مقسومة أو معوجة.', advice: 'هرب من هاد الموطور! خطر.', part: 'Soudure Cadre', price: 1000 },
+                { text: 'الحديد نقي (الأصل)', status: 'good', result: 'الكادر (Cadre) صاينة.', advice: 'الموطور عمرو تكسيدة خايبة.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 16, title: 'التابلو والإشارات', icon: 'fa-gauge-high',
+            instruction: 'جرب الكونتور (Vitesse/RPM)، السينيالات، والكلاكسون.',
+            options: [
+                { text: 'شي حاجة ماخداماش', status: 'warn', result: 'مشكل كهربائي بسيط.', advice: 'خاص فيريفيكاسيون للكابلات.', part: 'Accessoires Elec', price: 50 },
+                { text: 'كولشي كيشعل', status: 'good', result: 'التابلو كامل خدام.', advice: 'الضوء والإشارات مزيانين.', part: null, price: 0 }
+            ]
+        },
+        {
+            id: 17, title: 'الفورج والكاريناج', icon: 'fa-shield-cat',
+            instruction: 'شوف واش الفورج (Fourche) عوج، والكاريناج واش مهرس.',
+            options: [
+                { text: 'الفورج عوج / كاريناج مهرس', status: 'bad', result: 'الموطور طايح.', advice: 'خاص دريساج للفورج وكاريناج جديد.', part: 'Carenage / Dressage', price: 400 },
+                { text: 'كولشي مقاد', status: 'good', result: 'المظهر الخارجي نقي.', advice: 'الله يسخر.', part: null, price: 0 }
+            ]
+        }
+    ];
+
+    // 2. بيانات الزيوت (القسم الجديد)
+    const oilsGuide = {
+        rodage: [
+            { label: 'أول فيدونج (بعد تركيب سيلان جديد)', val: '500 كلم' },
+            { label: 'ثاني فيدونج', val: '1500 كلم' },
+            { label: 'اللزوجة الموصى بها', val: '10W-40' },
+        ],
+        products: [
+            { name: 'Motul 5000 10W40', type: 'Semi-Synthetic', price: '70 DH', tag: 'TOP (أفضل خيار)', color: 'text-yellow-400' },
+            { name: 'Shell Advance AX7', type: 'Synthetic Based', price: '75 DH', tag: 'جودة عالية', color: 'text-blue-400' },
+            { name: 'Mannol 4-Takt Plus', type: 'Ester', price: '60 DH', tag: 'ممتاز واقتصادي', color: 'text-green-400' },
+            { name: 'Wolf Moto 4T', type: 'Semi-Synthetic', price: '60 DH', tag: 'خيار جيد', color: 'text-gray-400' },
+        ]
+    };
+
+    // 3. بيانات GPS
+    const gpsData = [
+        { id: 1, name: 'Monimoto 7', type: 'Smart & Wireless', price: '1800 DH', features: ['بدون تركيب', 'اتصال هاتفي'], rank: 1, bestFor: 'الدرجات الغالية' },
+        { id: 2, name: 'Coban GPS303', type: 'Wired & Accurate', price: '450 DH', features: ['قطع المحرك', 'دقة عالية'], rank: 2, bestFor: 'الحماية القصوى' },
+        { id: 3, name: 'Sinotrack ST-901', type: 'Budget & Waterproof', price: '250 DH', features: ['مقاوم للماء', 'رخيص'], rank: 3, bestFor: 'الميزانية المحدودة' },
+    ];
+
+    // ================== 2. المكونات ==================
+
+    function App() {
+        const [view, setView] = React.useState('home');
+        const [currentStepIndex, setCurrentStepIndex] = React.useState(0);
+        const [stepResult, setStepResult] = React.useState(null);
+        const [totalDefects, setTotalDefects] = React.useState([]);
+
+        const handleAnswer = (option) => {
+            setStepResult(option);
+            if (option.status === 'bad' || option.status === 'warn') {
+                const exists = totalDefects.find(d => d.stepId === inspectionLogic[currentStepIndex].id);
+                if (!exists) setTotalDefects([...totalDefects, { stepId: inspectionLogic[currentStepIndex].id, ...option }]);
+            }
+        };
+
+        const nextStep = () => {
+            setStepResult(null);
+            if (currentStepIndex < inspectionLogic.length - 1) setCurrentStepIndex(currentStepIndex + 1);
+            else setView('report');
+        };
+
+        const resetInspection = () => {
+            setCurrentStepIndex(0);
+            setStepResult(null);
+            setTotalDefects([]);
+            setView('inspection');
+        };
+
+        // --- التعديل الجوهري: فتح الخريطة مباشرة ---
+        const findShop = () => {
+            // يفتح بحث جوجل مابس عن محلات قطع غيار الدراجات القريبة
+            window.open('https://www.google.com/maps/search/?api=1&query=$magasin pièces moto near me', '_blank');
+        };
+
+        return (
+            <div className="min-h-screen flex flex-col font-cairo pb-20">
+                <nav className="bg-moto-surface border-b border-gray-800 p-4 sticky top-0 z-50 flex justify-between items-center shadow-2xl">
+                    <div className="flex items-center gap-2" onClick={() => setView('home')}>
+                        <div className="bg-moto-primary p-1 rounded-lg text-black"><i className="fa-solid fa-wrench"></i></div>
+                        <h1 className="text-xl font-black text-white tracking-wide">MOTO<span className="text-moto-primary">CHECK</span></h1>
+                    </div>
+                    {view !== 'home' && <button onClick={() => setView('home')} className="text-gray-400 hover:text-white"><i className="fa-solid fa-house"></i></button>}
+                </nav>
+
+                <main className="flex-1 container mx-auto p-4 max-w-md">
+                    
+                    {/* --- Home --- */}
+                    {view === 'home' && (
+                        <div className="flex flex-col items-center justify-center mt-8 animate-fade-in space-y-6">
+                            <div className="text-center">
+                                <h2 className="text-2xl font-black text-white mb-2">غتشري موطور مستعمل؟</h2>
+                                <p className="text-gray-400 text-sm">افحص الموطور راسك بحال المحترفين.</p>
+                            </div>
+                            
+                            <div className="relative group cursor-pointer" onClick={resetInspection}>
+                                <div className="absolute inset-0 bg-moto-primary rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                                <div className="w-40 h-40 bg-moto-surface rounded-full flex items-center justify-center border-4 border-moto-primary relative z-10 shadow-xl transform group-hover:scale-105 transition-transform">
+                                    {/* أيقونة الدراجة النارية */}
+                                    <i className="fa-solid fa-motorcycle text-6xl text-white ml-2"></i>
+                                </div>
+                            </div>
+                            <p className="font-bold text-moto-primary animate-pulse">إبدأ الفحص الآن</p>
+
+                            <div className="w-full grid grid-cols-2 gap-3 mt-8">
+                                <button onClick={() => setView('gps')} className="bg-gray-800 border border-gray-700 p-4 rounded-2xl flex flex-col items-center gap-2 hover:border-moto-primary transition">
+                                    <i className="fa-solid fa-satellite-dish text-2xl text-blue-400"></i><span className="font-bold text-sm">أفضل GPS</span>
+                                </button>
+                                <button onClick={() => setView('oils')} className="bg-gray-800 border border-gray-700 p-4 rounded-2xl flex flex-col items-center gap-2 hover:border-moto-primary transition">
+                                    <i className="fa-solid fa-oil-can text-2xl text-yellow-400"></i><span className="font-bold text-sm">دليل الزيوت</span>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- Inspection --- */}
+                    {view === 'inspection' && (
+                        <div className="h-full flex flex-col animate-fade-in">
+                            <div className="w-full bg-gray-800 h-1.5 rounded-full mb-6">
+                                <div className="bg-moto-primary h-1.5 rounded-full transition-all duration-500" style={{ width: `${((currentStepIndex + 1) / inspectionLogic.length) * 100}%` }}></div>
+                            </div>
+                            <div className="flex-1 flex flex-col justify-center">
+                                <div className="bg-moto-surface border border-gray-700 rounded-3xl p-6 shadow-2xl relative">
+                                    <div className="flex flex-col items-center mb-6">
+                                        <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center text-3xl text-moto-primary mb-3 shadow-inner">
+                                            <i className={`fa-solid ${inspectionLogic[currentStepIndex].icon}`}></i>
+                                        </div>
+                                        <h2 className="text-xl font-bold text-white text-center">{inspectionLogic[currentStepIndex].title}</h2>
+                                    </div>
+
+                                    {!stepResult && (
+                                        <div className="bg-blue-900/20 border border-blue-800 p-4 rounded-xl mb-6 animate-slide-up">
+                                            <p className="text-blue-100 text-center font-bold text-lg leading-relaxed">"{inspectionLogic[currentStepIndex].instruction}"</p>
+                                        </div>
+                                    )}
+
+                                    {!stepResult ? (
+                                        <div className="grid gap-3 animate-slide-up">
+                                            {inspectionLogic[currentStepIndex].options.map((opt, i) => (
+                                                <button key={i} onClick={() => handleAnswer(opt)} 
+                                                    className="w-full bg-gray-800 hover:bg-gray-700 text-white p-4 rounded-xl border border-gray-600 font-bold text-right flex justify-between items-center transition-all group">
+                                                    <span>{opt.text}</span><i className="fa-solid fa-chevron-left text-gray-500 group-hover:text-moto-primary"></i>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="animate-pop-in text-center space-y-4">
+                                            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl mb-2 ${stepResult.status === 'good' ? 'bg-green-900/50 text-green-500' : 'bg-red-900/50 text-red-500'}`}>
+                                                <i className={`fa-solid ${stepResult.status === 'good' ? 'fa-check' : 'fa-triangle-exclamation'}`}></i>
+                                            </div>
+                                            <h3 className={`text-xl font-black ${stepResult.status === 'good' ? 'text-green-400' : 'text-red-400'}`}>{stepResult.result}</h3>
+                                            <p className="text-gray-300 text-sm">{stepResult.advice}</p>
+
+                                            {/* تفاصيل القطعة وزر الخريطة */}
+                                            {stepResult.part && (
+                                                <div className="bg-gray-900 p-4 rounded-xl border border-gray-700 mt-2">
+                                                    <div className="flex justify-between text-sm mb-2"><span className="text-gray-400">القطعة:</span><span className="text-white font-bold">{stepResult.part}</span></div>
+                                                    <div className="flex justify-between text-sm mb-3"><span className="text-gray-400">الثمن التقريبي:</span><span className="text-moto-primary font-bold">{stepResult.price} DH</span></div>
+                                                    <button onClick={findShop} className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition">
+                                                        <i className="fa-solid fa-location-dot text-moto-primary"></i> 📍 أقرب محل لبيع هذه القطعة
+                                                    </button>
+                                                </div>
+                                            )}
+
+                                            <button onClick={nextStep} className="w-full bg-moto-primary text-black font-black py-3 rounded-xl shadow-lg hover:bg-yellow-500 transition mt-4 flex items-center justify-center gap-2">
+                                                {currentStepIndex < inspectionLogic.length - 1 ? 'انتقل للفحص الموالي' : 'إنهاء وعرض التقرير'} <i className="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- GPS Page --- */}
+                    {view === 'gps' && (
+                        <div className="animate-slide-up space-y-5">
+                            <h2 className="text-xl font-bold text-white border-r-4 border-blue-500 pr-3">أفضل أجهزة التتبع (GPS)</h2>
+                            <div className="space-y-4">
+                                {gpsData.map(gps => (
+                                    <div key={gps.id} className="bg-moto-surface rounded-2xl p-5 border border-gray-800 relative overflow-hidden">
+                                        <div className="absolute top-0 left-0 bg-blue-600 text-white px-3 py-1 rounded-br-xl text-xs font-bold">#{gps.rank}</div>
+                                        <div className="flex justify-between items-start mb-2"><h3 className="text-lg font-black text-white">{gps.name}</h3><span className="text-moto-primary font-bold">{gps.price}</span></div>
+                                        <p className="text-xs text-gray-400 mb-3 bg-gray-900 p-2 rounded-lg inline-block">{gps.type}</p>
+                                        <ul className="text-sm text-gray-300 space-y-1 mb-4">{gps.features.map((f, i) => <li key={i}><i className="fa-solid fa-check text-green-500 text-xs ml-1"></i> {f}</li>)}</ul>
+                                        <div className="bg-blue-900/30 p-2 rounded-lg text-xs text-blue-200 text-center"><i className="fa-solid fa-thumbs-up ml-1"></i> ينصح به لـ: {gps.bestFor}</div>
+                                    </div>
+                                ))}
+                            </div>
+                            <button onClick={() => setView('home')} className="w-full bg-gray-800 py-3 rounded-xl font-bold text-gray-300">رجوع</button>
+                        </div>
+                    )}
+
+                    {/* --- Oils Guide --- */}
+                    {view === 'oils' && (
+                        <div className="animate-slide-up space-y-6">
+                            <h2 className="text-xl font-bold text-white border-r-4 border-yellow-500 pr-3">دليل الزيوت (Vidange)</h2>
+                            
+                            <div className="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-md">
+                                <h3 className="text-moto-primary font-black mb-3 text-lg"><i className="fa-solid fa-triangle-exclamation"></i> قاعدة الروداج (Rodage)</h3>
+                                <div className="space-y-2 text-sm">
+                                    {oilsGuide.rodage.map((rule, i) => (
+                                        <div key={i} className="flex justify-between border-b border-gray-700 pb-2 last:border-0 last:pb-0">
+                                            <span className="text-gray-300">{rule.label}</span>
+                                            <span className="font-bold text-white">{rule.val}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h3 className="text-white font-bold text-sm">أفضل الزيوت المجربة:</h3>
+                                {oilsGuide.products.map((oil, i) => (
+                                    <div key={i} className="bg-moto-surface p-4 rounded-xl border border-gray-800 flex justify-between items-center group hover:border-moto-primary transition">
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h4 className="font-black text-white text-lg">{oil.name}</h4>
+                                                {i === 0 && <i className="fa-solid fa-crown text-yellow-500 text-xs"></i>}
+                                            </div>
+                                            <span className="text-xs text-gray-500 bg-gray-900 px-2 py-0.5 rounded mr-1">{oil.type}</span>
+                                            <p className={`text-xs mt-1 font-bold ${oil.color}`}>{oil.tag}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="font-black text-moto-primary text-xl">{oil.price}</div>
+                                            <button onClick={findShop} className="text-[10px] bg-gray-800 text-gray-300 px-2 py-1 rounded mt-1 hover:bg-white hover:text-black transition flex items-center gap-1"><i className="fa-solid fa-location-dot"></i> شراء</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <button onClick={() => setView('home')} className="w-full bg-gray-800 py-3 rounded-xl font-bold text-gray-300">رجوع</button>
+                        </div>
+                    )}
+
+                    {/* --- Report Page --- */}
+                    {view === 'report' && (
+                        <div className="animate-fade-in space-y-6">
+                            <div className="text-center">
+                                <h2 className="text-2xl font-black text-white">تقرير الحالة 📋</h2>
+                                <p className="text-gray-400">ملخص المشاكل وتكلفة الإصلاح</p>
+                            </div>
+                            {totalDefects.length === 0 ? (
+                                <div className="bg-green-900/20 border border-green-600 p-8 rounded-3xl text-center">
+                                    <i className="fa-solid fa-shield-halved text-6xl text-green-500 mb-4"></i>
+                                    <h3 className="text-2xl font-bold text-white mb-2">الموطور ناضي (Mlih)!</h3>
+                                    <p className="text-green-200">لم يتم تسجيل أي عيوب تذكر. توكل على الله واشتريه.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {totalDefects.map((def, i) => (
+                                        <div key={i} className="bg-moto-surface p-4 rounded-xl border-r-4 border-red-500 flex justify-between items-center shadow-md">
+                                            <div><h4 className="font-bold text-white text-sm">{def.part}</h4><p className="text-xs text-red-400">{def.result}</p></div>
+                                            <span className="font-black text-moto-primary text-lg">-{def.price} DH</span>
+                                        </div>
+                                    ))}
+                                    <div className="bg-gray-800 p-5 rounded-2xl flex justify-between items-center border border-gray-600"><span className="text-gray-400 font-bold">مجموع الخصم:</span><span className="text-2xl font-black text-white">{totalDefects.reduce((a, b) => a + b.price, 0)} DH</span></div>
+                                    <button onClick={findShop} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"><i className="fa-solid fa-location-dot"></i> أقرب محل بياس (GPS)</button>
+                                </div>
+                            )}
+                            <button onClick={resetInspection} className="w-full border border-gray-600 text-gray-400 py-3 rounded-xl hover:text-white transition">فحص جديد</button>
+                        </div>
+                    )}
+
+                </main>
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+</body>
+</html>
