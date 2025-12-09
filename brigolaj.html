@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>حريفي.ما - اعثر على صنايعي</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        work: { 500: '#2563EB', 600: '#1D4ED8' }, // أزرق العمل
+                        alert: { 500: '#F59E0B' } // برتقالي التنبيه
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.5s ease-out' },
+                    keyframes: { fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #F3F4F6; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    // ================== 1. البيانات (الصنايعية) ==================
+    const handymen = [
+        { id: 1, name: 'المعلم أحمد', job: 'plumber', jobTitle: 'سباك (Plombier)', dist: 1.2, rating: 4.8, reviews: 120, phone: '2126000000', img: 'https://images.unsplash.com/photo-1581578731117-104f2a41272c?w=500', verified: true },
+        { id: 2, name: 'سعيد التريسيان', job: 'electrician', jobTitle: 'كهربائي', dist: 3.5, rating: 4.5, reviews: 85, phone: '2126000000', img: 'https://images.unsplash.com/photo-1621905476438-1a4948d4ecc9?w=500', verified: true },
+        { id: 3, name: 'حسن الصباغ', job: 'painter', jobTitle: 'صباغ', dist: 0.5, rating: 4.2, reviews: 40, phone: '2126000000', img: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500', verified: false },
+        { id: 4, name: 'ورشة النجارة', job: 'carpenter', jobTitle: 'نجار', dist: 5.0, rating: 4.9, reviews: 200, phone: '2126000000', img: 'https://images.unsplash.com/photo-1611021061285-19a873c9d2bc?w=500', verified: true },
+        { id: 5, name: 'كريم بريكول', job: 'all', jobTitle: 'بريكولور عام', dist: 2.0, rating: 3.9, reviews: 15, phone: '2126000000', img: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=500', verified: false },
+        { id: 6, name: 'رضا ساتيلايت', job: 'satellite', jobTitle: 'تقني بارابول', dist: 1.0, rating: 4.7, reviews: 60, phone: '2126000000', img: 'https://images.unsplash.com/photo-1595849154375-964295e9297e?w=500', verified: true },
+    ];
+
+    const categories = [
+        { id: 'all', name: 'الكل', icon: 'fa-screwdriver-wrench' },
+        { id: 'plumber', name: 'سباك', icon: 'fa-faucet-drip' },
+        { id: 'electrician', name: 'كهربائي', icon: 'fa-bolt' },
+        { id: 'painter', name: 'صباغ', icon: 'fa-paint-roller' },
+        { id: 'carpenter', name: 'نجار', icon: 'fa-hammer' },
+        { id: 'satellite', name: 'بارابول', icon: 'fa-satellite-dish' },
+    ];
+
+    // ================== 2. المكونات (Components) ==================
+
+    function App() {
+        const [filter, setFilter] = React.useState('all');
+        const [search, setSearch] = React.useState('');
+        const [sortByDist, setSortByDist] = React.useState(false);
+
+        // منطق الفلترة
+        let filteredList = handymen.filter(h => {
+            return (filter === 'all' || h.job === filter) &&
+                   (h.name.includes(search) || h.jobTitle.includes(search));
+        });
+
+        // منطق الترتيب (الأقرب)
+        if (sortByDist) {
+            filteredList.sort((a, b) => a.dist - b.dist);
+        } else {
+            // ترتيب افتراضي بالأعلى تقييماً
+            filteredList.sort((a, b) => b.rating - a.rating);
+        }
+
+        return (
+            <div className="min-h-screen flex flex-col font-cairo pb-20">
+                
+                {/* --- Header --- */}
+                <header className="bg-work-600 text-white p-6 rounded-b-3xl shadow-lg sticky top-0 z-50">
+                    <div className="flex justify-between items-center mb-4">
+                        <div>
+                            <h1 className="text-2xl font-black tracking-wide">حرايفي.ma 🛠️</h1>
+                            <p className="text-xs text-blue-200">أقرب "معلم" ليك فالحين</p>
+                        </div>
+                        <div className="bg-white/20 p-2 rounded-full cursor-pointer hover:bg-white/30 transition">
+                            <i className="fa-solid fa-user text-xl"></i>
+                        </div>
+                    </div>
+
+                    {/* شريط البحث */}
+                    <div className="relative">
+                        <input 
+                            type="text" 
+                            placeholder="بحث عن معلم أو تخصص..." 
+                            className="w-full p-3 pr-10 rounded-xl text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-alert-500 shadow-inner"
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <i className="fa-solid fa-search absolute top-3.5 right-3 text-gray-400"></i>
+                    </div>
+                </header>
+
+                {/* --- Categories Filters --- */}
+                <div className="container mx-auto px-4 mt-6">
+                    <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
+                        {categories.map(cat => (
+                            <button 
+                                key={cat.id}
+                                onClick={() => setFilter(cat.id)}
+                                className={`flex flex-col items-center gap-2 min-w-[80px] p-3 rounded-xl transition-all border-2
+                                ${filter === cat.id 
+                                    ? 'bg-work-600 text-white border-work-600 shadow-md scale-105' 
+                                    : 'bg-white text-gray-500 border-transparent shadow-sm hover:bg-gray-50'}`}
+                            >
+                                <i className={`fa-solid ${cat.icon} text-xl`}></i>
+                                <span className="text-xs font-bold">{cat.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* --- Sort Button & Title --- */}
+                <div className="container mx-auto px-4 flex justify-between items-center mb-4">
+                    <h2 className="font-bold text-gray-800 text-lg">
+                        {filter === 'all' ? 'جميع الحرفيين' : categories.find(c => c.id === filter).name} 
+                        <span className="text-sm text-gray-400 font-normal"> ({filteredList.length})</span>
+                    </h2>
+                    <button 
+                        onClick={() => setSortByDist(!sortByDist)}
+                        className={`text-xs px-3 py-1.5 rounded-full font-bold flex items-center gap-1 border transition-all 
+                        ${sortByDist ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-600 border-gray-300'}`}
+                    >
+                        <i className="fa-solid fa-location-crosshairs"></i> الأقرب إلي
+                    </button>
+                </div>
+
+                {/* --- Handymen Grid --- */}
+                <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredList.map(item => (
+                        <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all animate-fade-in group">
+                            <div className="flex p-4 gap-4">
+                                {/* صورة الحرفي */}
+                                <div className="relative w-20 h-20 shrink-0">
+                                    <img src={item.img} className="w-full h-full object-cover rounded-xl shadow-sm" />
+                                    {item.verified && <div className="absolute -bottom-2 -right-2 bg-blue-500 text-white text-[10px] p-1 rounded-full border-2 border-white"><i className="fa-solid fa-check"></i></div>}
+                                </div>
+                                
+                                {/* المعلومات */}
+                                <div className="flex-1">
+                                    <div className="flex justify-between items-start">
+                                        <h3 className="font-bold text-gray-800 text-lg">{item.name}</h3>
+                                        <span className="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded font-bold">{item.dist} كم</span>
+                                    </div>
+                                    <p className="text-work-600 text-sm font-bold mb-1">{item.jobTitle}</p>
+                                    <div className="flex items-center gap-1 text-xs text-yellow-500">
+                                        {'⭐'.repeat(Math.round(item.rating))}
+                                        <span className="text-gray-400 font-bold ml-1">({item.reviews})</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* أزرار التواصل (Action Bar) */}
+                            <div className="grid grid-cols-3 border-t border-gray-100 bg-gray-50">
+                                <a href={`tel:${item.phone}`} className="flex flex-col items-center justify-center p-3 text-gray-600 hover:bg-green-100 hover:text-green-600 transition border-l border-gray-200">
+                                    <i className="fa-solid fa-phone text-lg mb-1"></i>
+                                    <span className="text-[10px] font-bold">اتصال</span>
+                                </a>
+                                <a href={`https://wa.me/${item.phone}`} target="_blank" className="flex flex-col items-center justify-center p-3 text-gray-600 hover:bg-green-100 hover:text-green-600 transition border-l border-gray-200">
+                                    <i className="fa-brands fa-whatsapp text-lg mb-1"></i>
+                                    <span className="text-[10px] font-bold">واتساب</span>
+                                </a>
+                                <a href="#" className="flex flex-col items-center justify-center p-3 text-gray-600 hover:bg-blue-100 hover:text-blue-600 transition">
+                                    <i className="fa-solid fa-map-location-dot text-lg mb-1"></i>
+                                    <span className="text-[10px] font-bold">الموقع</span>
+                                </a>
+                            </div>
+                        </div>
+                    ))}
+                    
+                    {filteredList.length === 0 && (
+                        <div className="col-span-full text-center py-20 text-gray-400">
+                            <i className="fa-solid fa-helmet-safety text-4xl mb-2 opacity-50"></i>
+                            <p>لا يوجد حرفيين بهذا التخصص حالياً</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Bottom Navigation (للتنقل السريع) */}
+                <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around p-3 z-50 shadow-lg pb-safe">
+                    <button className="flex flex-col items-center text-work-600">
+                        <i className="fa-solid fa-house text-xl"></i>
+                        <span className="text-[10px] font-bold">الرئيسية</span>
+                    </button>
+                    <button className="flex flex-col items-center text-gray-400 hover:text-work-600">
+                        <i className="fa-solid fa-heart text-xl"></i>
+                        <span className="text-[10px] font-bold">المفضلة</span>
+                    </button>
+                    <button className="flex flex-col items-center text-gray-400 hover:text-work-600">
+                        <i className="fa-solid fa-gear text-xl"></i>
+                        <span className="text-[10px] font-bold">حسابي</span>
+                    </button>
+                </nav>
+
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+</body>
+</html>
