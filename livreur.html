@@ -3,190 +3,522 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route Fathelkhair | شريكك اللوجستي الأول للتجارة الإلكترونية في المغرب</title>
-    <meta name="description" content="شركة فتح الخير للتوصيل واللوجستيك. تخزين، تغليف، وتوصيل سريع لطلبيات التجارة الإلكترونية في المغرب. خدمة الدفع عند الاستلام (COD) مضمونة.">
-    <meta name="keywords" content="توصيل, المغرب, تجارة إلكترونية, تخزين, Stockage, Livraison, Amana, Cash on Delivery, Logistics Morocco, Route Fathelkhair">
-    <meta name="author" content="Mehdi Ouatmane">
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Fathelkhair Logistics | الشريك اللوجستي رقم 1 للتجارة الإلكترونية بالمغرب</title>
+    <meta name="description" content="شركة فتح الخير (Fathelkhair) للوجستيك: تخزين السلع (Fulfillment)، التغليف، وتوصيل الطلبات في 24 ساعة. خدمة الدفع عند الاستلام (COD) وأسعار تنافسية لأصحاب المتاجر الإلكترونية.">
+    <meta name="keywords" content="للوجستيك المغرب, شركة توصيل, Amana, تخزين السلع, E-commerce Morocco, التوصيل السريع, الدفع عند الاستلام, Fathelkhair, فتح الخير">
+    <meta name="author" content="Mehdi Ouatmane - Fathelkhair">
+    <meta name="robots" content="index, follow">
+    <meta name="geo.region" content="MA">
+    <meta name="geo.placename" content="Rabat">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Fathelkhair - خزن سلعتك وحنا نوصلوها">
+    <meta property="og:description" content="الحل النهائي لمشاكل التوصيل والروتور. انضم لأقوى شبكة توزيع في المغرب.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80">
+    <meta property="og:url" content="https://fathelkhair.ma">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Fathelkhair Logistics",
+      "image": "https://images.unsplash.com/photo-1616432043562-3671ea2e5242",
+      "telephone": "+212629846173",
+      "email": "Mehdi.ouatmane@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "C168 Al Fadel",
+        "addressLocality": "Ain Aouda",
+        "addressRegion": "Rabat",
+        "postalCode": "10000",
+        "addressCountry": "MA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 33.9716,
+        "longitude": -6.8498
+      },
+      "url": "https://fathelkhair.ma",
+      "priceRange": "$$",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "08:00",
+        "closes": "20:00"
+      },
+      "sameAs": [
+        "https://www.facebook.com/fathelkhair",
+        "https://www.instagram.com/fathelkhair"
+      ]
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        'cairo': ['Cairo', 'sans-serif'],
+                        'tajawal': ['Tajawal', 'sans-serif']
+                    },
+                    colors: {
+                        brand: { 
+                            50:'#f0fdf4', 100:'#dcfce7', 500:'#22c55e', 600:'#16a34a', 900:'#14532d', // أخضر للنمو
+                            dark: '#0f172a' 
+                        },
+                        gold: { 500: '#eab308' }
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        :root {
-            --primary: #004d40; /* لون أخضر داكن يوحي بالثقة */
-            --secondary: #ffc107; /* لون أصفر للنشاط والسرعة */
-            --dark: #1a1a1a;
-            --light: #f4f4f4;
+        body { font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        
+        /* Language Switcher Styling */
+        .lang-switch {
+            position: relative;
+            display: inline-flex;
+            background: #f3f4f6;
+            padding: 4px;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Cairo', sans-serif; line-height: 1.6; background-color: #fff; color: var(--dark); }
-        a { text-decoration: none; }
-        ul { list-style: none; }
-
-        /* Header */
-        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .container { max-width: 1200px; margin: auto; padding: 0 20px; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; height: 80px; }
-        .logo { font-size: 24px; font-weight: 800; color: var(--primary); }
-        .logo span { color: var(--secondary); }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a { color: var(--dark); font-weight: 600; transition: 0.3s; }
-        .nav-links a:hover { color: var(--primary); }
-        .btn { background: var(--primary); color: #fff; padding: 10px 25px; border-radius: 5px; font-weight: bold; transition: 0.3s; }
-        .btn:hover { background: #00332a; }
-
-        /* Hero Section */
-        .hero { 
-            height: 100vh; 
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover; 
-            background-position: center;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center; 
-            color: #fff;
-            padding-top: 80px;
+        .lang-btn {
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #6b7280;
         }
-        .hero-content h1 { font-size: 3rem; margin-bottom: 20px; }
-        .hero-content p { font-size: 1.2rem; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto; }
-        .btn-lg { padding: 15px 40px; font-size: 1.2rem; background: var(--secondary); color: var(--dark); }
-
-        /* Services */
-        .section { padding: 80px 0; }
-        .section-title { text-align: center; margin-bottom: 60px; }
-        .section-title h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; }
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .service-card { background: var(--light); padding: 30px; border-radius: 10px; text-align: center; transition: 0.3s; }
-        .service-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .service-card i { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
-
-        /* Why Us (SEO Rich Text) */
-        .about { background: #fff; }
-        .about-content { display: flex; flex-wrap: wrap; align-items: center; gap: 40px; }
-        .about-text { flex: 1; }
-        .about-image { flex: 1; }
-        .about-image img { width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-
-        /* Fleet Section */
-        .fleet { background: var(--light); }
-        .fleet-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; }
-        .fleet-img { min-width: 300px; height: 200px; object-fit: cover; border-radius: 10px; }
-
-        /* Contact Form */
-        .contact { background: var(--primary); color: #fff; }
-        .contact form { max-width: 600px; margin: auto; background: rgba(255,255,255,0.1); padding: 40px; border-radius: 10px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 15px; border: none; border-radius: 5px; font-family: 'Cairo'; }
-        .contact h2 { color: #fff; }
-
-        /* Footer */
-        footer { background: #111; color: #fff; padding: 20px 0; text-align: center; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2rem; }
-            .nav-links { display: none; }
-            .about-content { flex-direction: column; }
+        .lang-btn.active {
+            background: #16a34a;
+            color: white;
+            box-shadow: 0 2px 5px rgba(22, 163, 74, 0.3);
+        }
+        
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(to right, #16a34a, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 antialiased selection:bg-brand-500 selection:text-white">
 
-    <header>
-        <div class="container navbar">
-            <div class="logo">Route <span>Fathelkhair</span></div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#home">الرئيسية</a></li>
-                    <li><a href="#services">خدماتنا</a></li>
-                    <li><a href="#about">لماذا نحن؟</a></li>
-                    <li><a href="#contact">انضم إلينا</a></li>
-                </ul>
-            </nav>
-            <a href="#contact" class="btn">ابدأ الآن</a>
+    <nav class="glass-nav fixed w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-black text-brand-900 flex items-center gap-2 tracking-tighter">
+                <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <i data-lucide="package" class="w-6 h-6"></i>
+                </div>
+                <span data-i18n="logo">فتح الخير</span>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#services" class="hover:text-brand-600 transition font-bold text-sm" data-i18n="nav_services">خدماتنا</a>
+                <a href="#process" class="hover:text-brand-600 transition font-bold text-sm" data-i18n="nav_process">كيف نعمل؟</a>
+                <a href="#tarifs" class="hover:text-brand-600 transition font-bold text-sm" data-i18n="nav_pricing">الأسعار</a>
+                <a href="#stats" class="hover:text-brand-600 transition font-bold text-sm" data-i18n="nav_stats">إحصائياتنا</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="lang-switch">
+                    <span class="lang-btn active" onclick="setLanguage('ar')">عربي</span>
+                    <span class="lang-btn" onclick="setLanguage('fr')">FR</span>
+                    <span class="lang-btn" onclick="setLanguage('en')">EN</span>
+                </div>
+                
+                <a href="#contact" class="hidden md:block bg-brand-900 text-white px-6 py-2.5 rounded-full font-bold hover:bg-brand-600 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm flex items-center gap-2" data-i18n="nav_cta">
+                    <i data-lucide="phone-call" class="w-4 h-4"></i> ابدأ الآن
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div class="absolute inset-0 bg-brand-50 -z-10 skew-y-3 transform origin-top-left scale-110"></div>
+        
+        <div class="container mx-auto flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2 text-center md:text-start">
+                <span class="inline-block bg-brand-100 text-brand-900 px-4 py-1.5 rounded-full text-xs font-black mb-6 tracking-wide border border-brand-200" data-i18n="hero_badge">
+                    🔥 الشريك اللوجستي الأسرع نمواً في 2025
+                </span>
+                <h1 class="text-4xl md:text-6xl font-black leading-tight mb-6 text-brand-dark">
+                    <span data-i18n="hero_title_1">نخزن سلعتك، نوصلها،</span> <br> 
+                    <span class="text-gradient" data-i18n="hero_title_2">ونجيب ليك فلوسك!</span>
+                </h1>
+                <p class="text-gray-600 text-lg mb-8 leading-relaxed max-w-lg mx-auto md:mx-0" data-i18n="hero_desc">
+                    هل أنت تاجر إلكتروني؟ هل تعاني مع الروتور والتخزين؟ شركة "فتح الخير" توفر لك مستودعاً مركزياً + أسطول سيارات Master جاهز لتوصيل طلبياتك في وقت قياسي.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <a href="#contact" class="bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-2xl font-bold text-lg text-center transition shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2 hover:scale-105 transform duration-200">
+                         <span data-i18n="hero_btn_1">انضم للنخبة (10 مقاعد فقط)</span> <i data-lucide="arrow-left" class="rtl:rotate-0 ltr:rotate-180"></i>
+                    </a>
+                </div>
+                
+                <div class="mt-10 grid grid-cols-3 gap-4 border-t border-gray-200 pt-6">
+                    <div>
+                        <p class="font-black text-2xl text-brand-600">+8000</p>
+                        <p class="text-xs text-gray-500 font-bold" data-i18n="stat_1">زبون راضٍ</p>
+                    </div>
+                    <div>
+                        <p class="font-black text-2xl text-brand-600">24h</p>
+                        <p class="text-xs text-gray-500 font-bold" data-i18n="stat_2">سرعة التوصيل</p>
+                    </div>
+                    <div>
+                        <p class="font-black text-2xl text-brand-600">0%</p>
+                        <p class="text-xs text-gray-500 font-bold" data-i18n="stat_3">مشاكل تخزين</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:w-1/2 relative">
+                <div class="relative z-10 animate-float">
+                    <img src="https://images.unsplash.com/photo-1605218427368-35b8612803b8?auto=format&fit=crop&q=80&w=800" alt="Fathelkhair Logistics Fleet" class="rounded-3xl shadow-2xl border-4 border-white">
+                </div>
+                <div class="absolute top-10 -right-10 w-24 h-24 bg-gold-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+                <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-brand-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+            </div>
         </div>
     </header>
 
-    <section id="home" class="hero">
-        <div class="container hero-content">
-            <h1>ركز في التجارة وخلي اللوجستيك علينا</h1>
-            <p>نقدم خدمة التخزين، التغليف، والتوصيل السريع لأصحاب المتاجر الإلكترونية في المغرب. أسطولنا جاهز لخدمة مشروعك.</p>
-            <a href="#contact" class="btn btn-lg">احجز مساحتك في المخزن</a>
-        </div>
-    </section>
+    <section id="services" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-black text-brand-dark mb-4" data-i18n="services_title">نظام لوجستي متكامل</h2>
+                <div class="h-1 w-20 bg-brand-500 mx-auto rounded-full"></div>
+            </div>
 
-    <section id="services" class="section">
-        <div class="container">
-            <div class="section-title">
-                <h2>حلول متكاملة للتجارة الإلكترونية</h2>
-                <p>من الاستلام وحتى توصيل الطلبية واستلام الأموال (Cash On Delivery)</p>
-            </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <i class="fas fa-warehouse"></i>
-                    <h3>التخزين الذكي (Fulfillment)</h3>
-                    <p>لا تملك مكاناً للسلعة؟ نوفر لك مساحة تخزين آمنة في مستودعنا لجميع منتجاتك (عسل، إلكترونيات، تجميل...).</p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="group p-8 rounded-3xl bg-gray-50 hover:bg-white hover:shadow-2xl transition duration-300 border border-gray-100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 text-blue-600 group-hover:scale-110 transition">
+                        <i data-lucide="warehouse" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="serv_1_title">التخزين (Fulfillment)</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="serv_1_desc">
+                        كراج مؤمن بالكامل لتخزين سلعك. نوفر عليك مصاريف الكراء والماء والكهرباء. فقط أحضر السلعة وركز في التسويق.
+                    </p>
                 </div>
-                <div class="service-card">
-                    <i class="fas fa-truck-fast"></i>
-                    <h3>توصيل سريع ومحترف</h3>
-                    <p>أسطول من 3 سيارات Renault Master يضمن وصول سلعتك سليمة وفي الوقت المحدد للزبون.</p>
+                <div class="group p-8 rounded-3xl bg-gray-50 hover:bg-white hover:shadow-2xl transition duration-300 border border-gray-100">
+                    <div class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center mb-6 text-brand-600 group-hover:scale-110 transition">
+                        <i data-lucide="truck" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="serv_2_title">أسطول خاص</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="serv_2_desc">
+                        لا نتعامل مع وسطاء. نمتلك 3 سيارات Renault Master وسائقين محترفين يعرفون أزقة المدن لضمان تسليم الطلب.
+                    </p>
                 </div>
-                <div class="service-card">
-                    <i class="fas fa-hand-holding-dollar"></i>
-                    <h3>إدارة الروتور والكاش</h3>
-                    <p>نستلم الأموال من الزبائن (Contre Remboursement) ونحولها لك بانتظام. نسبة الروتور أقل بفضل التنسيق المسبق.</p>
+                <div class="group p-8 rounded-3xl bg-gray-50 hover:bg-white hover:shadow-2xl transition duration-300 border border-gray-100">
+                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 text-purple-600 group-hover:scale-110 transition">
+                        <i data-lucide="wallet" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="serv_3_title">إدارة الكاش (COD)</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="serv_3_desc">
+                        أموالك في أمان. نقوم بجمع المبالغ من الزبائن وتحويلها لك بشكل دوري ومنتظم وبتقارير شفافة.
+                    </p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="about" class="section about">
-        <div class="container about-content">
-            <div class="about-image">
-                <img src="26251.jpg" alt="أسطول شركة فتح الخير للتوصيل">
-            </div>
-            <div class="about-text">
-                <h2>لماذا يختار التجار "Route Fathelkhair"؟</h2>
-                <p>نحن لا نوصل الطرود فقط، نحن شركاء نجاحك. بخلاف الشركات الكبرى التي تعامل طردك كرقم، نحن نعامل كل طلبية بعناية خاصة.</p>
-                <ul style="margin-top: 20px;">
-                    <li>✅ <strong style="color:var(--primary)">سرعة الاستجابة:</strong> فريقنا جاهز للتوصيل يومياً.</li>
-                    <li>✅ <strong style="color:var(--primary)">حماية المنتجات:</strong> خبرة في نقل المواد الحساسة والقابلة للكسر.</li>
-                    <li>✅ <strong style="color:var(--primary)">تغطية شاملة:</strong> نصل إلى المدن والقرى (Last Mile Delivery).</li>
-                </ul>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="section contact">
-        <div class="container">
-            <div class="section-title">
-                <h2>كن من الـ 10 عملاء الأوائل!</h2>
-                <p>المخزن يتسع لعدد محدود. سجل الآن لنبدأ العمل غداً.</p>
+    <section id="tarifs" class="py-20 bg-brand-900 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-black mb-4" data-i18n="pricing_title">تعريفة واضحة.. لا مفاجآت</h2>
+                <p class="text-brand-100" data-i18n="pricing_subtitle">اختر الشفافية والمصداقية مع فتح الخير.</p>
             </div>
-            <form>
-                <div class="form-group">
-                    <input type="text" placeholder="اسمك الكامل" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" placeholder="اسم المتجر / نوع السلعة" required>
-                </div>
-                <div class="form-group">
-                    <input type="tel" placeholder="رقم الهاتف" required>
-                </div>
-                <div class="form-group">
-                    <textarea rows="4" placeholder="كم عدد الطلبيات التقريبي في اليوم؟"></textarea>
-                </div>
-                <button type="submit" class="btn" style="width: 100%; background: var(--secondary); color: var(--dark);">أرسل الطلب</button>
-            </form>
+            
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl overflow-hidden shadow-2xl text-gray-800">
+                <table class="w-full text-start">
+                    <thead class="bg-brand-50">
+                        <tr>
+                            <th class="py-5 px-6 font-extrabold text-start" data-i18n="th_city">المدينة</th>
+                            <th class="py-5 px-6 font-extrabold text-start" data-i18n="th_delivery">التوصيل</th>
+                            <th class="py-5 px-6 font-extrabold text-start" data-i18n="th_return">الروتور (Retour)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr class="hover:bg-gray-50 transition"><td class="py-4 px-6 font-bold" data-i18n="city_casa">الدار البيضاء</td><td class="py-4 px-6 text-brand-600 font-black">30 DH</td><td class="py-4 px-6 text-green-600 font-bold">مجاناً</td></tr>
+                        <tr class="hover:bg-gray-50 transition"><td class="py-4 px-6 font-bold" data-i18n="city_rabat">الرباط</td><td class="py-4 px-6 text-brand-600 font-black">30 DH</td><td class="py-4 px-6 text-green-600 font-bold">مجاناً</td></tr>
+                        <tr class="hover:bg-gray-50 transition"><td class="py-4 px-6 font-bold" data-i18n="city_kech">مراكش</td><td class="py-4 px-6 text-brand-600 font-black">35 DH</td><td class="py-4 px-6 text-green-600 font-bold">مجاناً</td></tr>
+                        <tr class="hover:bg-gray-50 transition"><td class="py-4 px-6 font-bold" data-i18n="city_agadir">أكادير</td><td class="py-4 px-6 text-brand-600 font-black">35 DH</td><td class="py-4 px-6 text-green-600 font-bold">مجاناً</td></tr>
+                        <tr class="hover:bg-gray-50 transition"><td class="py-4 px-6 font-bold" data-i18n="city_fes">فاس / مكناس</td><td class="py-4 px-6 text-brand-600 font-black">35 DH</td><td class="py-4 px-6 text-green-600 font-bold">مجاناً</td></tr>
+                        <tr class="hover:bg-gray-50 transition"><td class="py-4 px-6 font-bold" data-i18n="city_oujda">وجدة / الشمال</td><td class="py-4 px-6 text-brand-600 font-black">40 DH</td><td class="py-4 px-6 text-green-600 font-bold">مجاناً</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
-    <footer>
-        <p>جميع الحقوق محفوظة &copy; 2025 Route Fathelkhair - Maroc</p>
+    <section id="stats" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+             <div class="flex flex-col md:flex-row justify-center items-center gap-12">
+                <div class="text-center opacity-60 scale-90">
+                    <h3 class="text-xl font-bold text-gray-400 mb-2" data-i18n="year_2023">سنة 2023</h3>
+                    <p class="text-4xl font-black text-gray-600 mb-2 dir-ltr">1,900</p>
+                    <p class="text-sm font-semibold text-gray-400" data-i18n="happy_client">زبون</p>
+                </div>
+
+                <div class="hidden md:block text-brand-500 animate-pulse">
+                     <i data-lucide="chevrons-left" class="w-12 h-12 rtl:rotate-0 ltr:rotate-180"></i>
+                </div>
+
+                <div class="bg-white p-10 rounded-3xl text-center shadow-xl border-2 border-brand-100 transform hover:scale-105 transition duration-300 relative">
+                    <div class="absolute -top-4 -right-4 bg-gradient-to-r from-brand-500 to-emerald-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg" data-i18n="growth_badge">
+                        نمو صاروخي 🚀
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-900 mb-2" data-i18n="today">اليوم</h3>
+                    <p class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-brand-500 to-brand-700 mb-2 dir-ltr">+8,000</p>
+                    <p class="text-lg font-bold text-gray-600" data-i18n="active_client">زبون نشط في قاعدة البيانات</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-5xl mx-auto bg-brand-50 rounded-[3rem] p-8 md:p-16 shadow-inner border border-brand-100 flex flex-col md:flex-row gap-16 items-center">
+                <div class="md:w-1/2">
+                    <span class="text-brand-600 font-extrabold tracking-widest uppercase text-sm mb-2 block" data-i18n="contact_label">عرض محدود</span>
+                    <h2 class="text-4xl font-black text-brand-900 mb-6 leading-tight" data-i18n="contact_title">هل تريد تكبير مشروعك؟</h2>
+                    <p class="text-gray-600 mb-8 text-lg" data-i18n="contact_desc">
+                        نحن نبحث عن <span class="font-bold text-brand-600 underline">10 عملاء جادين فقط</span> لنضع سلعهم في المستودع ونبدأ العمل فوراً. هل أنت واحد منهم؟
+                    </p>
+                    
+                    <div class="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm w-fit">
+                        <div class="w-12 h-12 bg-brand-100 rounded-full flex items-center justify-center text-brand-600"><i data-lucide="phone-call"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-bold uppercase" data-i18n="call_us">اتصل بالمدير مباشرة</p>
+                            <p class="font-black text-xl dir-ltr text-start tracking-wide">06 29 84 61 73</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 w-full bg-white p-8 rounded-3xl shadow-xl">
+                    <form action="#" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2" data-i18n="form_name">اسم المتجر / النشاط</label>
+                            <input type="text" class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition font-bold text-gray-900">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2" data-i18n="form_phone">رقم الهاتف</label>
+                            <input type="tel" class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition font-bold text-gray-900 dir-ltr text-right">
+                        </div>
+                        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-black py-4 rounded-xl transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg" data-i18n="form_btn">
+                            حجز مقعدي الآن
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-brand-dark text-gray-400 py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-3xl font-black text-white mb-4 tracking-tighter" data-i18n="logo">فتح الخير</h3>
+            <p class="mb-8 max-w-md mx-auto" data-i18n="footer_desc">من المزرعة والميناء.. إلى باب الزبون.</p>
+            <div class="flex justify-center gap-6 mb-8">
+                <a href="#" class="hover:text-white transition"><i data-lucide="facebook"></i></a>
+                <a href="#" class="hover:text-white transition"><i data-lucide="instagram"></i></a>
+                <a href="#" class="hover:text-white transition"><i data-lucide="linkedin"></i></a>
+            </div>
+            <div class="text-sm font-medium opacity-50">
+                &copy; 2025 Fathelkhair Logistics. By Mehdi Ouatmane.
+            </div>
+        </div>
     </footer>
 
+    <script>
+        lucide.createIcons();
+
+        const translations = {
+            ar: {
+                logo: "فتح الخير",
+                nav_services: "خدماتنا",
+                nav_process: "كيف نعمل؟",
+                nav_pricing: "الأسعار",
+                nav_stats: "إحصائياتنا",
+                nav_cta: "ابدأ الآن",
+                hero_badge: "🔥 الشريك اللوجستي الأسرع نمواً في 2025",
+                hero_title_1: "نخزن سلعتك، نوصلها،",
+                hero_title_2: "ونجيب ليك فلوسك!",
+                hero_desc: "هل أنت تاجر إلكتروني؟ هل تعاني مع الروتور والتخزين؟ شركة 'فتح الخير' توفر لك مستودعاً مركزياً + أسطول سيارات Master جاهز لتوصيل طلبياتك في وقت قياسي.",
+                hero_btn_1: "انضم للنخبة (10 مقاعد فقط)",
+                stat_1: "زبون راضٍ",
+                stat_2: "سرعة التوصيل",
+                stat_3: "مشاكل تخزين",
+                services_title: "نظام لوجستي متكامل",
+                serv_1_title: "التخزين (Fulfillment)",
+                serv_1_desc: "كراج مؤمن بالكامل لتخزين سلعك. نوفر عليك مصاريف الكراء والماء والكهرباء. فقط أحضر السلعة وركز في التسويق.",
+                serv_2_title: "أسطول خاص",
+                serv_2_desc: "لا نتعامل مع وسطاء. نمتلك 3 سيارات Renault Master وسائقين محترفين يعرفون أزقة المدن لضمان تسليم الطلب.",
+                serv_3_title: "إدارة الكاش (COD)",
+                serv_3_desc: "أموالك في أمان. نقوم بجمع المبالغ من الزبائن وتحويلها لك بشكل دوري ومنتظم وبتقارير شفافة.",
+                pricing_title: "تعريفة واضحة.. لا مفاجآت",
+                pricing_subtitle: "اختر الشفافية والمصداقية مع فتح الخير.",
+                th_city: "المدينة",
+                th_delivery: "التوصيل",
+                th_return: "الروتور",
+                city_casa: "الدار البيضاء",
+                city_rabat: "الرباط",
+                city_kech: "مراكش",
+                city_agadir: "أكادير",
+                city_fes: "فاس / مكناس",
+                city_oujda: "وجدة / الشمال",
+                year_2023: "سنة 2023",
+                happy_client: "زبون",
+                today: "اليوم",
+                active_client: "زبون نشط في قاعدة البيانات",
+                growth_badge: "نمو صاروخي 🚀",
+                contact_label: "عرض محدود",
+                contact_title: "هل تريد تكبير مشروعك؟",
+                contact_desc: "نحن نبحث عن 10 عملاء جادين فقط لنضع سلعهم في المستودع ونبدأ العمل فوراً. هل أنت واحد منهم؟",
+                call_us: "اتصل بالمدير مباشرة",
+                form_name: "اسم المتجر / النشاط",
+                form_phone: "رقم الهاتف",
+                form_btn: "حجز مقعدي الآن",
+                footer_desc: "من المزرعة والميناء.. إلى باب الزبون."
+            },
+            fr: {
+                logo: "Fathelkhair",
+                nav_services: "Services",
+                nav_process: "Processus",
+                nav_pricing: "Tarifs",
+                nav_stats: "Stats",
+                nav_cta: "Commencer",
+                hero_badge: "🔥 Partenaire logistique N°1 en 2025",
+                hero_title_1: "On stocke, on livre,",
+                hero_title_2: "On récupère votre Cash!",
+                hero_desc: "E-commerçant? Fatigué des retours et du stockage? Fathelkhair vous offre un entrepôt central + une flotte de Master pour livrer vos commandes en un temps record.",
+                hero_btn_1: "Rejoindre l'élite (10 places)",
+                stat_1: "Clients Satisfaits",
+                stat_2: "Livraison Rapide",
+                stat_3: "Zéro Soucis",
+                services_title: "Système Logistique Complet",
+                serv_1_title: "Stockage (Fulfillment)",
+                serv_1_desc: "Garage sécurisé pour vos produits. Économisez les frais de loyer et d'électricité. Apportez votre stock et concentrez-vous sur le marketing.",
+                serv_2_title: "Flotte Privée",
+                serv_2_desc: "Pas d'intermédiaires. Nous possédons 3 Renault Master et des chauffeurs professionnels pour garantir la livraison.",
+                serv_3_title: "Gestion Cash (COD)",
+                serv_3_desc: "Votre argent est en sécurité. Nous collectons les paiements et vous les transférons régulièrement avec des rapports transparents.",
+                pricing_title: "Tarifs Clairs... Sans Surprise",
+                pricing_subtitle: "Choisissez la transparence avec Fathelkhair.",
+                th_city: "Ville",
+                th_delivery: "Livraison",
+                th_return: "Retour",
+                city_casa: "Casablanca",
+                city_rabat: "Rabat",
+                city_kech: "Marrakech",
+                city_agadir: "Agadir",
+                city_fes: "Fès / Meknès",
+                city_oujda: "Oujda / Nord",
+                year_2023: "Année 2023",
+                happy_client: "Clients",
+                today: "Aujourd'hui",
+                active_client: "Clients Actifs",
+                growth_badge: "Croissance Rapide 🚀",
+                contact_label: "Offre Limitée",
+                contact_title: "Vous voulez grandir?",
+                contact_desc: "Nous cherchons seulement 10 clients sérieux pour stocker leurs produits et commencer immédiatement.",
+                call_us: "Appeler le Directeur",
+                form_name: "Nom du Magasin",
+                form_phone: "Téléphone",
+                form_btn: "Réserver ma place",
+                footer_desc: "De la ferme au client."
+            },
+            en: {
+                logo: "Fathelkhair",
+                nav_services: "Services",
+                nav_process: "Process",
+                nav_pricing: "Pricing",
+                nav_stats: "Stats",
+                nav_cta: "Start Now",
+                hero_badge: "🔥 Fastest Growing Logistics Partner 2025",
+                hero_title_1: "We Store, We Deliver,",
+                hero_title_2: "We Get Your Cash!",
+                hero_desc: "E-commerce merchant? Tired of returns and storage issues? Fathelkhair offers a central warehouse + a fleet of Master trucks to deliver your orders in record time.",
+                hero_btn_1: "Join the Elite (10 spots)",
+                stat_1: "Happy Clients",
+                stat_2: "Fast Delivery",
+                stat_3: "Zero Hassle",
+                services_title: "Complete Logistics System",
+                serv_1_title: "Warehousing (Fulfillment)",
+                serv_1_desc: "Secured garage for your goods. Save on rent and utilities. Just bring your stock and focus on marketing.",
+                serv_2_title: "Private Fleet",
+                serv_2_desc: "No middlemen. We own 3 Renault Master trucks with professional drivers to ensure delivery success.",
+                serv_3_title: "Cash Management (COD)",
+                serv_3_desc: "Your money is safe. We collect payments from customers and transfer them to you regularly with transparent reports.",
+                pricing_title: "Clear Pricing... No Surprises",
+                pricing_subtitle: "Choose transparency with Fathelkhair.",
+                th_city: "City",
+                th_delivery: "Delivery",
+                th_return: "Return",
+                city_casa: "Casablanca",
+                city_rabat: "Rabat",
+                city_kech: "Marrakech",
+                city_agadir: "Agadir",
+                city_fes: "Fes / Meknes",
+                city_oujda: "Oujda / North",
+                year_2023: "Year 2023",
+                happy_client: "Clients",
+                today: "Today",
+                active_client: "Active Clients",
+                growth_badge: "Rocket Growth 🚀",
+                contact_label: "Limited Offer",
+                contact_title: "Want to Scale Up?",
+                contact_desc: "We are looking for only 10 serious clients to store their goods and start immediately. Are you one of them?",
+                call_us: "Call Manager",
+                form_name: "Store Name",
+                form_phone: "Phone Number",
+                form_btn: "Book My Spot",
+                footer_desc: "From farm to customer."
+            }
+        };
+
+        function setLanguage(lang) {
+            const dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.setAttribute('dir', dir);
+            document.documentElement.setAttribute('lang', lang);
+
+            // Update Buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase() === lang || (lang === 'ar' && btn.innerText === 'عربي')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update Text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+        }
+    </script>
 </body>
 </html>
