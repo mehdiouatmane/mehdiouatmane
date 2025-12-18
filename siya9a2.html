@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sya9a Game Show - تحدي السياقة</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'cairo': ['Cairo', 'sans-serif'] },
+                    colors: {
+                        // ألوان النيون الجديدة
+                        neon: {
+                            blue: '#00f2ff',
+                            purple: '#bd00ff',
+                            green: '#00ff9f',
+                            red: '#ff0055',
+                            yellow: '#ffe600'
+                        },
+                        game: {
+                            dark: '#0a0a1f', // خلفية داكنة جداً
+                            card: '#161638', // لون البطاقات
+                        }
+                    },
+                    boxShadow: {
+                        // تأثيرات التوهج (Glow)
+                        'neon-blue': '0 0 20px rgba(0, 242, 255, 0.5)',
+                        'neon-green': '0 0 30px rgba(0, 255, 159, 0.6)',
+                        'neon-red': '0 0 30px rgba(255, 0, 85, 0.6)',
+                        'glass': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);',
+                    },
+                    backgroundImage: {
+                        'game-gradient': 'linear-gradient(135deg, #0a0a1f 0%, #1a1a3a 100%)',
+                        'btn-gradient': 'linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0.1))'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #0a0a1f;
+            /* خلفية شبكية رقمية خفيفة */
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(189, 0, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+        }
+        
+        /* تأثيرات الحركة */
+        .slide-in { animation: slideIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+        
+        .pop-in { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+
+        .glow-text { text-shadow: 0 0 10px rgba(0, 242, 255, 0.7); }
+        
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a1f; }
+        ::-webkit-scrollbar-thumb { background: #bd00ff; border-radius: 4px; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="text-white antialiased min-h-screen flex flex-col">
+
+    <div class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center max-w-5xl">
+        
+        <header class="w-full flex justify-between items-center mb-8 p-4 bg-game-card/50 backdrop-blur-md rounded-2xl border border-neon-blue/30 shadow-neon-blue">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-neon-purple to-neon-blue rounded-full flex items-center justify-center shadow-lg">
+                    <i data-lucide="gamepad-2" class="w-7 h-7 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight glow-text">تحدي السياقة</h1>
+                    <span class="text-xs text-neon-blue font-bold uppercase tracking-wider">المستوى الاحترافي</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <div class="text-sm text-gray-400 font-semibold">النقاط</div>
+                    <div class="text-3xl font-black text-neon-yellow"><span id="current-score">0</span></div>
+                </div>
+                <div class="relative w-16 h-16 flex items-center justify-center rounded-full border-4 border-game-card bg-game-dark">
+                    <span id="question-progress" class="font-bold text-lg">1/4</span>
+                    <svg class="absolute top-0 left-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#bd00ff" stroke-width="8" stroke-dasharray="282.7" id="progress-ring" style="stroke-dashoffset: 282.7; transition: stroke-dashoffset 1s ease;"></circle>
+                    </svg>
+                 </div>
+            </div>
+        </header>
+
+        <div id="game-board" class="w-full bg-game-card/80 backdrop-blur-xl rounded-[2rem] shadow-2xl overflow-hidden border-2 border-white/10 relative pop-in p-6 md:p-10">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-1 bg-gradient-to-r from-transparent via-neon-blue to-transparent"></div>
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-1 bg-gradient-to-r from-transparent via-neon-purple to-transparent"></div>
+
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-1/2 flex flex-col">
+                    <div class="mb-6">
+                        <span id="q-category" class="inline-block px-4 py-2 bg-neon-purple/20 text-neon-purple text-sm font-bold uppercase tracking-wider rounded-lg mb-4 border border-neon-purple/50">
+                            فئة السؤال
+                        </span>
+                        <h3 id="q-text" class="text-2xl md:text-3xl font-extrabold leading-snug text-white">
+                            نص السؤال هنا...
+                        </h3>
+                    </div>
+
+                    <div class="flex-grow rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 relative group bg-game-dark h-64 md:h-auto">
+                        <img id="q-image" src="" alt="Scenario" class="w-full h-full object-contain hidden transition-transform duration-700 group-hover:scale-105" />
+                        <div id="no-image" class="w-full h-full flex flex-col items-center justify-center text-gray-500 hidden">
+                            <i data-lucide="image" class="w-20 h-20 mb-4 opacity-30"></i>
+                            <span class="font-bold">لا توجد صورة</span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-game-card via-transparent to-transparent opacity-50"></div>
+                    </div>
+                </div>
+
+                <div class="md:w-1/2 flex flex-col justify-center">
+                    <h4 class="text-xl font-bold text-gray-300 mb-6 flex items-center">
+                        <i data-lucide="help-circle" class="ml-2 text-neon-blue"></i> اختر الإجابة الصحيحة:
+                    </h4>
+                    
+                    <div id="options-container" class="space-y-4 flex-grow">
+                        </div>
+
+                    <div id="feedback-section" class="mt-8 hidden pop-in relative overflow-hidden rounded-2xl">
+                         <div id="feedback-bg" class="absolute inset-0 bg-game-dark opacity-90"></div>
+                        <div class="relative p-6 border-2 rounded-2xl z-10" id="feedback-border">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div id="feedback-icon-container" class="p-2 rounded-full bg-white/10">
+                                    </div>
+                                <h5 id="feedback-title" class="text-2xl font-black uppercase"></h5>
+                            </div>
+                            <p id="explanation-text" class="text-lg text-white leading-relaxed font-semibold"></p>
+                            
+                             <button id="next-btn" class="mt-6 w-full py-4 bg-gradient-to-r from-neon-purple to-neon-blue hover:from-neon-blue hover:to-neon-purple text-white rounded-xl font-black text-xl shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3 relative overflow-hidden group border-2 border-white/20">
+                                <div class="absolute inset-0 bg-white/20 group-hover:bg-transparent transition-all"></div>
+                                <span class="relative z-10">السؤال التالي</span>
+                                <i data-lucide="arrow-left-circle" class="w-8 h-8 relative z-10"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden w-full max-w-2xl pop-in text-center relative z-10">
+             <div class="absolute inset-0 -z-10 overflow-hidden" id="result-bg-effect"></div>
+
+            <div class="bg-game-card/90 backdrop-blur-xl p-12 rounded-[3rem] shadow-neon-blue border-4 border-neon-purple/50">
+                <div class="mb-8 flex justify-center">
+                    <div id="result-icon-container" class="w-32 h-32 rounded-full flex items-center justify-center shadow-2xl relative">
+                        <div class="absolute inset-0 rounded-full animate-ping opacity-50" id="result-glow"></div>
+                        <i id="result-icon" class="w-20 h-20 relative z-10"></i>
+                    </div>
+                </div>
+
+                <h2 id="result-title" class="text-5xl font-black mb-4 glow-text"></h2>
+                <p class="text-xl text-gray-300 mb-10 font-bold">لقد أنهيت التحدي!</p>
+
+                <div class="mb-12 inline-block relative">
+                    <div class="text-8xl font-black text-white relative z-10">
+                        <span id="final-score" class="text-transparent bg-clip-text bg-gradient-to-r from-neon-yellow to-neon-green"></span>
+                        <span class="text-4xl text-gray-400">/ <span id="total-questions"></span></span>
+                    </div>
+                    <div class="absolute inset-0 bg-neon-blue/20 blur-3xl -z-10 rounded-full"></div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full md:w-2/3 mx-auto py-5 bg-gradient-to-r from-neon-blue via-neon-purple to-neon-red hover:bg-gradient-to-l text-white rounded-2xl font-black text-2xl shadow-neon-purple transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3 border-2 border-white/20">
+                    <i data-lucide="rotate-ccw" class="w-8 h-8"></i> تحدي جديد
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- البيانات التي طلبتها (من الصورة السابقة) ---
+        const questionsData = [
+            {
+                id: 1,
+                category: "العقوبات والمخالفات",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/M_19_Panneau_Arr%C3%AAt_au_Maroc.svg/1200px-M_19_Panneau_Arr%C3%AAt_au_Maroc.svg.png", 
+                scenarioText: "لم تحترم علامة 'قف' (STOP) وتجاوزت الخط دون توقف. حسب مدونة السير، ما هي العقوبة؟",
+                options: [
+                    { id: 'a', text: "غرامة 500 درهم فقط", isCorrect: false },
+                    { id: 'b', text: "غرامة 700 درهم و خصم 4 نقط", isCorrect: true },
+                    { id: 'c', text: "غرامة 300 درهم و خصم نقطتين", isCorrect: false },
+                ],
+                explanation: "مخالفة خطيرة! عدم احترام علامة قف يستوجب غرامة من الدرجة الأولى (700 درهم) وسحب 4 نقاط من رصيد رخصتك."
+            },
+            {
+                id: 2,
+                category: "قواعد التشوير",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/M_4_Panneau_Cedez_le_passage_au_Maroc.svg/1071px-M_4_Panneau_Cedez_le_passage_au_Maroc.svg.png",
+                scenarioText: "أنت تسير خارج المجال الحضري (خارج المدينة) ووجدت علامة خطر. على أي بعد توضع؟",
+                options: [
+                    { id: 'a', text: "قبل الخطر بـ 50 متر", isCorrect: false },
+                    { id: 'b', text: "قبل الخطر بـ 150 متر", isCorrect: true },
+                    { id: 'c', text: "عند مكان الخطر مباشرة", isCorrect: false },
+                ],
+                explanation: "قاعدة المسافات: علامات الخطر المثلثة توضع قبل 150 متر خارج المدينة، وقبل 50 متر فقط داخل المدينة."
+            },
+            {
+                id: 3,
+                category: "حق الأسبقية",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Panneau_AB2_fr.svg/1200px-Panneau_AB2_fr.svg.png",
+                scenarioText: "أنت في طريق بها هذه العلامة (المعين الأصفر). تقترب من ملتقى طرق، من له الأسبقية؟",
+                options: [
+                    { id: 'a', text: "الأسبقية للقادم من اليمين", isCorrect: false },
+                    { id: 'b', text: "أنت لديك حق الأسبقية (طريق كبيرة)", isCorrect: true },
+                    { id: 'c', text: "الأسبقية للقادم من اليسار", isCorrect: false },
+                ],
+                explanation: "هذه علامة 'طريق ذات أولوية'. أنت في الطريق الرئيسية، والآخرون في الطرق الفرعية (الصغيرة) يجب أن يتوقفوا ويعطوك الأسبقية."
+            },
+            {
+                id: 4,
+                category: "ملتقى الطرق (كروازمة)",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Panneau_A21_fr.svg/1200px-Panneau_A21_fr.svg.png",
+                scenarioText: "وصلت لملتقى طرق توجد به هذه العلامة (X)، أو بدون أي علامات. لمن حق الأسبقية؟",
+                options: [
+                    { id: 'a', text: "الأسبقية لليمين فقط", isCorrect: true },
+                    { id: 'b', text: "الأسبقية لليسار واليمين", isCorrect: false },
+                    { id: 'c', text: "أنت تمر أولاً", isCorrect: false },
+                ],
+                explanation: "في غياب التشوير أو وجود علامة 'X'، تطبق القاعدة العامة: 'الأسبقية لليمين' (مول ليمن يدوز)."
+            },
+            {
+                id: 5,
+                category: "ملتقى الطرق (كروازمة)",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Panneau_A21_fr.svg/1200px-Panneau_A21_fr.svg.png",
+                scenarioText: "ILAHWITK",
+                options: [
+                    { id: 'a', text: "WACH RAT9sah", isCorrect: true },
+                    { id: 'b', text: "wach ray3jbk lhal", isCorrect: false },
+                    { id: 'c', text: "wach ratn3as", isCorrect: false },
+                ],
+                explanation: "lhwa ni3mm ozwin bzaaf"
+            }			
+        ];
+
+        // --- State ---
+        let currentIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        // --- DOM Elements ---
+        const gameBoard = document.getElementById('game-board');
+        const resultScreen = document.getElementById('result-screen');
+        const nextBtn = document.getElementById('next-btn');
+        const progressRing = document.getElementById('progress-ring');
+
+        // --- Functions ---
+        function initQuiz() {
+            renderQuestion();
+            updateScoreUI();
+            lucide.createIcons();
+        }
+
+        function updateScoreUI() {
+             document.getElementById('current-score').innerText = score * 100; // Game show numbering (e.g., 100 points per question)
+             document.getElementById('question-progress').innerText = `${currentIndex + 1}/${questionsData.length}`;
+             
+             // Update Progress Ring Dashoffset
+             const total = questionsData.length;
+             const progress = (currentIndex) / total;
+             const circumference = 2 * Math.PI * 45; // r=45
+             const offset = circumference - (progress * circumference);
+             progressRing.style.strokeDashoffset = offset;
+
+        }
+
+        function renderQuestion() {
+            const q = questionsData[currentIndex];
+            isAnswered = false;
+            updateScoreUI();
+
+            // Reset Animations
+            gameBoard.classList.remove('pop-in');
+            void gameBoard.offsetWidth; // Trigger reflow
+            gameBoard.classList.add('pop-in');
+
+            document.getElementById('q-category').innerText = q.category;
+            document.getElementById('q-text').innerText = q.scenarioText;
+            
+            const imgEl = document.getElementById('q-image');
+            const noImgEl = document.getElementById('no-image');
+            if (q.image) {
+                imgEl.src = q.image;
+                imgEl.classList.remove('hidden');
+                noImgEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                noImgEl.classList.remove('hidden');
+            }
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                // Game Button Style (Default State)
+                btn.className = `w-full p-5 rounded-2xl border-2 border-white/10 bg-white/5 text-right font-bold text-xl text-white transition-all duration-300 flex items-center justify-between group hover:bg-white/10 hover:border-neon-blue/50 hover:shadow-[0_0_15px_rgba(0,242,255,0.3)] hover:-translate-y-1 active:scale-95 relative overflow-hidden slide-in`;
+                btn.style.animationDelay = `${index * 0.1}s`; // Staggered animation
+                btn.innerHTML = `
+                    <div class="absolute inset-0 bg-btn-gradient opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="relative z-10 flex items-center gap-3">
+                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-neon-blue font-black">${String.fromCharCode(65 + index)}</span>
+                        ${opt.text}
+                    </span>
+                    <div class="relative z-10 mr-4 w-8 h-8 rounded-full border-2 border-white/20 flex items-center justify-center icon-placeholder bg-game-dark/50"></div>
+                `;
+                btn.onclick = () => handleSelect(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('feedback-section').classList.add('hidden');
+            nextBtn.onclick = handleNext;
+            nextBtn.querySelector('span').innerText = currentIndex === questionsData.length - 1 ? "عرض النتيجة النهائية" : "السؤال التالي";
+            
+            lucide.createIcons();
+        }
+
+        function handleSelect(btnElement, option) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const isCorrect = option.isCorrect;
+            if (isCorrect) score++;
+
+            const buttons = document.getElementById('options-container').children;
+            Array.from(buttons).forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-white/10', 'hover:border-neon-blue/50', 'hover:shadow-[0_0_15px_rgba(0,242,255,0.3)]', 'hover:-translate-y-1', 'active:scale-95');
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            });
+
+            // --- Game Show Reveal Effects ---
+            btnElement.classList.remove('opacity-50', 'border-white/10', 'bg-white/5');
+            btnElement.classList.add('scale-105', 'z-20', 'shadow-2xl');
+
+            const feedbackBg = document.getElementById('feedback-bg');
+            const feedbackBorder = document.getElementById('feedback-border');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackIconContainer = document.getElementById('feedback-icon-container');
+
+            if (isCorrect) {
+                // Correct Answer Style (Explosive Green)
+                btnElement.className += " bg-gradient-to-r from-green-500 to-emerald-600 border-transparent shadow-neon-green";
+                btnElement.querySelector('.icon-placeholder').innerHTML = `<i data-lucide="check-circle-2" class="text-white w-8 h-8 animate-bounce"></i>`;
+                btnElement.querySelector('.icon-placeholder').classList.remove('border-2', 'bg-game-dark/50');
+                btnElement.querySelector('.icon-placeholder').classList.add('bg-green-500');
+                
+                feedbackBg.className = "absolute inset-0 bg-green-900/80";
+                feedbackBorder.className = "relative p-6 border-2 border-green-500 rounded-2xl z-10 shadow-neon-green";
+                feedbackTitle.innerText = "إجابة صحيحة! ممتاز";
+                feedbackTitle.className = "text-2xl font-black uppercase text-green-400 glow-text";
+                feedbackIconContainer.className = "p-3 rounded-full bg-green-500 text-white shadow-lg shadow-green-500/50";
+                feedbackIconContainer.innerHTML = `<i data-lucide="party-popper" class="w-8 h-8"></i>`;
+
+            } else {
+                // Incorrect Answer Style (Explosive Red)
+                btnElement.className += " bg-gradient-to-r from-red-600 to-rose-700 border-transparent shadow-neon-red shake";
+                btnElement.querySelector('.icon-placeholder').innerHTML = `<i data-lucide="x-circle" class="text-white w-8 h-8"></i>`;
+                btnElement.querySelector('.icon-placeholder').classList.remove('border-2', 'bg-game-dark/50');
+                btnElement.querySelector('.icon-placeholder').classList.add('bg-red-600');
+
+                // Highlight Correct One
+                const currentQ = questionsData[currentIndex];
+                const correctOptIndex = currentQ.options.findIndex(o => o.isCorrect);
+                const correctBtn = buttons[correctOptIndex];
+                correctBtn.classList.remove('opacity-50', 'border-white/10', 'bg-white/5');
+                correctBtn.classList.add('bg-gradient-to-r', 'from-green-500/50', 'to-emerald-600/50', 'border-green-500', 'text-white', 'shadow-neon-green');
+                correctBtn.querySelector('.icon-placeholder').innerHTML = `<i data-lucide="check-circle-2" class="text-green-400 w-6 h-6"></i>`;
+
+                feedbackBg.className = "absolute inset-0 bg-red-900/80";
+                feedbackBorder.className = "relative p-6 border-2 border-red-500 rounded-2xl z-10 shadow-neon-red";
+                feedbackTitle.innerText = "إجابة خاطئة! ركز";
+                feedbackTitle.className = "text-2xl font-black uppercase text-red-500 glow-text";
+                feedbackIconContainer.className = "p-3 rounded-full bg-red-600 text-white shadow-lg shadow-red-600/50";
+                feedbackIconContainer.innerHTML = `<i data-lucide="alert-triangle" class="w-8 h-8"></i>`;
+            }
+
+            document.getElementById('explanation-text').innerText = questionsData[currentIndex].explanation;
+            document.getElementById('feedback-section').classList.remove('hidden');
+            
+            updateScoreUI();
+            lucide.createIcons();
+        }
+
+        function handleNext() {
+            if (currentIndex < questionsData.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            gameBoard.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            const percentage = Math.round((score / questionsData.length) * 100);
+            const isSuccess = percentage >= 75;
+            
+            document.getElementById('final-score').innerText = score * 100;
+            document.getElementById('total-questions').innerText = questionsData.length * 100;
+            
+            const resultIconContainer = document.getElementById('result-icon-container');
+            const resultGlow = document.getElementById('result-glow');
+            const titleEl = document.getElementById('result-title');
+            const bgEffect = document.getElementById('result-bg-effect');
+
+            if (isSuccess) {
+                resultIconContainer.className = "w-32 h-32 rounded-full flex items-center justify-center shadow-2xl relative bg-gradient-to-br from-green-400 to-emerald-600 text-white shadow-neon-green";
+                resultGlow.className = "absolute inset-0 rounded-full animate-ping opacity-50 bg-green-500";
+                resultIconContainer.innerHTML = `<i data-lucide="trophy" class="w-20 h-20 relative z-10"></i>` + resultGlow.outerHTML;
+                titleEl.innerText = "أسطورة السياقة!";
+                titleEl.classList.add('text-green-400');
+                // Simple confetti placeholder gradient
+                bgEffect.style.background = "radial-gradient(circle, rgba(0,255,159,0.2) 0%, rgba(10,10,31,0) 70%)";
+
+            } else {
+                resultIconContainer.className = "w-32 h-32 rounded-full flex items-center justify-center shadow-2xl relative bg-gradient-to-br from-red-500 to-rose-700 text-white shadow-neon-red";
+                resultGlow.className = "absolute inset-0 rounded-full animate-ping opacity-50 bg-red-600";
+                 resultIconContainer.innerHTML = `<i data-lucide="thumbs-down" class="w-20 h-20 relative z-10"></i>` + resultGlow.outerHTML;
+                titleEl.innerText = "تحتاج للتدريب!";
+                titleEl.classList.add('text-red-500');
+                bgEffect.style.background = "radial-gradient(circle, rgba(255,0,85,0.2) 0%, rgba(10,10,31,0) 70%)";
+            }
+            lucide.createIcons();
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            resultScreen.classList.add('hidden');
+            gameBoard.classList.remove('hidden');
+            renderQuestion();
+        }
+
+        initQuiz();
+    </script>
+</body>
+</html>
