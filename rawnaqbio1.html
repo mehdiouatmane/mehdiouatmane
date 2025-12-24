@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rawnaq Bio | رونق بيو - للمنتجات الطبيعية والمكملات</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: '#10B981', 600: '#059669', 900: '#064E3B' }, // أخضر زمردي للطبيعة
+                        gold: { 500: '#F59E0B', 600: '#D97706' }, // ذهبي للعسل والزيوت
+                        dark: '#1e293b'
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #F0FDF4; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    // ================== 1. إعدادات تيليجرام (أوتوماتيكية) ==================
+    const TELEGRAM_CONFIG = {
+        token: "8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0",
+        chatId: "1335982188"
+    };
+
+    // ================== 2. بيانات المنتجات (متنوعة حسب طلبك) ==================
+    const productsDB = [
+        // 4 منتجات رئيسية (Featured)
+        { id: 1, name: 'عسل السدر الملكي (1kg)', price: 350, category: 'عسل وزيوت', image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500', rating: 5, featured: true, description: 'عسل سدر حر 100% من جبال الأطلس، مفيد للمناعة والطاقة.' },
+        { id: 2, name: 'مجموعة الأركان للتجميل', price: 199, category: 'تجميل', image: 'https://images.unsplash.com/photo-1608248597279-f99d160bfbc8?w=500', rating: 4.8, featured: true, description: 'زيت أركان بكر للشعر والبشرة مع صابون بلدي بالأعشاب.' },
+        { id: 3, name: 'مكمل القوة العضلية Whey', price: 550, category: 'مكملات ورياضة', image: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=500', rating: 4.9, featured: true, description: 'بروتين نقي لبناء العضلات وزيادة القوة البدنية. نكهة الشوكولاتة.' },
+        { id: 4, name: 'خلطة الأعشاب المقوية', price: 120, category: 'أعشاب وعلاج', image: 'https://images.unsplash.com/photo-1615485500704-8e99099928b3?w=500', rating: 4.7, featured: true, description: 'خلطة طبيعية لزيادة النشاط وعلاج الضعف الجنسي والوهن.' },
+        
+        // منتجات أخرى (Best Sellers & New)
+        { id: 5, name: 'أملو باللوز وزيت الأركان', price: 90, category: 'عسل وزيوت', image: 'https://images.unsplash.com/photo-1551268249-14a044d03825?w=500', rating: 4.9, type: 'best' },
+        { id: 6, name: 'فيتامين C سيروم للوجه', price: 150, category: 'تجميل', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500', rating: 4.6, type: 'best' },
+        { id: 7, name: 'جينسينغ كوري أحمر', price: 200, category: 'أعشاب وعلاج', image: 'https://images.unsplash.com/photo-1607923432782-b7a42168923a?w=500', rating: 5, type: 'new' },
+        { id: 8, name: 'زيت الحبة السوداء', price: 60, category: 'عسل وزيوت', image: 'https://images.unsplash.com/photo-1629196914375-f7e48f477b6d?w=500', rating: 4.8, type: 'new' },
+    ];
+
+    // ================== 3. المكونات (Components) ==================
+
+    // --- أ. الهيدر (شعار واسم احترافي) ---
+    const Header = ({ cartCount, goHome }) => (
+        <header className="bg-brand-900 text-white sticky top-0 z-50 shadow-lg border-b-4 border-gold-500">
+            <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+                <div onClick={goHome} className="cursor-pointer flex items-center gap-2">
+                    <i className="fa-solid fa-leaf text-brand-500 text-2xl bg-white p-2 rounded-full"></i>
+                    <div>
+                        <h1 className="text-xl font-black leading-none text-white">Rawnaq<span className="text-brand-500">Bio</span></h1>
+                        <p className="text-[10px] text-gray-300">كنوز الطبيعة بين يديك</p>
+                    </div>
+                </div>
+                <div className="relative">
+                    <i className="fa-solid fa-basket-shopping text-2xl text-gold-500"></i>
+                    {cartCount > 0 && <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold animate-bounce">{cartCount}</span>}
+                </div>
+            </div>
+        </header>
+    );
+
+    // --- ب. بطاقة المنتج (Grid & Slider) ---
+    const ProductCard = ({ product, onBuy }) => (
+        <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all border border-gray-100 group h-full flex flex-col">
+            <div className="h-40 overflow-hidden relative bg-gray-100">
+                <img src={product.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={product.name} />
+                {product.type === 'new' && <span className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded font-bold">جديد</span>}
+                {product.type === 'best' && <span className="absolute top-2 right-2 bg-gold-500 text-white text-xs px-2 py-1 rounded font-bold">الأكثر طلباً</span>}
+            </div>
+            <div className="p-3 flex-1 flex flex-col justify-between">
+                <div>
+                    <span className="text-[10px] text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded-full">{product.category}</span>
+                    <h3 className="font-bold text-gray-800 text-sm mt-1 leading-tight">{product.name}</h3>
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                    <span className="text-lg font-black text-brand-900">{product.price} DH</span>
+                    <button onClick={() => onBuy(product)} className="bg-gold-500 text-white w-8 h-8 rounded-full shadow-lg hover:bg-gold-600 transition flex items-center justify-center animate-pulse">
+                        <i className="fa-solid fa-cart-arrow-down"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+
+    // --- ج. الصفحة الرئيسية (Homepage) ---
+    const HomePage = ({ onBuy }) => {
+        const [filterCat, setFilterCat] = React.useState('الكل');
+        const [searchTerm, setSearchTerm] = React.useState('');
+
+        const categories = ['الكل', 'عسل وزيوت', 'تجميل', 'مكملات ورياضة', 'أعشاب وعلاج'];
+        
+        // منطق الفلترة
+        const filteredProducts = productsDB.filter(p => {
+            const matchesCat = filterCat === 'الكل' || p.category === filterCat;
+            const matchesSearch = p.name.includes(searchTerm);
+            return matchesCat && matchesSearch;
+        });
+
+        // تقسيم المنتجات للعرض
+        const featured = productsDB.filter(p => p.featured);
+        const bestSellers = productsDB.filter(p => p.type === 'best');
+        const newArrivals = productsDB.filter(p => p.type === 'new');
+
+        return (
+            <div className="container mx-auto pb-20 animate-fade-in">
+                
+                {/* 1. قسم البحث والفلاتر */}
+                <div className="bg-white p-4 sticky top-[68px] z-40 shadow-sm border-b">
+                    <div className="relative mb-3">
+                        <input 
+                            type="text" 
+                            placeholder="ابحث عن منتج (مثال: عسل، بروتين...)" 
+                            className="w-full bg-gray-100 border-none rounded-full px-10 py-2 text-sm focus:ring-2 focus:ring-brand-500"
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <i className="fa-solid fa-search absolute right-4 top-2.5 text-gray-400"></i>
+                    </div>
+                    <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+                        {categories.map(cat => (
+                            <button 
+                                key={cat} 
+                                onClick={() => setFilterCat(cat)}
+                                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition-all ${filterCat === cat ? 'bg-brand-600 text-white shadow-md' : 'bg-gray-100 text-gray-600'}`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* إذا كان هناك بحث أو فلترة نشطة، نعرض النتائج فقط */}
+                {(searchTerm || filterCat !== 'الكل') ? (
+                    <div className="p-4 grid grid-cols-2 gap-4">
+                        {filteredProducts.map(p => <ProductCard key={p.id} product={p} onBuy={onBuy} />)}
+                        {filteredProducts.length === 0 && <div className="col-span-2 text-center py-10 text-gray-400">لا توجد نتائج مطابقة 🔍</div>}
+                    </div>
+                ) : (
+                    <div className="space-y-6">
+                        {/* 2. المنتجات المميزة (Grid) */}
+                        <section className="p-4">
+                            <h2 className="text-lg font-black text-brand-900 mb-3 flex items-center gap-2">
+                                <i className="fa-solid fa-crown text-gold-500"></i> مختارات لك
+                            </h2>
+                            <div className="grid grid-cols-2 gap-4">
+                                {featured.map(p => <ProductCard key={p.id} product={p} onBuy={onBuy} />)}
+                            </div>
+                        </section>
+
+                        {/* 3. الأكثر مبيعاً (Slider) */}
+                        <section className="bg-white py-6 border-y border-gray-100">
+                            <div className="container px-4">
+                                <h2 className="text-lg font-black text-brand-900 mb-3 flex items-center gap-2">
+                                    <i className="fa-solid fa-fire text-red-500"></i> الأكثر طلباً
+                                </h2>
+                                <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x">
+                                    {bestSellers.map(p => (
+                                        <div key={p.id} className="min-w-[160px] snap-center">
+                                            <ProductCard product={p} onBuy={onBuy} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* 4. وصل حديثاً (Slider) */}
+                        <section className="px-4">
+                            <h2 className="text-lg font-black text-brand-900 mb-3 flex items-center gap-2">
+                                <i className="fa-solid fa-clock text-blue-500"></i> جديد المتجر
+                            </h2>
+                            <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x">
+                                {newArrivals.map(p => (
+                                    <div key={p.id} className="min-w-[160px] snap-center">
+                                        <ProductCard product={p} onBuy={onBuy} />
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    // --- د. مسار الشراء (المتسلسل في صفحة واحدة) ---
+    const BuyingProcess = ({ cart, onBackToHome }) => {
+        const [step, setStep] = React.useState(1); // 1: Cart, 2: Info, 3: Processing, 4: Success
+        const [userData, setUserData] = React.useState({ name: '', phone: '', address: '' });
+
+        // حساب المجموع
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        const product = cart[0]; // نفترض منتج واحد للشراء المباشر للتبسيط
+
+        // إرسال الطلب لتيليجرام
+        const sendOrder = async () => {
+            setStep(3); // شاشة التحميل
+            
+            const message = `
+🛒 *طلب جديد من متجر Rawnaq Bio*
+---------------------------
+📦 *المنتج:* ${product.name}
+💰 *السعر:* ${product.price} DH
+---------------------------
+👤 *الاسم:* ${userData.name}
+📱 *الهاتف:* ${userData.phone}
+📍 *العنوان:* ${userData.address}
+---------------------------
+✅ *يرجى الاتصال بالزبون لتأكيد الطلب.*
+            `;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.token}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CONFIG.chatId,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                setStep(4); // نجاح
+            } catch (error) {
+                alert('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً');
+                setStep(2);
+            }
+        };
+
+        return (
+            <div className="min-h-screen bg-gray-50 flex flex-col animate-slide-up">
+                {/* شريط التقدم */}
+                <div className="bg-white p-4 shadow-sm mb-4">
+                    <div className="flex justify-between items-center max-w-sm mx-auto relative">
+                        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-0"></div>
+                        <div className={`absolute top-1/2 right-0 h-1 bg-brand-500 -z-0 transition-all duration-500`} style={{width: `${(step/4)*100}%`}}></div>
+                        
+                        {[1, 2, 3, 4].map(s => (
+                            <div key={s} className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all ${s <= step ? 'bg-brand-600 text-white' : 'bg-gray-300 text-gray-500'}`}>
+                                {s === 1 ? <i className="fa-solid fa-cart-shopping"></i> : 
+                                 s === 2 ? <i className="fa-solid fa-user"></i> :
+                                 s === 3 ? <i className="fa-solid fa-paper-plane"></i> : <i className="fa-solid fa-check"></i>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="flex-1 container mx-auto px-4 pb-20 max-w-lg">
+                    
+                    {/* خطوة 1: مراجعة الطلب */}
+                    {step === 1 && (
+                        <div className="bg-white rounded-2xl shadow-lg p-6">
+                            <h2 className="text-xl font-bold mb-4 text-center">تأكيد المنتج</h2>
+                            <div className="flex gap-4 items-center bg-gray-50 p-3 rounded-xl border border-gray-100 mb-6">
+                                <img src={product.image} className="w-20 h-20 rounded-lg object-cover" />
+                                <div>
+                                    <h3 className="font-bold text-gray-800">{product.name}</h3>
+                                    <p className="text-sm text-gray-500">{product.category}</p>
+                                    <span className="text-brand-600 font-black text-lg">{product.price} DH</span>
+                                </div>
+                            </div>
+                            
+                            <div className="border-t pt-4 space-y-2 mb-6">
+                                <div className="flex justify-between text-sm"><span>ثمن المنتج</span><span>{total} DH</span></div>
+                                <div className="flex justify-between text-sm text-green-600"><span>التوصيل</span><span>مجاني</span></div>
+                                <div className="flex justify-between text-lg font-black"><span>المجموع</span><span>{total} DH</span></div>
+                            </div>
+
+                            <button onClick={() => setStep(2)} className="w-full bg-brand-600 text-white py-4 rounded-xl font-bold hover:bg-brand-700 shadow-lg transition transform active:scale-95">
+                                متابعة إدخال العنوان <i className="fa-solid fa-arrow-left mr-2"></i>
+                            </button>
+                            <button onClick={onBackToHome} className="w-full text-center text-gray-400 mt-4 text-sm font-bold">إلغاء والعودة</button>
+                        </div>
+                    )}
+
+                    {/* خطوة 2: المعلومات */}
+                    {step === 2 && (
+                        <div className="bg-white rounded-2xl shadow-lg p-6">
+                            <h2 className="text-xl font-bold mb-2 text-center">معلومات التوصيل</h2>
+                            <p className="text-gray-400 text-xs text-center mb-6">أدخل معلوماتك لنتصل بك ونسلمك الطلب</p>
+                            
+                            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); sendOrder(); }}>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-500 mr-1">الاسم الكامل</label>
+                                    <input required type="text" className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:border-brand-500 outline-none" 
+                                        onChange={e => setUserData({...userData, name: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-500 mr-1">رقم الهاتف (واتساب)</label>
+                                    <input required type="tel" dir="ltr" className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-right focus:border-brand-500 outline-none" 
+                                        onChange={e => setUserData({...userData, phone: e.target.value})} />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-500 mr-1">المدينة / العنوان</label>
+                                    <textarea required className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 h-20 focus:border-brand-500 outline-none"
+                                        onChange={e => setUserData({...userData, address: e.target.value})} ></textarea>
+                                </div>
+
+                                <button type="submit" className="w-full bg-gold-500 text-white py-4 rounded-xl font-bold hover:bg-gold-600 shadow-lg mt-4 animate-pulse">
+                                    تأكيد الطلب الآن ({total} DH)
+                                </button>
+                            </form>
+                            <button onClick={() => setStep(1)} className="w-full text-center text-gray-400 mt-4 text-sm">رجوع</button>
+                        </div>
+                    )}
+
+                    {/* خطوة 3: جاري الإرسال */}
+                    {step === 3 && (
+                        <div className="flex flex-col items-center justify-center h-64">
+                            <i className="fa-solid fa-circle-notch fa-spin text-5xl text-brand-500 mb-4"></i>
+                            <h2 className="font-bold text-xl">جاري تسجيل طلبك...</h2>
+                            <p className="text-gray-500 text-sm">لحظات فقط</p>
+                        </div>
+                    )}
+
+                    {/* خطوة 4: النجاح */}
+                    {step === 4 && (
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 text-center border-t-8 border-brand-500">
+                            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i className="fa-solid fa-check text-4xl text-green-600"></i>
+                            </div>
+                            <h1 className="text-2xl font-black text-gray-800 mb-2">شكراً لثقتك! ❤️</h1>
+                            <p className="text-gray-600 mb-6 text-sm">تم استلام طلبك بنجاح. سيتصل بك فريق "رونق بيو" لتأكيد الموعد والعنوان.</p>
+                            
+                            <div className="bg-gray-50 p-4 rounded-xl text-sm mb-6 border border-gray-100">
+                                <div className="flex justify-between mb-2"><span>رقم الطلب:</span><span className="font-bold">#{Math.floor(Math.random()*10000)}</span></div>
+                                <div className="flex justify-between"><span>المبلغ:</span><span className="font-bold text-brand-600">{total} DH</span></div>
+                            </div>
+
+                            <button onClick={onBackToHome} className="w-full bg-dark text-white py-3 rounded-xl font-bold shadow-lg">
+                                تسوق منتجات أخرى
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    // ================== 4. التطبيق الرئيسي ==================
+    function App() {
+        const [view, setView] = React.useState('home'); // 'home' or 'buying'
+        const [cart, setCart] = React.useState([]);
+
+        // وظيفة الشراء المباشر (Direct Buy Logic)
+        const handleBuy = (product) => {
+            setCart([product]); // إضافة المنتج للسلة (منتج واحد حالياً لتبسيط الشراء المباشر)
+            setView('buying');  // الانتقال فوراً لصفحة الشراء المتسلسل
+        };
+
+        return (
+            <div className="min-h-screen bg-gray-50 font-cairo">
+                {view === 'home' && (
+                    <>
+                        <Header cartCount={0} goHome={() => window.location.reload()} />
+                        <HomePage onBuy={handleBuy} />
+                    </>
+                )}
+
+                {view === 'buying' && (
+                    <BuyingProcess cart={cart} onBackToHome={() => { setView('home'); setCart([]); }} />
+                )}
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+</body>
+</html>
