@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biohack: Audio N-2 Back</title>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a202c;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            background: #2d3748;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 2px solid #4a5568;
+        }
+        h1 { color: #f6e05e; margin-bottom: 10px; font-size: 1.5rem; }
+        
+        /* أيقونة المكبر */
+        .speaker-box {
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+            background: #1a202c;
+            border-radius: 50%;
+            width: 180px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 4px solid #4a5568;
+            transition: all 0.2s;
+        }
+
+        .speaker-icon {
+            font-size: 5rem;
+            transition: transform 0.2s;
+        }
+
+        /* تأثير النبض عند الكلام */
+        .speaking {
+            animation: pulse 0.5s infinite alternate;
+            border-color: #63b3ed;
+            box-shadow: 0 0 20px rgba(99, 179, 237, 0.4);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        /* الأزرار */
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        button {
+            padding: 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            font-weight: bold;
+            color: white;
+        }
+        button:active { transform: scale(0.95); }
+        .btn-match { background-color: #48bb78; box-shadow: 0 5px 0 #2f855a; }
+        .btn-no-match { background-color: #f56565; box-shadow: 0 5px 0 #c53030; }
+        .btn-start { 
+            grid-column: span 2; 
+            background-color: #4299e1; 
+            font-size: 1.4rem;
+            box-shadow: 0 5px 0 #2b6cb0;
+        }
+
+        .feedback {
+            height: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .correct { color: #68d391; }
+        .wrong { color: #fc8181; }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            color: #a0aec0;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        const AudioNBack = () => {
+            const [sequence, setSequence] = useState([]);
+            const [score, setScore] = useState(0);
+            const [round, setRound] = useState(0);
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [isSpeaking, setIsSpeaking] = useState(false);
+            const [feedback, setFeedback] = useState("");
+            const [currentNumber, setCurrentNumber] = useState(null);
+
+            // توليد رقم عشوائي
+            const getRandomDigit = () => Math.floor(Math.random() * 10);
+
+            // وظيفة النطق (Text to Speech)
+            const speakNumber = (num) => {
+                if ('speechSynthesis' in window) {
+                    setIsSpeaking(true);
+                    
+                    // إعداد الكلام
+                    const utterance = new SpeechSynthesisUtterance(num);
+                    utterance.lang = 'ar-SA'; // محاولة النطق بالعربية
+                    utterance.rate = 1.2; // سرعة متوسطة
+                    utterance.pitch = 1;
+
+                    // في حال لم تدعم العربية، ستنطق باللغة الافتراضية للجهاز (غالباً إنجليزية)
+                    // وهذا جيد أيضاً للتدريب
+                    
+                    utterance.onend = () => {
+                        setIsSpeaking(false);
+                    };
+
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    alert("المتصفح لا يدعم الصوت");
+                }
+            };
+
+            const nextTurn = useCallback(() => {
+                setFeedback("");
+                
+                // خوارزمية التطابق N-2 (بنسبة 40%)
+                let nextNum;
+                const shouldMatch = sequence.length >= 2 && Math.random() < 0.4;
+
+                if (shouldMatch) {
+                    nextNum = sequence[sequence.length - 2];
+                } else {
+                    // رقم عشوائي (نحاول تجنب التطابق العرضي)
+                    do {
+                        nextNum = getRandomDigit();
+                    } while (sequence.length >= 2 && nextNum === sequence[sequence.length - 2]);
+                }
+
+                const newSequence = [...sequence, nextNum];
+                setSequence(newSequence);
+                setRound(prev => prev + 1);
+                setCurrentNumber(nextNum);
+                
+                // نطق الرقم
+                speakNumber(nextNum);
+
+            }, [sequence]);
+
+            const startGame = () => {
+                setSequence([]);
+                setScore(0);
+                setRound(0);
+                setIsPlaying(true);
+                setFeedback("استمع جيداً...");
+                
+                // إطلاق الجولة الأولى
+                setTimeout(() => {
+                    const first = getRandomDigit();
+                    setSequence([first]);
+                    setCurrentNumber(first);
+                    setRound(1);
+                    speakNumber(first);
+                }, 500);
+            };
+
+            const handleAnswer = (userClaimedMatch) => {
+                // منطق N-2
+                const currentIndex = sequence.length - 1;
+                const targetIndex = currentIndex - 2;
+
+                let isActuallyMatch = false;
+                if (targetIndex >= 0) {
+                    isActuallyMatch = sequence[currentIndex] === sequence[targetIndex];
+                }
+
+                if (userClaimedMatch === isActuallyMatch) {
+                    setScore(s => s + 10);
+                    setFeedback("✅ صحيح!");
+                } else {
+                    setScore(s => Math.max(0, s - 5));
+                    setFeedback("❌ خطأ");
+                }
+
+                // انتقال تلقائي بعد الإجابة
+                setTimeout(() => {
+                    nextTurn();
+                }, 1000);
+            };
+
+            return (
+                <div className="container">
+                    <h1>🔊 Audio N-2 Biohack</h1>
+                    
+                    <div className="game-info">
+                        <span>النقاط: {score}</span>
+                        <span>الرقم: {round}</span>
+                    </div>
+
+                    <div className={`speaker-box ${isSpeaking ? 'speaking' : ''}`}>
+                        <div className="speaker-icon">
+                            {/* لا نظهر الرقم، فقط أيقونة الصوت */}
+                            📢
+                        </div>
+                    </div>
+
+                    <div className={`feedback ${feedback.includes("صحيح") ? "correct" : "wrong"}`}>
+                        {feedback}
+                    </div>
+
+                    {!isPlaying ? (
+                        <button className="btn-start" onClick={startGame}>
+                            ابدأ التدريب السمعي 🎧
+                        </button>
+                    ) : (
+                        <div className="controls">
+                            {/* الأزرار تظهر فقط بعد أول رقمين */}
+                            {round > 2 ? (
+                                <>
+                                    <button className="btn-match" onClick={() => handleAnswer(true)}>
+                                        نعم (تطابق)
+                                    </button>
+                                    <button className="btn-no-match" onClick={() => handleAnswer(false)}>
+                                        لا (مختلف)
+                                    </button>
+                                </>
+                            ) : (
+                                <button className="btn-start" onClick={nextTurn} style={{backgroundColor: '#718096', boxShadow: 'none'}}>
+                                    استمع واحفظ... ({round}/2)
+                                </button>
+                            )}
+                        </div>
+                    )}
+                    
+                    <p style={{marginTop: '20px', fontSize: '0.8rem', color: '#718096'}}>
+                        هل الصوت الذي تسمعه الآن يطابق الصوت قبل خطوتين؟
+                    </p>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AudioNBack />);
+    </script>
+</body>
+</html>
