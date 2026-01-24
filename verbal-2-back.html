@@ -1,0 +1,162 @@
+import React, { useState, useEffect, useCallback } from 'react';
+
+// مجموعة الكلمات (الوقود)
+const WORDS = ["MOTO", "CODE", "REACT", "GLOVO", "DATA", "BOUYZAR"];
+
+const VerbalTwoBack = () => {
+  const [sequence, setSequence] = useState([]);
+  const [currentWord, setCurrentWord] = useState(null);
+  const [score, setScore] = useState(0);
+  const [round, setRound] = useState(0);
+  const [message, setMessage] = useState("اضغط 'ابدأ' للانطلاق");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [feedback, setFeedback] = useState(null); // 'correct' or 'wrong'
+
+  // دالة لتوليد كلمة جديدة
+  const generateNextWord = useCallback(() => {
+    // احتمالية 30% أن تكون الكلمة مطابقة لما قبل خطوتين (لخلق فرصة للربح)
+    let nextWord;
+    const nMinus2 = sequence[sequence.length - 2];
+
+    if (sequence.length >= 2 && Math.random() < 0.3) {
+      nextWord = nMinus2; 
+    } else {
+      const randomIndex = Math.floor(Math.random() * WORDS.length);
+      nextWord = WORDS[randomIndex];
+    }
+
+    setSequence(prev => [...prev, nextWord]);
+    setCurrentWord(nextWord);
+    setRound(prev => prev + 1);
+    setFeedback(null); // تصفير التفاعل اللوني
+  }, [sequence]);
+
+  // تشغيل اللعبة
+  const startGame = () => {
+    setSequence([]);
+    setScore(0);
+    setRound(1);
+    setIsPlaying(true);
+    setMessage("");
+    
+    // الخطوة الأولى والثانية (تحضير)
+    const first = WORDS[Math.floor(Math.random() * WORDS.length)];
+    const second = WORDS[Math.floor(Math.random() * WORDS.length)];
+    
+    setSequence([first]);
+    setCurrentWord(first);
+
+    // ننتظر قليلاً ثم نظهر الثانية
+    setTimeout(() => {
+      setSequence(prev => [...prev, second]);
+      setCurrentWord(second);
+      setRound(2);
+    }, 2000);
+  };
+
+  // التحقق من الإجابة
+  const checkMatch = (isMatchClaimed) => {
+    if (sequence.length < 3) return; // لا يوجد اختبار في أول كلمتين
+
+    const nMinus2 = sequence[sequence.length - 3]; // الكلمة قبل خطوتين
+    const actualMatch = currentWord === nMinus2;
+
+    if (isMatchClaimed === actualMatch) {
+      setScore(prev => prev + 10);
+      setFeedback('correct');
+      setMessage("صح! 🔥");
+    } else {
+      setScore(prev => Math.max(0, prev - 5));
+      setFeedback('wrong');
+      setMessage("خطأ! ❌");
+    }
+
+    // الانتقال للكلمة التالية بعد قصيرة
+    setTimeout(() => {
+      generateNextWord();
+    }, 500);
+  };
+
+  // زر الانتقال بدون مطابقة (نفس منطق "لا يوجد تطابق")
+  const nextWithoutMatch = () => checkMatch(false);
+
+  // الأنماط (CSS in JS بسيط)
+  const styles = {
+    container: {
+      fontFamily: 'Arial, sans-serif',
+      textAlign: 'center',
+      padding: '20px',
+      backgroundColor: feedback === 'correct' ? '#e6fffa' : feedback === 'wrong' ? '#fff5f5' : '#f7fafc',
+      height: '100vh',
+      transition: 'background-color 0.3s'
+    },
+    wordBox: {
+      fontSize: '3rem',
+      fontWeight: 'bold',
+      margin: '40px 0',
+      color: '#2d3748',
+      minHeight: '60px'
+    },
+    button: {
+      padding: '15px 30px',
+      fontSize: '1.2rem',
+      margin: '10px',
+      cursor: 'pointer',
+      borderRadius: '8px',
+      border: 'none',
+      color: 'white',
+      fontWeight: 'bold'
+    },
+    matchBtn: { backgroundColor: '#48bb78' },
+    noMatchBtn: { backgroundColor: '#f56565' },
+    startBtn: { backgroundColor: '#4299e1', padding: '10px 40px' }
+  };
+
+  return (
+    <div style={styles.container}>
+      <h1>🧠 Verbal 2-Back Biohack</h1>
+      <h3>النقاط: {score} | الجولة: {round}</h3>
+      
+      {!isPlaying ? (
+        <button style={{...styles.button, ...styles.startBtn}} onClick={startGame}>
+          ابدأ الشحن الكهربائي 🚀
+        </button>
+      ) : (
+        <>
+          <div style={styles.wordBox}>
+            {currentWord}
+          </div>
+
+          {/* نظهر الأزرار فقط بعد الجولة الثانية */}
+          {sequence.length >= 2 ? (
+            <div>
+              <p style={{marginBottom: '20px', color: '#718096'}}>
+                هل كلمة <strong>{currentWord}</strong> تطابق الكلمة رقم <strong>{round - 2}</strong>؟
+              </p>
+              <button 
+                style={{...styles.button, ...styles.matchBtn}} 
+                onClick={() => checkMatch(true)}
+              >
+                نعم (تطابق) ✅
+              </button>
+              <button 
+                style={{...styles.button, ...styles.noMatchBtn}} 
+                onClick={() => checkMatch(false)}
+              >
+                لا (مختلفة) ❌
+              </button>
+            </div>
+          ) : (
+            <p>احفظ الكلمات... الاختبار سيبدأ قريباً</p>
+          )}
+        </>
+      )}
+      
+      <h2 style={{marginTop: '30px', color: feedback === 'correct' ? 'green' : 'red'}}>
+        {message}
+      </h2>
+    </div>
+  );
+};
+
+export default VerbalTwoBack;
