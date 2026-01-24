@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biohack: Verbal 2-Back</title>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        h1 { color: #2d3748; margin-bottom: 0.5rem; }
+        .score-board { 
+            display: flex; 
+            justify-content: space-around; 
+            margin-bottom: 2rem; 
+            font-weight: bold; 
+            color: #4a5568; 
+        }
+        .word-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2b6cb0;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: popIn 0.3s ease-out;
+            margin: 20px 0;
+        }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            font-weight: bold;
+            color: white;
+        }
+        button:active { transform: scale(0.95); }
+        .btn-match { background-color: #48bb78; box-shadow: 0 4px 0 #2f855a; }
+        .btn-no-match { background-color: #f56565; box-shadow: 0 4px 0 #c53030; }
+        .btn-start { 
+            grid-column: span 2; 
+            background-color: #4299e1; 
+            box-shadow: 0 4px 0 #2b6cb0;
+            font-size: 1.5rem;
+        }
+        .feedback { 
+            height: 30px; 
+            margin-top: 15px; 
+            font-weight: bold; 
+            font-size: 1.2rem; 
+        }
+        .correct { color: #38a169; }
+        .wrong { color: #e53e3e; }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // الكلمات الخاصة بالمطور والبيوهاكر
+        const WORDS = ["REACT", "CODE", "DATA", "MOTO", "GLOVO", "API", "JAVA", "PHP"];
+
+        const VerbalTwoBack = () => {
+            const [sequence, setSequence] = useState([]);
+            const [currentWord, setCurrentWord] = useState(null);
+            const [score, setScore] = useState(0);
+            const [round, setRound] = useState(0);
+            const [gameState, setGameState] = useState('idle'); // idle, playing, waiting
+            const [feedback, setFeedback] = useState("");
+
+            // المحرك الرئيسي للعبة
+            const nextTurn = useCallback(() => {
+                setGameState('waiting'); // منع الضغط المتكرر
+                setFeedback("");
+
+                // خوارزمية احتمالية لتكرار الكلمة N-2 (بنسبة 35% لتزيد الفرصة)
+                let nextWord;
+                const nMinus2 = sequence[sequence.length - 1]; // لاحظ: المصفوفة ستزيد بعد قليل، لذا نأخذ آخر عنصر حالياً ليكون هو n-2 مستقبلاً
+
+                // منطق التوليد: هل نجبر التطابق؟
+                const shouldMatch = sequence.length >= 2 && Math.random() < 0.35;
+                
+                if (shouldMatch) {
+                    nextWord = sequence[sequence.length - 2];
+                } else {
+                    // اختيار كلمة عشوائية مع تجنب التكرار المباشر (N-1) لزيادة الصعوبة
+                    do {
+                        nextWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+                    } while (sequence.length > 0 && nextWord === sequence[sequence.length - 1]);
+                }
+
+                const newSequence = [...sequence, nextWord];
+                setSequence(newSequence);
+                setCurrentWord(nextWord);
+                setRound(prev => prev + 1);
+                setGameState('playing');
+
+            }, [sequence]);
+
+            // بدء اللعبة
+            const startGame = () => {
+                setSequence([]);
+                setScore(0);
+                setRound(0);
+                setGameState('playing');
+                // نبدأ بأول كلمة فوراً
+                const first = WORDS[Math.floor(Math.random() * WORDS.length)];
+                setSequence([first]);
+                setCurrentWord(first);
+                setRound(1);
+            };
+
+            // التحقق من الإجابة
+            const handleAnswer = (userClaimedMatch) => {
+                if (gameState !== 'playing') return;
+
+                // المنطق: هل الكلمة الحالية == الكلمة قبل خطوتين؟
+                // المصفوفة الحالية: [..., A, B, C] -> C هي currentWord (index: length-1)
+                // نريد مقارنة C مع A (index: length-3)
+                
+                const currentIndex = sequence.length - 1;
+                const targetIndex = currentIndex - 2;
+                
+                let isActuallyMatch = false;
+                if (targetIndex >= 0) {
+                    isActuallyMatch = sequence[currentIndex] === sequence[targetIndex];
+                }
+
+                if (userClaimedMatch === isActuallyMatch) {
+                    setScore(s => s + 10);
+                    setFeedback("صحيح! 🔥");
+                } else {
+                    setScore(s => Math.max(0, s - 5)); // لا ننزل تحت الصفر
+                    setFeedback("خطأ ❌");
+                }
+
+                // الانتقال التلقائي بعد لحظة قصيرة
+                setGameState('waiting');
+                setTimeout(() => {
+                    nextTurn();
+                }, 800); // سرعة الانتقال (كلما قلت زاد الضغط الكهربائي)
+            };
+
+            return (
+                <div className="container">
+                    <h1>🧠 N-2 Back: Developer Edition</h1>
+                    
+                    <div className="score-board">
+                        <span>النقاط: {score}</span>
+                        <span>الجولة: {round}</span>
+                    </div>
+
+                    {round === 0 ? (
+                        <div style={{textAlign: 'center', padding: '20px'}}>
+                            <p>هل الكلمة الحالية تطابق الكلمة <strong>ما قبل الأخيرة</strong>؟</p>
+                            <p style={{fontSize: '0.9rem', color: '#718096'}}>مثال: JAVA -> PHP -> JAVA (اضغط تطابق)</p>
+                            <button className="btn-start" onClick={startGame}>
+                                ابدأ الشحن ⚡
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="word-display">
+                                {currentWord}
+                            </div>
+
+                            <div className="feedback" className={feedback.includes("صحيح") ? "feedback correct" : "feedback wrong"}>
+                                {feedback}
+                            </div>
+
+                            <div className="controls">
+                                {/* نخفي الأزرار في أول جولتين لأنه يستحيل وجود تطابق N-2 */}
+                                {round > 2 ? (
+                                    <>
+                                        <button className="btn-match" onClick={() => handleAnswer(true)}>
+                                            تطابق (نعم)
+                                        </button>
+                                        <button className="btn-no-match" onClick={() => handleAnswer(false)}>
+                                            مختلف (لا)
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button className="btn-start" onClick={nextTurn} style={{backgroundColor: '#718096'}}>
+                                        احفظ واكمل... ({round}/2)
+                                    </button>
+                                )}
+                            </div>
+                        </>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<VerbalTwoBack />);
+    </script>
+</body>
+</html>
