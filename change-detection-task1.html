@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biohack: Delayed Match</title>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a202c;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            background: #2d3748;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid #4a5568;
+        }
+        h1 { color: #63b3ed; margin-bottom: 10px; font-size: 1.5rem; }
+        
+        .timer-display {
+            font-size: 1.5rem;
+            color: #f6e05e;
+            margin: 10px 0;
+            font-weight: bold;
+            height: 30px;
+        }
+
+        /* شبكة الأرقام */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+            min-height: 200px; /* الحفاظ على الحجم حتى عند الاختفاء */
+        }
+        
+        .number-box {
+            background-color: #4a5568;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: default; /* لا يمكن الضغط إلا في مرحلة التخمين */
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border: 3px solid transparent;
+        }
+
+        .clickable {
+            cursor: pointer;
+            background-color: #2b6cb0;
+        }
+        .clickable:hover { transform: scale(1.05); }
+        .clickable:active { transform: scale(0.95); }
+
+        /* ألوان النتيجة */
+        .correct {
+            background-color: #38a169 !important;
+            border-color: #2f855a;
+            color: white;
+        }
+        .wrong {
+            background-color: #e53e3e !important;
+            border-color: #c53030;
+            opacity: 0.6;
+        }
+        .missed {
+            border-color: #38a169;
+            background-color: #2d3748;
+            color: #48bb78;
+        }
+
+        /* الأزرار */
+        button {
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(66, 153, 225, 0.4);
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        button:hover { transform: scale(1.05); }
+        button:disabled { background-color: #718096; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        /* الساعة الرملية (Loader) */
+        .hourglass-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #63b3ed;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const getRandomNum = () => Math.floor(Math.random() * 90) + 10;
+
+        const AdvancedMemoryGame = () => {
+            // States
+            const [gameState, setGameState] = useState('start'); // start, memorizing, distraction, guessing, result
+            const [numbers, setNumbers] = useState([]);
+            const [changedIndex, setChangedIndex] = useState(null);
+            const [timeLeft, setTimeLeft] = useState(0);
+            const [selectedIndex, setSelectedIndex] = useState(null);
+            const [score, setScore] = useState(0);
+
+            // Refs to handle timers securely
+            const timerRef = useRef(null);
+
+            // دالة تنظيف التايمر
+            const clearLocalTimer = () => {
+                if (timerRef.current) clearInterval(timerRef.current);
+            };
+
+            // تشغيل العداد التنازلي
+            useEffect(() => {
+                if (timeLeft > 0) {
+                    timerRef.current = setInterval(() => {
+                        setTimeLeft((prev) => prev - 1);
+                    }, 1000);
+                } else if (timeLeft === 0 && gameState === 'distraction') {
+                    // عندما ينتهي وقت الساعة الرملية (10ث)، نكشف الأرقام تلقائياً
+                    revealChangedNumbers();
+                } else if (timeLeft === 0 && (gameState === 'memorizing' || gameState === 'guessing')) {
+                    // إذا انتهى الوقت في الحفظ أو التخمين، يتوقف التايمر فقط
+                    clearLocalTimer();
+                }
+
+                return () => clearLocalTimer();
+            }, [timeLeft, gameState]);
+
+            // 1. مرحلة الانطلاق
+            const startRound = () => {
+                const newNums = Array.from({ length: 6 }, () => getRandomNum());
+                setNumbers(newNums);
+                setChangedIndex(null);
+                setSelectedIndex(null);
+                
+                setGameState('memorizing');
+                setTimeLeft(30); // 30 ثانية للحفظ
+            };
+
+            // 2. زر "غير الرقم" ينقلنا لمرحلة الاختفاء
+            const startDistractionPhase = () => {
+                clearLocalTimer(); // نوقف عداد الحفظ إذا ضغط المستخدم قبل 30ث
+                setGameState('distraction');
+                setTimeLeft(10); // 10 ثواني انتظار
+            };
+
+            // 3. كشف الأرقام بعد الانتظار (تلقائي)
+            const revealChangedNumbers = () => {
+                clearLocalTimer();
+                
+                // نقوم بتغيير الرقم الآن فقط
+                const newNums = [...numbers];
+                const randomIndex = Math.floor(Math.random() * 6);
+                let newNumber;
+                do {
+                    newNumber = getRandomNum();
+                } while (newNumber === newNums[randomIndex]);
+
+                newNums[randomIndex] = newNumber;
+                
+                setNumbers(newNums);
+                setChangedIndex(randomIndex);
+                
+                setGameState('guessing');
+                setTimeLeft(30); // 30 ثانية للإجابة
+            };
+
+            // 4. معالجة نقرة المستخدم
+            const handleNumberClick = (index) => {
+                if (gameState !== 'guessing') return;
+
+                clearLocalTimer(); // نوقف العداد
+                setSelectedIndex(index);
+                setGameState('result');
+
+                if (index === changedIndex) {
+                    setScore(s => s + 10);
+                } else {
+                    setScore(s => Math.max(0, s - 5));
+                }
+            };
+
+            // تحديد شكل الخانة (ألوان)
+            const getBoxClass = (index) => {
+                let classes = "number-box";
+                
+                // في مرحلة التخمين، نجعلها قابلة للنقر
+                if (gameState === 'guessing') {
+                    classes += " clickable";
+                }
+
+                if (gameState === 'result') {
+                    if (index === selectedIndex) {
+                        return index === changedIndex ? classes + " correct" : classes + " wrong";
+                    }
+                    if (index === changedIndex && index !== selectedIndex) {
+                        return classes + " missed";
+                    }
+                }
+                
+                return classes;
+            };
+
+            return (
+                <div className="container">
+                    <h1>🧠 الذاكرة المؤجلة: المستوى الصعب</h1>
+                    
+                    <div className="timer-display">
+                        {gameState === 'memorizing' && `⏱️ احفظ: ${timeLeft} ثانية`}
+                        {gameState === 'distraction' && `⏳ انتظر... ${timeLeft}`}
+                        {gameState === 'guessing' && `🎯 أي رقم تغير؟ ${timeLeft}`}
+                        {gameState === 'result' && (selectedIndex === changedIndex ? "✅ إجابة صحيحة!" : "❌ إجابة خاطئة")}
+                    </div>
+
+                    {/* منطقة العرض */}
+                    {gameState === 'distraction' ? (
+                        <div className="hourglass-container">
+                            <div className="loader"></div>
+                            <p>يتم خلط الأرقام في دماغك...</p>
+                        </div>
+                    ) : (
+                        <div className="grid">
+                            {/* في بداية اللعبة لا نعرض الشبكة فارغة، بل زر الانطلاق */}
+                            {gameState === 'start' ? (
+                                <div style={{gridColumn: 'span 3', padding: '40px'}}>
+                                    <p>استعد لتمرين الذاكرة العاملة</p>
+                                </div>
+                            ) : (
+                                numbers.map((num, index) => (
+                                    <div 
+                                        key={index} 
+                                        className={getBoxClass(index)}
+                                        onClick={() => handleNumberClick(index)}
+                                    >
+                                        {num}
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
+
+                    {/* منطقة الأزرار */}
+                    <div>
+                        {gameState === 'start' && (
+                            <button onClick={startRound}>🚀 انطلق</button>
+                        )}
+
+                        {gameState === 'memorizing' && (
+                            <button onClick={startDistractionPhase}>
+                                🔄 غيّر الرقم الآن
+                            </button>
+                        )}
+
+                        {gameState === 'distraction' && (
+                            <button disabled style={{opacity: 0.5}}>انتظر قليلاً...</button>
+                        )}
+                        
+                        {gameState === 'result' && (
+                            <button onClick={startRound}>التالي &raquo;</button>
+                        )}
+                    </div>
+                    
+                    <p style={{marginTop: '20px', color: '#a0aec0'}}>النقاط: {score}</p>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AdvancedMemoryGame />);
+    </script>
+</body>
+</html>
