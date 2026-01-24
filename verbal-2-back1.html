@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biohack: Numeric 2-Back</title>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a202c; /* خلفية داكنة للتركيز العالي */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            background: #2d3748;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 450px;
+            border: 2px solid #4a5568;
+        }
+        h1 { color: #63b3ed; margin-bottom: 0.5rem; font-size: 1.8rem; }
+        .score-board { 
+            display: flex; 
+            justify-content: space-around; 
+            margin-bottom: 2rem; 
+            font-weight: bold; 
+            color: #a0aec0; 
+            font-size: 1.1rem;
+        }
+        .number-display {
+            font-size: 6rem; /* حجم ضخم للأرقام */
+            font-weight: 800;
+            color: #f6e05e; /* لون أصفر للتباين العالي */
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 10px 0;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        button {
+            padding: 20px;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            font-weight: bold;
+            color: white;
+        }
+        button:active { transform: scale(0.92); }
+        .btn-match { background-color: #48bb78; box-shadow: 0 6px 0 #2f855a; }
+        .btn-no-match { background-color: #f56565; box-shadow: 0 6px 0 #c53030; }
+        .btn-start { 
+            grid-column: span 2; 
+            background-color: #4299e1; 
+            box-shadow: 0 6px 0 #2b6cb0;
+            font-size: 1.6rem;
+        }
+        .feedback { 
+            height: 40px; 
+            margin-top: 15px; 
+            font-weight: bold; 
+            font-size: 1.4rem; 
+        }
+        .correct { color: #68d391; }
+        .wrong { color: #fc8181; }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        const NumericTwoBack = () => {
+            const [sequence, setSequence] = useState([]);
+            const [currentNumber, setCurrentNumber] = useState(null);
+            const [score, setScore] = useState(0);
+            const [round, setRound] = useState(0);
+            const [gameState, setGameState] = useState('idle');
+            const [feedback, setFeedback] = useState("");
+
+            // توليد رقم عشوائي (0-9)
+            const getRandomDigit = () => Math.floor(Math.random() * 10);
+
+            const nextTurn = useCallback(() => {
+                setGameState('waiting');
+                setFeedback("");
+
+                let nextNum;
+                // خوارزمية التحكم في الاحتمالات (35% فرصة لتكرار الرقم N-2)
+                const shouldMatch = sequence.length >= 2 && Math.random() < 0.35;
+                
+                if (shouldMatch) {
+                    // نأخذ الرقم الذي كان قبل خطوتين
+                    nextNum = sequence[sequence.length - 2];
+                } else {
+                    // نولد رقماً عشوائياً، ونحاول ألا يكون هو نفس الرقم N-2 لكي لا يحدث تطابق بالصدفة إلا نادراً
+                    do {
+                        nextNum = getRandomDigit();
+                    } while (sequence.length >= 2 && nextNum === sequence[sequence.length - 2]);
+                }
+
+                const newSequence = [...sequence, nextNum];
+                setSequence(newSequence);
+                setCurrentNumber(nextNum);
+                setRound(prev => prev + 1);
+                setGameState('playing');
+
+            }, [sequence]);
+
+            const startGame = () => {
+                setSequence([]);
+                setScore(0);
+                setRound(0);
+                setGameState('playing');
+                // البداية
+                const first = getRandomDigit();
+                setSequence([first]);
+                setCurrentNumber(first);
+                setRound(1);
+            };
+
+            const handleAnswer = (userClaimedMatch) => {
+                if (gameState !== 'playing') return;
+
+                const currentIndex = sequence.length - 1;
+                const targetIndex = currentIndex - 2; // N-2 Logic
+                
+                let isActuallyMatch = false;
+                if (targetIndex >= 0) {
+                    isActuallyMatch = sequence[currentIndex] === sequence[targetIndex];
+                }
+
+                if (userClaimedMatch === isActuallyMatch) {
+                    setScore(s => s + 10);
+                    setFeedback("صحيح! 🔥");
+                } else {
+                    setScore(s => Math.max(0, s - 5));
+                    setFeedback("خطأ ❌");
+                }
+
+                setGameState('waiting');
+                // تسريع اللعبة قليلاً (700ms) لزيادة الضغط الكهربائي
+                setTimeout(() => {
+                    nextTurn();
+                }, 700); 
+            };
+
+            return (
+                <div className="container">
+                    <h1>🔢 N-2 Back: Numeric Fuel</h1>
+                    
+                    <div className="score-board">
+                        <span>النقاط: {score}</span>
+                        <span>الجولة: {round}</span>
+                    </div>
+
+                    {round === 0 ? (
+                        <div style={{padding: '20px'}}>
+                            <p style={{fontSize: '1.1rem'}}>هل الرقم الحالي يطابق الرقم <strong>ما قبل الأخير</strong>؟</p>
+                            <p style={{color: '#a0aec0'}}>مثال: 5 -> 9 -> 5 (اضغط نعم)</p>
+                            <button className="btn-start" onClick={startGame}>
+                                ابدأ المحرك ⚡
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="number-display">
+                                {currentNumber}
+                            </div>
+
+                            <div className={`feedback ${feedback.includes("صحيح") ? "correct" : "wrong"}`}>
+                                {feedback}
+                            </div>
+
+                            <div className="controls">
+                                {round > 2 ? (
+                                    <>
+                                        <button className="btn-match" onClick={() => handleAnswer(true)}>
+                                            نعم (تطابق)
+                                        </button>
+                                        <button className="btn-no-match" onClick={() => handleAnswer(false)}>
+                                            لا (مختلف)
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button className="btn-start" onClick={nextTurn} style={{backgroundColor: '#718096', boxShadow: 'none'}}>
+                                        احفظ واكمل... ({round}/2)
+                                    </button>
+                                )}
+                            </div>
+                        </>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<NumericTwoBack />);
+    </script>
+</body>
+</html>
