@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neuro-Sniper Pro V4</title>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* إعدادات الشاشة السوداء الكاملة */
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .app-container {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: space-between;
+            height: 100vh; padding: 10px;
+            box-sizing: border-box;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; text-align: center; color: #0f0; text-shadow: 0 0 5px #0f0; }
+        .info-bar { display: flex; justify-content: space-between; width: 100%; padding: 5px 10px; font-weight: bold; font-size: 0.9rem; color: #fff; }
+
+        /* منطقة اللعب السوداء */
+        .game-area {
+            position: relative;
+            width: 100%; flex-grow: 1;
+            margin: 10px 0;
+            background: #000; /* سواد كامل */
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* تصميم الرقم (الهدف) */
+        .target-ball {
+            position: absolute;
+            width: 70px; height: 70px;
+            background: #0f0; color: #000;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2.5rem; font-weight: bold;
+            box-shadow: 0 0 20px #0f0;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            cursor: pointer;
+            /* تأثير ظهور سريع */
+            animation: popIn 0.1s ease-out forwards;
+        }
+        
+        .target-ball.hit {
+            background: #555; color: #888;
+            box-shadow: none; border: 2px solid #555;
+            pointer-events: none;
+        }
+
+        @keyframes popIn { from { transform: translate(-50%, -50%) scale(0); } to { transform: translate(-50%, -50%) scale(1); } }
+
+        /* الأزرار */
+        .controls { width: 100%; display: flex; justify-content: center; gap: 10px; padding-bottom: 20px; }
+        .btn {
+            background: #111; color: #0f0; border: 2px solid #0f0;
+            padding: 15px 25px; font-size: 1.2rem; font-weight: bold;
+            border-radius: 5px; cursor: pointer; touch-action: manipulation;
+        }
+        .btn:active { background: #0f0; color: #000; }
+        .btn-danger { border-color: red; color: red; }
+        
+        /* شاشات التراكب */
+        .overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 50; text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // ===============================================
+        // المحرك الأساسي: لعبة القناص (Reflex Sniper)
+        // ===============================================
+        const SniperGame = ({ onExit }) => {
+            const [level, setLevel] = useState(1);
+            const [targets, setTargets] = useState([]); // مصفوفة الأهداف
+            const [gameState, setGameState] = useState('idle'); // idle, waiting, playing, win, lose
+            const [msg, setMsg] = useState('المستوى 1: هدف واحد');
+            
+            // متغيرات لتخزين المؤقتات لتنظيفها
+            const waitTimer = useRef(null);
+            const loseTimer = useRef(null);
+
+            // تنظيف عند الخروج
+            useEffect(() => {
+                return () => {
+                    clearTimeout(waitTimer.current);
+                    clearTimeout(loseTimer.current);
+                };
+            }, []);
+
+            // 1. بدء المستوى
+            const startLevel = () => {
+                // تنظيف أي حالة سابقة
+                clearTimeout(waitTimer.current);
+                clearTimeout(loseTimer.current);
+                setTargets([]); 
+                setGameState('waiting');
+                setMsg(`...استعد للمستوى ${level}...`);
+
+                // انتظار عشوائي (1-3 ثواني) لمحاكاة التوتر
+                const delay = Math.floor(Math.random() * 2000) + 1000;
+
+                waitTimer.current = setTimeout(() => {
+                    spawnTargets(level);
+                }, delay);
+            };
+
+            // 2. توليد الأهداف (Spawn)
+            const spawnTargets = (lvlCount) => {
+                const newTargets = [];
+                for (let i = 0; i < lvlCount; i++) {
+                    // إحداثيات عشوائية (مع هوامش 10% لعدم الخروج من الشاشة)
+                    const t = Math.floor(Math.random() * 80) + 10;
+                    const l = Math.floor(Math.random() * 80) + 10;
+                    
+                    newTargets.push({
+                        id: Date.now() + i, // ID فريد
+                        val: Math.floor(Math.random() * 9) + 1,
+                        top: `${t}%`,
+                        left: `${l}%`,
+                        hit: false
+                    });
+                }
+                
+                setTargets(newTargets); // إظهار الأرقام
+                setGameState('playing');
+                setMsg('!!! اضرب بسرعة !!!');
+
+                // 3. مؤقت الخسارة (الوقت المسموح)
+                // المستوى 1 = 1000ms، المستوى 2 = 1800ms ...
+                const timeAllowed = 1000 + ((lvlCount - 1) * 800);
+                
+                loseTimer.current = setTimeout(() => {
+                    handleLose();
+                }, timeAllowed);
+            };
+
+            // 4. معالجة الضغط (Hit)
+            const handleHit = (id, e) => {
+                // منع التكرار وتصحيح اللمس
+                if (e) e.preventDefault();
+                if (gameState !== 'playing') return;
+
+                // تحديث حالة الهدف المضروب
+                setTargets(prev => prev.map(t => t.id === id ? { ...t, hit: true } : t));
+
+                // فحص هل فزنا؟ (نحتاج التحقق بعد التحديث مباشرة)
+                // هنا نستخدم خدعة: نحسب عدد الـ hit في الـ prev + 1
+                // الأفضل: فحص الحالة الحالية
+                const currentTargets = targets.map(t => t.id === id ? { ...t, hit: true } : t);
+                const allHit = currentTargets.every(t => t.hit);
+
+                if (allHit) {
+                    clearTimeout(loseTimer.current); // إيقاف الخسارة
+                    handleWin();
+                }
+            };
+
+            const handleWin = () => {
+                setGameState('win');
+                setMsg(`⚡ ممتاز! المستوى ${level} تم.`);
+            };
+
+            const handleLose = () => {
+                setGameState('lose');
+                setMsg('❌ بطيء جداً! اختفت الأرقام.');
+                setLevel(1); // عقاب: العودة للبداية
+            };
+
+            const nextLevelAction = () => {
+                setLevel(prev => prev + 1);
+                setTimeout(() => startLevel(), 100); // بدء المستوى التالي
+            };
+
+            return (
+                <div className="app-container">
+                    <div className="info-bar">
+                        <span>المستوى: {level}</span>
+                        <span>الحالة: {msg}</span>
+                    </div>
+
+                    <div className="game-area">
+                        {/* عرض الأهداف فقط عند اللعب أو الفوز/الخسارة لرؤية النتيجة */}
+                        {(gameState === 'playing' || gameState === 'win' || gameState === 'lose') && targets.map(t => (
+                            <div 
+                                key={t.id}
+                                className={`target-ball ${t.hit ? 'hit' : ''}`}
+                                style={{ top: t.top, left: t.left }}
+                                onMouseDown={(e) => handleHit(t.id, e)}
+                                onTouchStart={(e) => handleHit(t.id, e)}
+                            >
+                                {t.val}
+                            </div>
+                        ))}
+
+                        {/* شاشة انتظار سوداء بالكامل */}
+                        {gameState === 'waiting' && (
+                            <div className="overlay" style={{background:'#000'}}>
+                                <h2 style={{color: '#0f0', animation: 'pulse 1s infinite'}}>... رادار Locus Coeruleus يعمل ...</h2>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="controls">
+                        {gameState === 'idle' && <button className="btn" onClick={startLevel}>ابدأ التحدي</button>}
+                        {gameState === 'win' && <button className="btn" onClick={nextLevelAction}>المستوى التالي ({level+1}) ⏩</button>}
+                        {gameState === 'lose' && <button className="btn btn-danger" onClick={startLevel}>إعادة (المستوى 1)</button>}
+                        <button className="btn" style={{borderColor:'#555', color:'#888'}} onClick={onExit}>خروج</button>
+                    </div>
+                </div>
+            );
+        };
+
+        // ===============================================
+        // القائمة الرئيسية (Menu)
+        // ===============================================
+        const App = () => {
+            const [mode, setMode] = useState('menu');
+
+            if (mode === 'sniper') return <SniperGame onExit={() => setMode('menu')} />;
+
+            return (
+                <div className="app-container" style={{justifyContent: 'center'}}>
+                    <h1 style={{fontSize: '2rem', marginBottom: '30px'}}>BIOHACKER TERMINAL</h1>
+                    <div style={{display:'flex', flexDirection:'column', gap:'20px'}}>
+                        <button className="btn" style={{width:'250px'}} onClick={() => setMode('sniper')}>
+                            🧪 قناص المستويات
+                            <div style={{fontSize:'0.8rem', color:'#888'}}>تنشيط النورأدرينالين</div>
+                        </button>
+                        <button className="btn" style={{width:'250px', borderColor:'#555'}} disabled>
+                             قريباً: الذاكرة
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
