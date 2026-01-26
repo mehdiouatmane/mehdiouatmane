@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTA Mapping Engine - Demo</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body { background-color: #f3f4f6; font-family: sans-serif; }
+        .card { transition: all 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        // =========================================================
+        // 1. DATA (سلعة المزودين مخربقة)
+        // =========================================================
+        const rawDataFromSuppliers = [
+            // Hotel 1: Sofitel Rabat (Note les différences de noms)
+            { supplier: 'Hotelbeds', id: 'HB_100', name: 'Sofitel Rabat Jardin des Roses', price: 2500, lat: 34.01, lng: -6.83 },
+            { supplier: 'Expedia',   id: 'EXP_550', name: 'Sofitel Jardin Roses Hotel',     price: 2400, lat: 34.01, lng: -6.83 },
+            { supplier: 'TBO',       id: 'TBO_99',  name: 'The Sofitel Rabat Roses',        price: 2600, lat: 34.02, lng: -6.83 },
+
+            // Hotel 2: The View
+            { supplier: 'Hotelbeds', id: 'HB_101', name: 'The View Hotel Rabat',           price: 1800, lat: 33.95, lng: -6.86 },
+            { supplier: 'RateHawk',  id: 'RH_300', name: 'The View Rabat',                 price: 1750, lat: 33.95, lng: -6.86 },
+            
+            // Hotel 3: Un hôtel unique (pas de doublon)
+            { supplier: 'WebBeds',   id: 'WB_400', name: 'Onomo Hotel Rabat Medina',       price: 800,  lat: 34.02, lng: -6.84 }
+        ];
+
+        // =========================================================
+        // 2. THE ALGORITHM (Levenshtein Distance - Logic Simple)
+        // =========================================================
+        
+        // Hada howa l-Moteur li kyhsseb "Tachaboh" bin jouj klamat
+        function getSimilarity(s1, s2) {
+            let longer = s1;
+            let shorter = s2;
+            if (s1.length < s2.length) { longer = s2; shorter = s1; }
+            let longerLength = longer.length;
+            if (longerLength == 0) return 1.0;
+            return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+        }
+
+        function editDistance(s1, s2) {
+            s1 = s1.toLowerCase();
+            s2 = s2.toLowerCase();
+            let costs = new Array();
+            for (let i = 0; i <= s1.length; i++) {
+                let lastValue = i;
+                for (let j = 0; j <= s2.length; j++) {
+                    if (i == 0) costs[j] = j;
+                    else {
+                        if (j > 0) {
+                            let newValue = costs[j - 1];
+                            if (s1.charAt(i - 1) != s2.charAt(j - 1)) newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                            costs[j - 1] = lastValue;
+                            lastValue = newValue;
+                        }
+                    }
+                }
+                if (i > 0) costs[s2.length] = lastValue;
+            }
+            return costs[s2.length];
+        }
+
+        // =========================================================
+        // 3. MAPPING ENGINE (Khoya Server kayjm3 chml)
+        // =========================================================
+        
+        function mapAndDedupHotels(rawList) {
+            let mappedHotels = [];
+
+            rawList.forEach(item => {
+                let found = false;
+
+                // N9lbo wach had l-hotel deja 3ndna chi khoh f l-lista?
+                for (let existing of mappedHotels) {
+                    // Logic: Ila kan Similarity > 60% AW Coordinates mtqarbin bzaf
+                    let similarity = getSimilarity(item.name, existing.masterName);
+                    
+                    if (similarity > 0.6) { // 60% match
+                        existing.sources.push(item);
+                        // Nkhdo dima rkhes taman
+                        if (item.price < existing.bestPrice) {
+                            existing.bestPrice = item.price;
+                            existing.cheapestSupplier = item.supplier;
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+
+                // Ila malqinach khoh, n-creer hotel jdid (Master Record)
+                if (!found) {
+                    mappedHotels.push({
+                        id: Math.random(), // Fake Master ID
+                        masterName: item.name, // Nkhdo smya lwla kima hiya
+                        bestPrice: item.price,
+                        cheapestSupplier: item.supplier,
+                        image: 'https://via.placeholder.com/300x200?text=Hotel+Image',
+                        sources: [item]
+                    });
+                }
+            });
+
+            return mappedHotels;
+        }
+
+        // =========================================================
+        // 4. REACT COMPONENTS (UI)
+        // =========================================================
+
+        const App = () => {
+            const [mappedData, setMappedData] = React.useState([]);
+            const [loading, setLoading] = React.useState(true);
+
+            React.useEffect(() => {
+                // Simulation dyl Fetching + Mapping
+                setTimeout(() => {
+                    // HNA KHOYA SERVER KYKHDM
+                    const result = mapAndDedupHotels(rawDataFromSuppliers);
+                    setMappedData(result);
+                    setLoading(false);
+                }, 1000);
+            }, []);
+
+            return (
+                <div className="container mx-auto p-6 max-w-4xl">
+                    <header className="mb-8 text-center">
+                        <h1 className="text-3xl font-bold text-gray-800">
+                            🏨 OTA Mapping Engine <span className="text-blue-600 text-sm align-top">V1.0</span>
+                        </h1>
+                        <p className="text-gray-500 mt-2">Démonstration de Déduplication & Mapping</p>
+                    </header>
+
+                    {/* Stats Dashboard */}
+                    <div className="grid grid-cols-3 gap-4 mb-8">
+                        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
+                            <h3 className="text-gray-400 text-sm font-bold uppercase">Raw Data</h3>
+                            <p className="text-2xl font-bold">{rawDataFromSuppliers.length} <span className="text-sm font-normal text-gray-400">Records</span></p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
+                            <h3 className="text-gray-400 text-sm font-bold uppercase">Mapped Hotels</h3>
+                            <p className="text-2xl font-bold">{mappedData.length} <span className="text-sm font-normal text-gray-400">Unique</span></p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
+                            <h3 className="text-gray-400 text-sm font-bold uppercase">Efficiency</h3>
+                            <p className="text-2xl font-bold">
+                                {Math.round((1 - (mappedData.length / rawDataFromSuppliers.length)) * 100)}%
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Loading State */}
+                    {loading ? (
+                        <div className="text-center py-10">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                            <p className="mt-4 text-gray-500">Traitement des algorithmes...</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-6">
+                            {mappedData.map((hotel) => (
+                                <HotelCard key={hotel.id} hotel={hotel} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const HotelCard = ({ hotel }) => {
+            return (
+                <div className="card bg-white rounded-xl shadow-sm overflow-hidden flex flex-col md:flex-row border border-gray-100">
+                    <div className="md:w-1/3">
+                        <img src={hotel.image} className="h-full w-full object-cover" alt="Hotel" />
+                    </div>
+                    <div className="p-6 md:w-2/3 flex flex-col justify-between">
+                        <div>
+                            <div className="flex justify-between items-start">
+                                <h2 className="text-xl font-bold text-gray-800">{hotel.masterName}</h2>
+                                <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Verified</span>
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">Found in {hotel.sources.length} Suppliers</p>
+                            
+                            {/* Affichage des sources (Mapping Details) */}
+                            <div className="mt-4 bg-gray-50 p-3 rounded text-xs text-gray-600">
+                                <p className="font-bold mb-1">🔍 Mapping Sources:</p>
+                                <ul className="list-disc pl-4 space-y-1">
+                                    {hotel.sources.map((source, idx) => (
+                                        <li key={idx}>
+                                            <span className="font-semibold text-gray-700">{source.supplier}:</span> "{source.name}" 
+                                            <span className="ml-2 text-gray-400">({source.price} MAD)</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex justify-between items-center border-t pt-4">
+                            <div>
+                                <p className="text-xs text-gray-400">Best Deal via <b className="text-blue-600">{hotel.cheapestSupplier}</b></p>
+                            </div>
+                            <div className="text-right">
+                                <span className="text-3xl font-bold text-blue-600">{hotel.bestPrice}</span>
+                                <span className="text-sm text-gray-500"> MAD</span>
+                                <button className="block bg-blue-600 text-white text-sm px-4 py-2 rounded mt-1 hover:bg-blue-700 transition">
+                                    Réserver
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+    </script>
+</body>
+</html>
