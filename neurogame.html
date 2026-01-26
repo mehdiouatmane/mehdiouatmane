@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neuro-Trainer Pro</title>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* CSS مدمج: تصميم Biohacker Dark Mode */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden; /* لمنع السكرول */
+            user-select: none; /* لمنع تحديد النص */
+        }
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+        }
+        h1 { text-shadow: 0 0 10px #0f0; margin-bottom: 20px; font-size: 1.5rem; }
+        
+        .game-area {
+            width: 95%;
+            height: 70vh;
+            border: 2px solid #333;
+            background: #050505;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #003300;
+            overflow: hidden;
+            touch-action: none; /* لتحسين استجابة اللمس */
+        }
+
+        .target {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: #0f0;
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 0 25px #0f0;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { box-shadow: 0 0 10px #0f0; }
+            to { box-shadow: 0 0 30px #0f0; }
+        }
+
+        .btn {
+            background: #111;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            margin: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .btn:active { background: #0f0; color: #000; }
+        
+        .stats { font-size: 1.2rem; color: #fff; margin-bottom: 10px; min-height: 30px; }
+        
+        /* عناصر الذاكرة */
+        .memory-item {
+            position: absolute;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #0f0;
+            transform: translate(-50%, -50%);
+        }
+        .input-box {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 40px;
+            background: #222;
+            border: 1px solid #0f0;
+            color: #fff;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // ==========================================
+        // اللعبة 1: قناص النورأدرينالين (Reflex)
+        // ==========================================
+        const ReflexGame = ({ goBack }) => {
+            const [gameState, setGameState] = useState('idle');
+            const [position, setPosition] = useState({ top: '50%', left: '50%' });
+            const [targetNum, setTargetNum] = useState(0);
+            const [startTime, setStartTime] = useState(0);
+            const [msg, setMsg] = useState("المس 'ابدأ' لتفعيل الرادار");
+
+            const startRound = () => {
+                setGameState('waiting');
+                setMsg("...انتظر الهدف...");
+                // تأخير عشوائي بين 1 و 3 ثواني
+                const delay = Math.floor(Math.random() * 2000) + 1000;
+                
+                setTimeout(() => {
+                    // إحداثيات عشوائية (مع ترك هامش للحواف)
+                    const t = Math.floor(Math.random() * 80) + 10;
+                    const l = Math.floor(Math.random() * 80) + 10;
+                    setPosition({ top: `${t}%`, left: `${l}%` });
+                    setTargetNum(Math.floor(Math.random() * 9) + 1);
+                    setGameState('visible');
+                    setStartTime(Date.now());
+                }, delay);
+            };
+
+            const handleHit = () => {
+                if (gameState !== 'visible') return;
+                const diff = Date.now() - startTime;
+                let feedback = diff < 300 ? "⚡ ممتاز (High Noradrenaline)" : diff < 500 ? "🟢 جيد" : "🐢 بطيء";
+                setMsg(`${diff}ms - ${feedback}`);
+                setGameState('result');
+            };
+
+            return (
+                <div className="app-container">
+                    <h1>تمرين: قناص النورأدرينالين</h1>
+                    <div className="stats">{msg}</div>
+                    
+                    <div className="game-area" onMouseDown={() => { if(gameState==='visible') handleHit() }} onTouchStart={() => { if(gameState==='visible') handleHit() }}>
+                        {gameState === 'visible' && (
+                            <div className="target" 
+                                 style={{ top: position.top, left: position.left }}
+                                 onMouseDown={(e) => { e.stopPropagation(); handleHit(); }}
+                                 onTouchStart={(e) => { e.stopPropagation(); handleHit(); }}
+                            >
+                                {targetNum}
+                            </div>
+                        )}
+                    </div>
+
+                    <div style={{marginTop: '20px'}}>
+                        {(gameState === 'idle' || gameState === 'result') && 
+                            <button className="btn" onClick={startRound}>{gameState === 'idle' ? 'ابدأ' : 'محاولة أخرى'}</button>
+                        }
+                        <button className="btn" style={{borderColor: '#555'}} onClick={goBack}>خروج</button>
+                    </div>
+                </div>
+            );
+        };
+
+        // ==========================================
+        // اللعبة 2: ذاكرة الدوبامين (NMDA Hold)
+        // ==========================================
+        const MemoryGame = ({ goBack }) => {
+            const [phase, setPhase] = useState('idle');
+            const [items, setItems] = useState([]);
+            const [inputs, setInputs] = useState({});
+            const [timer, setTimer] = useState(0);
+
+            const startMem = () => {
+                const newItems = [];
+                for(let i=0; i<5; i++) {
+                    newItems.push({
+                        id: i,
+                        val: Math.floor(Math.random() * 90) + 10,
+                        top: Math.floor(Math.random() * 80) + 10,
+                        left: Math.floor(Math.random() * 80) + 10
+                    });
+                }
+                setItems(newItems);
+                setInputs({});
+                setPhase('memorize'); // مرحلة التصوير (أستيل كولين)
+
+                setTimeout(() => {
+                    setPhase('maintenance'); // مرحلة الظلام (دوبامين)
+                    setTimer(10); // 10 ثواني تثبيت
+                }, 3000);
+            };
+
+            useEffect(() => {
+                if (phase === 'maintenance') {
+                    if (timer > 0) {
+                        const t = setTimeout(() => setTimer(timer - 1), 1000);
+                        return () => clearTimeout(t);
+                    } else {
+                        setPhase('recall');
+                    }
+                }
+            }, [phase, timer]);
+
+            const checkAnswers = () => setPhase('result');
+
+            return (
+                <div className="app-container">
+                    <h1>تمرين: ذاكرة الدوبامين</h1>
+                    
+                    <div className="game-area">
+                        {phase === 'idle' && (
+                            <div className="overlay">
+                                <p style={{color:'#aaa', textAlign:'center'}}>سيظهر 5 أرقام. صورها بعينك، ثم ثبتها في الظلام، ثم أعد كتابتها.</p>
+                                <button className="btn" onClick={startMem}>بدء البروتوكول</button>
+                            </div>
+                        )}
+
+                        {phase === 'maintenance' && (
+                            <div className="overlay">
+                                <h2 style={{color: '#0ff'}}>مرحلة التثبيت</h2>
+                                <h1 style={{fontSize: '5rem', color: '#fff'}}>{timer}</h1>
+                                <p>حافظ على الصورة مضيئة في خيالك!</p>
+                            </div>
+                        )}
+
+                        {phase === 'memorize' && items.map(item => (
+                            <div key={item.id} className="memory-item" style={{top: `${item.top}%`, left: `${item.left}%`}}>
+                                {item.val}
+                            </div>
+                        ))}
+
+                        {phase === 'recall' && items.map(item => (
+                            <div key={item.id} style={{position:'absolute', top: `${item.top}%`, left: `${item.left}%`, transform: 'translate(-50%, -50%)'}}>
+                                <input type="number" className="input-box" 
+                                    onChange={(e) => setInputs({...inputs, [item.id]: e.target.value})} 
+                                />
+                            </div>
+                        ))}
+
+                        {phase === 'result' && items.map(item => (
+                            <div key={item.id} className="memory-item" 
+                                 style={{
+                                     top: `${item.top}%`, left: `${item.left}%`, 
+                                     color: inputs[item.id] == item.val ? '#0f0' : '#f00',
+                                     border: inputs[item.id] == item.val ? '2px solid #0f0' : '2px solid #f00',
+                                     padding: '5px'
+                                 }}>
+                                {item.val} <span style={{fontSize:'1rem', color:'#fff'}}>({inputs[item.id]||'?'})</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div style={{marginTop: '10px'}}>
+                        {phase === 'recall' && <button className="btn" onClick={checkAnswers}>فحص الذاكرة</button>}
+                        {phase === 'result' && <button className="btn" onClick={() => setPhase('idle')}>إعادة</button>}
+                        <button className="btn" style={{borderColor: '#555'}} onClick={goBack}>خروج</button>
+                    </div>
+                </div>
+            );
+        };
+
+        // ==========================================
+        // القائمة الرئيسية
+        // ==========================================
+        const App = () => {
+            const [mode, setMode] = useState('menu');
+
+            if (mode === 'reflex') return <ReflexGame goBack={() => setMode('menu')} />;
+            if (mode === 'memory') return <MemoryGame goBack={() => setMode('menu')} />;
+
+            return (
+                <div className="app-container">
+                    <h1 style={{fontSize: '2rem'}}>BIOHACKER TERMINAL</h1>
+                    <div style={{display:'flex', flexDirection:'column'}}>
+                        <button className="btn" onClick={() => setMode('reflex')}>
+                            🧪 تفعيل النورأدرينالين (Reflex)
+                        </button>
+                        <button className="btn" onClick={() => setMode('memory')}>
+                            💾 ذاكرة الدوبامين (NMDA Hold)
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
