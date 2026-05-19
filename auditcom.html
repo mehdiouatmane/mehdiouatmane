@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وكالة البرمجة | تصميم وتطوير المواقع</title>
+    <title>Agence Digitale Maroc | Création de sites web</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -16,14 +16,14 @@
             theme: {
                 extend: {
                     fontFamily: { 
-                        'cairo': ['Cairo', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif'],
                     },
                     colors: {
                         brand: {
-                            black: '#09090b',    // كحل غامق بحال الفيديو
-                            dark: '#18181b',     // كحل رمادي للبطاقات
-                            gold: '#facc15',     // أصفر/ذهبي
-                            gold_hover: '#eab308'
+                            black: '#0a0a0a',    // Noir profond
+                            dark: '#121212',     // Gris très foncé pour les sections
+                            yellow: '#facc15',   // Jaune CHENOCOM
+                            yellow_hover: '#eab308'
                         }
                     }
                 }
@@ -32,238 +32,286 @@
     </script>
 
     <style>
-        body { font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; background-color: #0a0a0a; color: #ffffff; }
         .glass-nav { 
-            background: rgba(9, 9, 11, 0.85); 
-            backdrop-filter: blur(12px); 
+            background: rgba(10, 10, 10, 0.9); 
+            backdrop-filter: blur(10px); 
             border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
         .text-outline {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
             color: transparent;
         }
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #facc15; }
     </style>
 </head>
-<body class="bg-brand-black text-gray-300 antialiased selection:bg-brand-gold selection:text-black">
+<body class="bg-brand-black text-gray-300 antialiased selection:bg-brand-yellow selection:text-black">
 
     <nav class="glass-nav fixed w-full z-50 transition-all duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-brand-gold rounded flex items-center justify-center text-black shadow-[0_0_15px_rgba(250,204,21,0.3)]">
-                    <i data-lucide="code-2" class="w-6 h-6"></i>
-                </div>
-                <span class="text-2xl font-black text-white tracking-wider uppercase">Tech<span class="text-brand-gold">Agency</span></span>
+            
+            <a href="#" class="flex flex-col items-center">
+                <img src="https://i.ibb.co/3sZ8XG0/chenocom-logo.png" alt="Logo" class="h-10 object-contain">
             </a>
             
             <div class="hidden md:flex items-center gap-8">
-                <a href="#services" class="text-white hover:text-brand-gold transition font-bold text-sm">خدماتنا</a>
-                <a href="#portfolio" class="text-white hover:text-brand-gold transition font-bold text-sm">أعمالنا</a>
+                <a href="#services" class="text-white hover:text-brand-yellow transition font-semibold text-sm">Nos expertises</a>
+                <a href="#portfolio" class="text-white hover:text-brand-yellow transition font-semibold text-sm">Nos références</a>
             </div>
 
-            <a href="#contact" class="bg-brand-gold text-black px-6 py-2 rounded font-black hover:bg-gold_hover transition shadow-lg text-sm flex items-center gap-2">
-                تواصل معنا
-            </a>
+            <button class="md:hidden text-white hover:text-brand-yellow transition">
+                <i data-lucide="menu" class="w-8 h-8"></i>
+            </button>
         </div>
     </nav>
 
-    <header class="relative pt-40 pb-20 px-6 overflow-hidden min-h-screen flex items-center">
-        <div class="absolute top-20 left-10 w-96 h-96 bg-brand-gold/10 rounded-full blur-[100px] -z-10"></div>
-        <div class="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] -z-10"></div>
-
-        <div class="container mx-auto text-center md:text-start flex flex-col items-center md:items-start z-10">
-            <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6 text-white max-w-4xl">
-                استراتيجيات رقمية مخصصة <br> 
-                <span class="text-brand-gold">لتحفيز نمو مشروعك</span>
+    <header class="relative pt-32 pb-16 px-6 overflow-hidden flex flex-col items-center text-center">
+        <div class="container mx-auto mt-10 md:mt-20 z-10 max-w-4xl">
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6 text-white tracking-tight">
+                <span class="text-brand-yellow">Des stratégies digitales</span> <br>
+                sur mesure pour catalyser votre croissance
             </h1>
-            <p class="text-gray-400 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl">
-                نحن وكالتك الرقمية الموثوقة. نصمم ونطور مواقع وتطبيقات قوية، جذابة، وعالية الأداء لتحويل زوارك إلى عملاء دائمين. نعطي التألق الذي يستحقه مشروعك!
+            <p class="text-gray-300 text-base md:text-lg mb-8 leading-relaxed max-w-3xl mx-auto">
+                Votre <strong>Agence Digitale Maroc</strong> de confiance, créant des sites puissants et sur mesure qui attirent et convertissent. En tant qu'Agence Digitale Maroc, nous donnons de l'éclat à votre projet !
             </p>
-            <div class="flex flex-col sm:flex-row gap-4">
-                <a href="#contact" class="bg-brand-gold hover:bg-gold_hover text-black px-8 py-4 rounded font-black text-lg text-center transition flex items-center justify-center gap-2">
-                    اطلب موقعك الآن <i data-lucide="arrow-left" class="rtl:rotate-0 ltr:rotate-180"></i>
-                </a>
-                <a href="#portfolio" class="border border-zinc-700 hover:border-brand-gold text-white px-8 py-4 rounded font-bold text-lg text-center transition flex items-center justify-center">
-                    اكتشف أعمالنا
-                </a>
+            <a href="#contact" class="text-brand-yellow font-bold text-xl border-b-2 border-brand-yellow pb-1 hover:text-white hover:border-white transition inline-block mb-16">
+                Contactez-nous
+            </a>
+
+            <div class="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl border border-zinc-800">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200" alt="Dashboard Design" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition duration-500">
             </div>
         </div>
     </header>
 
-    <section class="py-16 border-y border-zinc-800 bg-brand-dark">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-x-reverse divide-zinc-800">
-                <div>
-                    <p class="text-4xl md:text-5xl font-black text-white mb-2 dir-ltr">+100</p>
-                    <p class="text-sm text-gray-400 font-bold uppercase">مشروع مكتمل</p>
+    <section class="py-16 bg-brand-black border-t border-zinc-900">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                L'excellence opérationnelle au <br> service de votre transformation numérique.
+            </h2>
+            <p class="text-gray-400 mb-12">
+                <span class="text-white font-semibold">Votre agence</span> est une agence digitale marocaine de premier plan, spécialisée dans le développement web sur mesure et les applications mobiles.
+            </p>
+
+            <div class="flex flex-col items-center justify-center gap-10 py-10 border-t border-b border-zinc-800 text-center relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none text-9xl font-black uppercase whitespace-nowrap overflow-hidden">
+                    Création Web App
                 </div>
                 <div>
-                    <p class="text-4xl md:text-5xl font-black text-brand-gold mb-2 dir-ltr">94%</p>
-                    <p class="text-sm text-gray-400 font-bold uppercase">تحسين معدل التحويل</p>
+                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">100<span class="text-brand-yellow">+</span></p>
+                    <p class="text-sm text-gray-400 uppercase tracking-widest">Projets finalisés</p>
                 </div>
+                <div class="w-px h-16 bg-zinc-800 hidden md:block"></div>
+                <div class="h-px w-32 bg-zinc-800 md:hidden"></div>
                 <div>
-                    <p class="text-4xl md:text-5xl font-black text-white mb-2 dir-ltr">06</p>
-                    <p class="text-sm text-gray-400 font-bold uppercase">سنوات من الخبرة</p>
+                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">94<span class="text-brand-yellow">%</span></p>
+                    <p class="text-sm text-gray-400 uppercase tracking-widest">Amélioration de conversion</p>
                 </div>
+                <div class="w-px h-16 bg-zinc-800 hidden md:block"></div>
+                <div class="h-px w-32 bg-zinc-800 md:hidden"></div>
                 <div>
-                    <p class="text-4xl md:text-5xl font-black text-white mb-2 dir-ltr">24/7</p>
-                    <p class="text-sm text-gray-400 font-bold uppercase">دعم فني</p>
+                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">06</p>
+                    <p class="text-sm text-gray-400 uppercase tracking-widest">Années d'expérience</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="services" class="py-24 relative">
-        <div class="container mx-auto px-6">
-            <div class="mb-16 md:flex justify-between items-end">
-                <div class="max-w-2xl">
-                    <h2 class="text-3xl md:text-5xl font-black text-white mb-6">تآزر المهارات <br>لدفع رؤيتك للنجاح</h2>
-                    <p class="text-gray-400 leading-relaxed">
-                        بفضل فريقنا المكون من خبراء في تطوير الويب، تصميم الواجهات، والتسويق، نجمع كل الكفاءات اللازمة لجعل مشروعك ناجحاً.
-                    </p>
+    <section id="services" class="py-20 bg-brand-dark relative">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <div class="mb-16 md:flex justify-between items-start gap-8">
+                <div class="md:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Une synergie de compétences par notre Agence Digital pour propulser votre visibilité</h2>
+                </div>
+                <div class="md:w-1/2 text-gray-400">
+                    <p class="mb-4">Grâce à nos équipes expertes en développement web, design graphique, SEO naturel, gestion des réseaux sociaux et rédaction de contenus optimisés, nous réunissons toutes les compétences nécessaires pour faire de votre projet un succès.</p>
+                    <a href="#contact" class="text-brand-yellow font-bold underline hover:text-white transition">Pourquoi nous choisir ?</a>
                 </div>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="group p-8 rounded-xl bg-brand-dark border border-zinc-800 hover:border-brand-gold transition duration-300 relative overflow-hidden">
-                    <div class="text-6xl font-black text-outline absolute top-4 left-4 opacity-50 group-hover:text-brand-gold group-hover:-webkit-text-stroke-0 transition">01</div>
-                    <div class="w-14 h-14 bg-zinc-900 rounded border border-zinc-700 flex items-center justify-center mb-16 text-brand-gold">
-                        <i data-lucide="layout-template" class="w-7 h-7"></i>
+                <div class="p-8 rounded-lg bg-brand-black border border-zinc-800 hover:border-brand-yellow transition group relative">
+                    <div class="text-5xl font-bold text-white mb-4 absolute top-6 right-6">01</div>
+                    <div class="mt-16">
+                        <h3 class="text-xl font-bold text-white mb-3 leading-snug group-hover:text-brand-yellow transition">Architecture Web : Conception de sites</h3>
+                        <p class="text-gray-400 text-sm">Des sites esthétiques, performants et conçus pour convertir. Un développement humain, stratégique et sur-mesure.</p>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">تصميم وتطوير المواقع</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        مواقع جمالية، سريعة، ومصممة للتحويل. تطوير بشري، استراتيجي، ومخصص بالكامل لمشروعك.
-                    </p>
                 </div>
 
-                <div class="group p-8 rounded-xl bg-brand-dark border border-zinc-800 hover:border-brand-gold transition duration-300 relative overflow-hidden">
-                    <div class="text-6xl font-black text-outline absolute top-4 left-4 opacity-50 group-hover:text-brand-gold group-hover:-webkit-text-stroke-0 transition">02</div>
-                    <div class="w-14 h-14 bg-zinc-900 rounded border border-zinc-700 flex items-center justify-center mb-16 text-brand-gold">
-                        <i data-lucide="smartphone" class="w-7 h-7"></i>
+                <div class="p-8 rounded-lg bg-brand-black border border-zinc-800 hover:border-brand-yellow transition group relative">
+                    <div class="text-5xl font-bold text-white mb-4 absolute top-6 right-6">02</div>
+                    <div class="mt-16">
+                        <h3 class="text-xl font-bold text-white mb-3 leading-snug group-hover:text-brand-yellow transition">Ingénierie Mobile : Développement d'applications</h3>
+                        <p class="text-gray-400 text-sm">Des applications fluides, intuitives et adaptées à vos utilisateurs. Nous allions technologie et performance.</p>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">هندسة تطبيقات الموبايل</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        تطبيقات سلسة، بديهية ومكيفة لمستخدميك. نجمع بين التكنولوجيا المتطورة والأداء العالي.
-                    </p>
                 </div>
 
-                <div class="group p-8 rounded-xl bg-brand-dark border border-zinc-800 hover:border-brand-gold transition duration-300 relative overflow-hidden">
-                    <div class="text-6xl font-black text-outline absolute top-4 left-4 opacity-50 group-hover:text-brand-gold group-hover:-webkit-text-stroke-0 transition">03</div>
-                    <div class="w-14 h-14 bg-zinc-900 rounded border border-zinc-700 flex items-center justify-center mb-16 text-brand-gold">
-                        <i data-lucide="pen-tool" class="w-7 h-7"></i>
+                <div class="p-8 rounded-lg bg-brand-black border border-zinc-800 hover:border-brand-yellow transition group relative">
+                    <div class="text-5xl font-bold text-white mb-4 absolute top-6 right-6">03</div>
+                    <div class="mt-16">
+                        <h3 class="text-xl font-bold text-white mb-3 leading-snug group-hover:text-brand-yellow transition">Marketing 360° : L'expertise de notre Agence</h3>
+                        <p class="text-gray-400 text-sm">Des stratégies ciblées, des contenus optimisés, et une présence digitale qui attire, engage et transforme.</p>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">تصميم UI/UX</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        تصاميم تركز على تجربة المستخدم، لخلق رحلة سلسة تزيد من تفاعل الزوار ومبيعاتك.
-                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="py-24 bg-brand-dark border-t border-zinc-800">
-        <div class="container mx-auto px-6">
-            <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-16 items-center">
+    <section id="portfolio" class="py-20 bg-brand-black border-t border-zinc-900">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-12 max-w-2xl">
+                Des créations web qui <span class="text-brand-yellow">marquent les esprits</span> et boostent vos performances
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-lg aspect-[3/4] mb-4 border border-zinc-800">
+                        <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&q=80&w=600" alt="Project 1" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Elegant morocco</h3>
+                    <div class="flex gap-2 text-xs font-semibold">
+                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">Design UX/UI</span>
+                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">Développement</span>
+                    </div>
+                </div>
+
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-lg aspect-[3/4] mb-4 border border-zinc-800">
+                        <img src="https://images.unsplash.com/photo-1616432043562-3671ea2e5242?auto=format&fit=crop&q=80&w=600" alt="Project 2" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Opaleon</h3>
+                    <div class="flex gap-2 text-xs font-semibold">
+                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">E-commerce</span>
+                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">Design</span>
+                    </div>
+                </div>
+
+                <div class="group cursor-pointer hidden lg:block">
+                    <div class="relative overflow-hidden rounded-lg aspect-[3/4] mb-4 border border-zinc-800">
+                        <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&q=80&w=600" alt="Project 3" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Littlekin</h3>
+                    <div class="flex gap-2 text-xs font-semibold">
+                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">E-commerce</span>
+                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">Développement</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 text-center md:text-left">
+                <a href="#" class="text-brand-yellow font-bold flex items-center gap-2 hover:text-white transition w-fit">
+                    Voir plus <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 bg-brand-dark border-y border-zinc-900">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <div class="flex flex-col md:flex-row gap-16 items-start">
+                
                 <div class="md:w-1/2">
-                    <h2 class="text-4xl font-black text-white mb-6">هل لديك فكرة مشروع؟ <br><span class="text-brand-gold">لنجعلها واقعاً.</span></h2>
-                    <p class="text-gray-400 mb-8 text-lg">
-                        املأ النموذج وسيقوم فريقنا بالتواصل معك في أقرب وقت لمناقشة تفاصيل مشروعك وتقديم استشارة مجانية.
+                    <h2 class="text-4xl font-bold text-brand-yellow mb-4">Contactez-nous</h2>
+                    <p class="text-gray-300 mb-8 text-lg">
+                        Prêt à démarrer votre transformation numérique ? Laissez-nous vos coordonnées, notre équipe vous contactera rapidement.
                     </p>
                     
                     <div class="space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-brand-gold"><i data-lucide="phone"></i></div>
-                            <div>
-                                <p class="text-xs text-gray-500 font-bold uppercase">اتصل بنا</p>
-                                <p dir="ltr" class="font-bold text-white text-lg text-right">+212 600 00 00 00</p>
-                            </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-500 font-bold uppercase mb-1">Email</span>
+                            <a href="mailto:contact@votreagence.com" class="font-bold text-white text-lg hover:text-brand-yellow transition">contact@votreagence.com</a>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded flex items-center justify-center text-brand-gold"><i data-lucide="mail"></i></div>
-                            <div>
-                                <p class="text-xs text-gray-500 font-bold uppercase">البريد الإلكتروني</p>
-                                <p class="font-bold text-white text-lg">contact@youragency.com</p>
-                            </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-500 font-bold uppercase mb-1">Téléphone</span>
+                            <a href="tel:+212600000000" class="font-bold text-white text-lg hover:text-brand-yellow transition">+212 60 00 00 00</a>
                         </div>
                     </div>
                 </div>
                 
-                <div class="md:w-1/2 w-full bg-zinc-950 p-8 rounded-xl border border-zinc-800 shadow-2xl relative">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-brand-gold rounded-t-xl"></div>
-                    
-                    <form id="devForm" class="space-y-5 mt-4">
+                <div class="md:w-1/2 w-full bg-brand-black p-8 rounded-lg border border-zinc-800 shadow-2xl relative">
+                    <form id="contactForm" class="space-y-5">
                         <div>
-                            <label class="block text-sm font-bold text-gray-400 mb-2">الاسم الكامل / الشركة</label>
-                            <input id="clientName" type="text" required class="w-full px-4 py-3 rounded bg-zinc-900 border border-zinc-800 text-white focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition">
+                            <input id="clientName" type="text" placeholder="Nom et Prénom / Entreprise" required class="w-full px-4 py-4 rounded bg-brand-dark border border-zinc-800 text-white placeholder-gray-500 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-400 mb-2">رقم الهاتف أو الواتساب</label>
-                            <input id="clientPhone" type="tel" required class="w-full px-4 py-3 rounded bg-zinc-900 border border-zinc-800 text-white focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition dir-ltr text-right">
+                            <input id="clientPhone" type="tel" placeholder="Téléphone / WhatsApp" required class="w-full px-4 py-4 rounded bg-brand-dark border border-zinc-800 text-white placeholder-gray-500 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-400 mb-2">نوع الخدمة المطلوبة</label>
-                            <select id="serviceType" class="w-full px-4 py-3 rounded bg-zinc-900 border border-zinc-800 text-white focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition">
-                                <option value="موقع تعريفي">موقع إلكتروني تعريفي (Landing Page)</option>
-                                <option value="متجر إلكتروني">متجر إلكتروني (E-commerce)</option>
-                                <option value="تطبيق موبايل">تطبيق موبايل</option>
-                                <option value="تصميم واجهات UI/UX">تصميم واجهات (UI/UX)</option>
-                                <option value="أخرى">أخرى / استشارة</option>
+                            <select id="serviceType" class="w-full px-4 py-4 rounded bg-brand-dark border border-zinc-800 text-gray-400 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition appearance-none">
+                                <option value="" disabled selected>Service souhaité...</option>
+                                <option value="Création Site Web">Création Site Web</option>
+                                <option value="Site E-commerce">Site E-commerce</option>
+                                <option value="Application Mobile">Application Mobile</option>
+                                <option value="Design UX/UI">Design UX/UI</option>
+                                <option value="Autre">Autre / Conseil</option>
                             </select>
                         </div>
-                        <button id="submitDevBtn" type="submit" class="w-full bg-brand-gold hover:bg-gold_hover text-black font-black py-4 rounded transition shadow-lg text-lg mt-4">
-                            إرسال الطلب
+                        <button id="submitBtn" type="submit" class="w-full bg-brand-yellow hover:bg-yellow-500 text-brand-black font-bold py-4 rounded transition text-lg mt-2 uppercase tracking-wide">
+                            Envoyer la demande
                         </button>
                     </form>	
                 </div>
+                
             </div>
         </div>
     </section>
 
-    <footer class="bg-brand-black text-gray-500 py-12 border-t border-zinc-900">
-        <div class="container mx-auto px-6 text-center">
-            <span class="text-3xl font-black text-white tracking-wider uppercase mb-4 block">Tech<span class="text-brand-gold">Agency</span></span>
-            <p class="mb-8 max-w-md mx-auto text-sm">نحول أفكارك إلى تجارب رقمية استثنائية.</p>
-            <div class="flex justify-center gap-6 mb-8">
-                <a href="#" class="hover:text-brand-gold transition"><i data-lucide="instagram"></i></a>
-                <a href="#" class="hover:text-brand-gold transition"><i data-lucide="linkedin"></i></a>
-                <a href="#" class="hover:text-brand-gold transition"><i data-lucide="github"></i></a>
+    <footer class="bg-brand-black text-gray-400 py-10 border-t border-zinc-900">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <img src="https://i.ibb.co/3sZ8XG0/chenocom-logo.png" alt="Logo" class="h-8 object-contain mb-2 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition">
+                <p class="text-sm">Votre réussite, notre engagement.</p>
             </div>
-            <div class="text-sm font-medium opacity-50">
-                &copy; 2026 TechAgency. All rights reserved.
+            <div class="flex gap-4">
+                <a href="#" class="w-10 h-10 rounded bg-zinc-900 flex items-center justify-center hover:bg-brand-yellow hover:text-black transition"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                <a href="#" class="w-10 h-10 rounded bg-zinc-900 flex items-center justify-center hover:bg-brand-yellow hover:text-black transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                <a href="#" class="w-10 h-10 rounded bg-zinc-900 flex items-center justify-center hover:bg-brand-yellow hover:text-black transition"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
             </div>
         </div>
     </footer>
+
+    <div class="fixed bottom-0 left-0 w-full bg-brand-black border-t border-zinc-800 flex md:hidden z-50">
+        <a href="#contact" class="flex-1 py-4 text-center font-bold text-white border-r border-zinc-800 text-sm tracking-wider uppercase">Contact</a>
+        <a href="tel:+212600000000" class="flex-1 py-4 text-center font-bold text-white text-sm tracking-wider">+212 60 00 00 00</a>
+    </div>
+
+    <div class="h-14 md:hidden"></div>
 
     <script>
         lucide.createIcons();
     </script>
 
     <script>
-        // ⚠️ مهم: حط التوكن والـ Chat ID ديالك هنا
+        // ⚠️ N'oubliez pas de mettre votre BOT_TOKEN et CHAT_ID
         const BOT_TOKEN = "8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0"; 
         const CHAT_ID = "1335982188"; 
 
-        document.getElementById('devForm').addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const submitBtn = document.getElementById('submitDevBtn');
+            const submitBtn = document.getElementById('submitBtn');
             const originalBtnText = submitBtn.innerText;
             
-            submitBtn.innerText = "جاري الإرسال...";
+            submitBtn.innerText = "Envoi en cours...";
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
 
             const name = document.getElementById('clientName').value;
             const phone = document.getElementById('clientPhone').value;
-            const service = document.getElementById('serviceType').value;
+            const service = document.getElementById('serviceType').value || "Non spécifié";
 
             const message = `
-🌟 *طلب تصميم/برمجة جديد*
+🌟 *Nouvelle Demande Client*
 
-👤 *الاسم/الشركة:* ${name}
-📱 *رقم الهاتف:* \`${phone}\`
-💻 *الخدمة المطلوبة:* ${service}
+👤 *Nom / Entreprise :* ${name}
+📱 *Téléphone :* \`${phone}\`
+💻 *Service souhaité :* ${service}
 
-🚀 *العميل ينتظر تواصلك!*
+🚀 *Client en attente de contact !*
             `;
 
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
@@ -280,28 +328,28 @@
             .then(response => response.json())
             .then(data => {
                 if (data.ok) {
-                    document.getElementById('devForm').reset();
-                    alert("🎉 تم استلام طلبك بنجاح! سنتواصل معك قريباً.");
+                    document.getElementById('contactForm').reset();
+                    alert("🎉 Votre demande a été envoyée avec succès ! Nous vous contacterons très bientôt.");
                     
-                    submitBtn.innerText = "تم الإرسال بنجاح ✓";
-                    submitBtn.classList.remove('bg-brand-gold', 'hover:bg-gold_hover', 'text-black');
+                    submitBtn.innerText = "Envoyé avec succès ✓";
+                    submitBtn.classList.remove('bg-brand-yellow', 'hover:bg-yellow-500', 'text-brand-black');
                     submitBtn.classList.add('bg-green-600', 'text-white');
 
                     setTimeout(() => {
                         submitBtn.innerText = originalBtnText;
                         submitBtn.disabled = false;
                         submitBtn.classList.remove('opacity-75', 'cursor-not-allowed', 'bg-green-600', 'text-white');
-                        submitBtn.classList.add('bg-brand-gold', 'hover:bg-gold_hover', 'text-black');
+                        submitBtn.classList.add('bg-brand-yellow', 'hover:bg-yellow-500', 'text-brand-black');
                     }, 3000);
                 } else {
-                    alert("حدث خطأ في الإرسال. يرجى المحاولة لاحقاً.");
+                    alert("Une erreur s'est produite. Veuillez réessayer.");
                     submitBtn.innerText = originalBtnText;
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
                 }
             })
             .catch(error => {
-                alert("تأكد من اتصالك بالإنترنت.");
+                alert("Erreur de connexion. Vérifiez votre accès internet.");
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
