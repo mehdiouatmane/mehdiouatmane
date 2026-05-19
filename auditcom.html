@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agence Digitale Maroc | Création de sites web</title>
+    <title>AUDITCOM | Agence Web & Solutions Digitales</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { 
-                        'poppins': ['Poppins', 'sans-serif'],
-                    },
+                    fontFamily: { 'poppins': ['Poppins', 'sans-serif'] },
                     colors: {
                         brand: {
-                            black: '#0a0a0a',    // Noir profond
-                            dark: '#121212',     // Gris très foncé pour les sections
-                            yellow: '#facc15',   // Jaune CHENOCOM
-                            yellow_hover: '#eab308'
+                            black: '#050505',    
+                            dark: '#0f1115',     
+                            card: '#16181d',
+                            primary: '#2563EB',  // أزرق متناسق مع لوغو Auditcom
+                            secondary: '#1E3A8A' // أزرق داكن
                         }
                     }
                 }
@@ -32,216 +35,236 @@
     </script>
 
     <style>
-        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; background-color: #0a0a0a; color: #ffffff; }
+        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; background-color: #050505; color: #ffffff; overflow-x: hidden; }
         .glass-nav { 
-            background: rgba(10, 10, 10, 0.9); 
-            backdrop-filter: blur(10px); 
+            background: rgba(5, 5, 5, 0.85); 
+            backdrop-filter: blur(12px); 
             border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
         .text-outline {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
             color: transparent;
         }
-        /* Hide scrollbar for clean look */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #facc15; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #1E3A8A; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563EB; }
+        
+        /* Swiper Customization */
+        .swiper-pagination-bullet { background: #6b7280; opacity: 0.5; }
+        .swiper-pagination-bullet-active { background: #2563EB; opacity: 1; width: 24px; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-brand-black text-gray-300 antialiased selection:bg-brand-yellow selection:text-black">
+<body class="bg-brand-black text-gray-300 antialiased selection:bg-brand-primary selection:text-white">
 
     <nav class="glass-nav fixed w-full z-50 transition-all duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             
             <a href="#" class="flex flex-col items-center">
-                <img src="https://i.ibb.co/3sZ8XG0/chenocom-logo.png" alt="Logo" class="h-10 object-contain">
+                <img src="117345.jpg" alt="AUDITCOM Logo" class="h-12 object-contain bg-white px-2 py-1 rounded">
             </a>
             
             <div class="hidden md:flex items-center gap-8">
-                <a href="#services" class="text-white hover:text-brand-yellow transition font-semibold text-sm">Nos expertises</a>
-                <a href="#portfolio" class="text-white hover:text-brand-yellow transition font-semibold text-sm">Nos références</a>
+                <a href="#services" class="text-white hover:text-brand-primary transition font-semibold text-sm tracking-wide">Nos expertises</a>
+                <a href="#portfolio" class="text-white hover:text-brand-primary transition font-semibold text-sm tracking-wide">Nos références</a>
+                <a href="#contact" class="bg-brand-primary text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-700 transition text-sm shadow-[0_0_15px_rgba(37,99,235,0.4)]">Contact</a>
             </div>
 
-            <button class="md:hidden text-white hover:text-brand-yellow transition">
+            <button id="mobileMenuBtn" class="md:hidden text-white hover:text-brand-primary transition">
                 <i data-lucide="menu" class="w-8 h-8"></i>
             </button>
         </div>
+
+        <div id="mobileMenu" class="hidden md:hidden bg-brand-dark border-b border-zinc-800 absolute w-full left-0 top-full flex flex-col p-6 gap-4 shadow-2xl">
+            <a href="#services" class="mobile-link text-white font-semibold text-lg border-b border-zinc-800 pb-2">Nos expertises</a>
+            <a href="#portfolio" class="mobile-link text-white font-semibold text-lg border-b border-zinc-800 pb-2">Nos références</a>
+            <a href="#contact" class="mobile-link text-brand-primary font-bold text-lg">Contactez-nous</a>
+        </div>
     </nav>
 
-    <header class="relative pt-32 pb-16 px-6 overflow-hidden flex flex-col items-center text-center">
-        <div class="container mx-auto mt-10 md:mt-20 z-10 max-w-4xl">
+    <header class="relative pt-40 pb-20 px-6 overflow-hidden flex flex-col items-center text-center min-h-screen justify-center">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand-primary/20 rounded-full blur-[120px] -z-10"></div>
+
+        <div class="container mx-auto z-10 max-w-5xl" data-aos="fade-up" data-aos-duration="1000">
             <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6 text-white tracking-tight">
-                <span class="text-brand-yellow">Des stratégies digitales</span> <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-brand-primary">Des stratégies digitales</span> <br>
                 sur mesure pour catalyser votre croissance
             </h1>
-            <p class="text-gray-300 text-base md:text-lg mb-8 leading-relaxed max-w-3xl mx-auto">
-                Votre <strong>Agence Digitale Maroc</strong> de confiance, créant des sites puissants et sur mesure qui attirent et convertissent. En tant qu'Agence Digitale Maroc, nous donnons de l'éclat à votre projet !
+            <p class="text-gray-400 text-base md:text-lg mb-10 leading-relaxed max-w-3xl mx-auto">
+                <strong>AUDITCOM</strong> – Votre Agence Web & Solutions Digitales de confiance. Nous créons, innovons et développons des sites puissants qui attirent et convertissent.
             </p>
-            <a href="#contact" class="text-brand-yellow font-bold text-xl border-b-2 border-brand-yellow pb-1 hover:text-white hover:border-white transition inline-block mb-16">
-                Contactez-nous
-            </a>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                <a href="#contact" class="bg-brand-primary hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition shadow-[0_0_20px_rgba(37,99,235,0.3)] flex items-center gap-2">
+                    Démarrer un projet <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </a>
+            </div>
 
-            <div class="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl border border-zinc-800">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200" alt="Dashboard Design" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition duration-500">
+            <div class="w-full max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-zinc-800" data-aos="zoom-in" data-aos-delay="200">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200" alt="Dashboard" class="w-full h-auto object-cover opacity-80 hover:opacity-100 transition duration-500">
             </div>
         </div>
     </header>
 
-    <section class="py-16 bg-brand-black border-t border-zinc-900">
-        <div class="container mx-auto px-6 max-w-5xl">
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
-                L'excellence opérationnelle au <br> service de votre transformation numérique.
-            </h2>
-            <p class="text-gray-400 mb-12">
-                <span class="text-white font-semibold">Votre agence</span> est une agence digitale marocaine de premier plan, spécialisée dans le développement web sur mesure et les applications mobiles.
-            </p>
+    <section class="py-24 bg-brand-dark border-y border-zinc-900 relative">
+        <div class="container mx-auto px-6 max-w-6xl text-center">
+            <div class="mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                    L'excellence opérationnelle au <br> service de votre transformation numérique.
+                </h2>
+                <p class="text-brand-primary font-semibold">🔥 Votre allié créatif de confiance</p>
+            </div>
 
-            <div class="flex flex-col items-center justify-center gap-10 py-10 border-t border-b border-zinc-800 text-center relative overflow-hidden">
-                <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none text-9xl font-black uppercase whitespace-nowrap overflow-hidden">
-                    Création Web App
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center" id="stats-section">
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <p class="text-6xl md:text-7xl font-light text-white mb-2"><span class="counter" data-target="100">0</span><span class="text-brand-primary font-bold">+</span></p>
+                    <p class="text-sm text-gray-500 uppercase tracking-widest font-semibold">Projets finalisés</p>
                 </div>
-                <div>
-                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">100<span class="text-brand-yellow">+</span></p>
-                    <p class="text-sm text-gray-400 uppercase tracking-widest">Projets finalisés</p>
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <p class="text-6xl md:text-7xl font-light text-white mb-2"><span class="counter" data-target="94">0</span><span class="text-brand-primary font-bold">%</span></p>
+                    <p class="text-sm text-gray-500 uppercase tracking-widest font-semibold">D'amélioration de conversion</p>
                 </div>
-                <div class="w-px h-16 bg-zinc-800 hidden md:block"></div>
-                <div class="h-px w-32 bg-zinc-800 md:hidden"></div>
-                <div>
-                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">94<span class="text-brand-yellow">%</span></p>
-                    <p class="text-sm text-gray-400 uppercase tracking-widest">Amélioration de conversion</p>
-                </div>
-                <div class="w-px h-16 bg-zinc-800 hidden md:block"></div>
-                <div class="h-px w-32 bg-zinc-800 md:hidden"></div>
-                <div>
-                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">06</p>
-                    <p class="text-sm text-gray-400 uppercase tracking-widest">Années d'expérience</p>
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <p class="text-6xl md:text-7xl font-light text-white mb-2"><span class="counter" data-target="8">0</span><span class="text-brand-primary font-bold">+</span></p>
+                    <p class="text-sm text-gray-500 uppercase tracking-widest font-semibold">Années d'expérience</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="services" class="py-20 bg-brand-dark relative">
+    <section id="services" class="py-24 bg-brand-black relative">
         <div class="container mx-auto px-6 max-w-6xl">
-            <div class="mb-16 md:flex justify-between items-start gap-8">
+            <div class="mb-16 md:flex justify-between items-start gap-8" data-aos="fade-right">
                 <div class="md:w-1/2">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Une synergie de compétences par notre Agence Digital pour propulser votre visibilité</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">Une synergie de compétences pour propulser votre visibilité</h2>
                 </div>
-                <div class="md:w-1/2 text-gray-400">
-                    <p class="mb-4">Grâce à nos équipes expertes en développement web, design graphique, SEO naturel, gestion des réseaux sociaux et rédaction de contenus optimisés, nous réunissons toutes les compétences nécessaires pour faire de votre projet un succès.</p>
-                    <a href="#contact" class="text-brand-yellow font-bold underline hover:text-white transition">Pourquoi nous choisir ?</a>
+                <div class="md:w-1/2 text-gray-400 border-l-2 border-brand-primary pl-6">
+                    <p>Grâce à nos équipes expertes en développement web, design graphique, SEO naturel, nous réunissons toutes les compétences nécessaires pour faire de votre projet un succès.</p>
                 </div>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="p-8 rounded-lg bg-brand-black border border-zinc-800 hover:border-brand-yellow transition group relative">
-                    <div class="text-5xl font-bold text-white mb-4 absolute top-6 right-6">01</div>
-                    <div class="mt-16">
-                        <h3 class="text-xl font-bold text-white mb-3 leading-snug group-hover:text-brand-yellow transition">Architecture Web : Conception de sites</h3>
-                        <p class="text-gray-400 text-sm">Des sites esthétiques, performants et conçus pour convertir. Un développement humain, stratégique et sur-mesure.</p>
+                <div class="p-8 rounded-2xl bg-brand-card border border-zinc-800 hover:border-brand-primary transition group relative overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-7xl font-black text-outline absolute top-4 right-4 opacity-30 group-hover:text-brand-primary group-hover:-webkit-text-stroke-0 transition duration-500">01</div>
+                    <div class="mt-12 relative z-10">
+                        <h3 class="text-xl font-bold text-white mb-3">Architecture Web : Conception de sites</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Des sites esthétiques, performants et conçus pour convertir. Un développement humain, stratégique et sur-mesure.</p>
                     </div>
                 </div>
 
-                <div class="p-8 rounded-lg bg-brand-black border border-zinc-800 hover:border-brand-yellow transition group relative">
-                    <div class="text-5xl font-bold text-white mb-4 absolute top-6 right-6">02</div>
-                    <div class="mt-16">
-                        <h3 class="text-xl font-bold text-white mb-3 leading-snug group-hover:text-brand-yellow transition">Ingénierie Mobile : Développement d'applications</h3>
-                        <p class="text-gray-400 text-sm">Des applications fluides, intuitives et adaptées à vos utilisateurs. Nous allions technologie et performance.</p>
+                <div class="p-8 rounded-2xl bg-brand-card border border-zinc-800 hover:border-brand-primary transition group relative overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-7xl font-black text-outline absolute top-4 right-4 opacity-30 group-hover:text-brand-primary group-hover:-webkit-text-stroke-0 transition duration-500">02</div>
+                    <div class="mt-12 relative z-10">
+                        <h3 class="text-xl font-bold text-white mb-3">Ingénierie Mobile : Applications intuitives</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Des applications fluides, intuitives et adaptées à vos utilisateurs. Nous allions technologie et performance.</p>
                     </div>
                 </div>
 
-                <div class="p-8 rounded-lg bg-brand-black border border-zinc-800 hover:border-brand-yellow transition group relative">
-                    <div class="text-5xl font-bold text-white mb-4 absolute top-6 right-6">03</div>
-                    <div class="mt-16">
-                        <h3 class="text-xl font-bold text-white mb-3 leading-snug group-hover:text-brand-yellow transition">Marketing 360° : L'expertise de notre Agence</h3>
-                        <p class="text-gray-400 text-sm">Des stratégies ciblées, des contenus optimisés, et une présence digitale qui attire, engage et transforme.</p>
+                <div class="p-8 rounded-2xl bg-brand-primary border border-brand-primary hover:shadow-[0_0_30px_rgba(37,99,235,0.3)] transition group relative overflow-hidden text-white" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-7xl font-black absolute top-4 right-4 opacity-20 transition duration-500 text-black">03</div>
+                    <div class="mt-12 relative z-10">
+                        <h3 class="text-xl font-bold mb-3">Marketing 360° : Expertise Digitale</h3>
+                        <p class="text-blue-100 text-sm leading-relaxed">Des stratégies ciblées, des contenus optimisés, et une présence digitale qui attire, engage et transforme.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="portfolio" class="py-20 bg-brand-black border-t border-zinc-900">
-        <div class="container mx-auto px-6 max-w-6xl">
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-12 max-w-2xl">
-                Des créations web qui <span class="text-brand-yellow">marquent les esprits</span> et boostent vos performances
+    <section id="portfolio" class="py-24 bg-brand-dark border-t border-zinc-900 overflow-hidden">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-12" data-aos="fade-right">
+                Des créations web qui <span class="text-brand-primary">marquent les esprits</span> <br> et boostent vos performances
             </h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="group cursor-pointer">
-                    <div class="relative overflow-hidden rounded-lg aspect-[3/4] mb-4 border border-zinc-800">
-                        <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&q=80&w=600" alt="Project 1" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+            <div class="swiper mySwiper" data-aos="fade-up">
+                <div class="swiper-wrapper mb-12">
+                    <div class="swiper-slide group cursor-pointer">
+                        <div class="relative overflow-hidden rounded-2xl aspect-[4/5] mb-4 border border-zinc-800">
+                            <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&q=80&w=600" alt="Project 1" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white mb-2">Opaleon</h3>
+                                    <div class="flex gap-2 text-xs font-semibold">
+                                        <span class="px-3 py-1 bg-brand-primary/90 text-white rounded-full">E-commerce</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Elegant morocco</h3>
-                    <div class="flex gap-2 text-xs font-semibold">
-                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">Design UX/UI</span>
-                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">Développement</span>
-                    </div>
-                </div>
 
-                <div class="group cursor-pointer">
-                    <div class="relative overflow-hidden rounded-lg aspect-[3/4] mb-4 border border-zinc-800">
-                        <img src="https://images.unsplash.com/photo-1616432043562-3671ea2e5242?auto=format&fit=crop&q=80&w=600" alt="Project 2" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+                    <div class="swiper-slide group cursor-pointer">
+                        <div class="relative overflow-hidden rounded-2xl aspect-[4/5] mb-4 border border-zinc-800">
+                            <img src="https://images.unsplash.com/photo-1616432043562-3671ea2e5242?auto=format&fit=crop&q=80&w=600" alt="Project 2" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white mb-2">Elegant Morocco</h3>
+                                    <div class="flex gap-2 text-xs font-semibold">
+                                        <span class="px-3 py-1 bg-brand-primary/90 text-white rounded-full">Design UX/UI</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Opaleon</h3>
-                    <div class="flex gap-2 text-xs font-semibold">
-                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">E-commerce</span>
-                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">Design</span>
-                    </div>
-                </div>
 
-                <div class="group cursor-pointer hidden lg:block">
-                    <div class="relative overflow-hidden rounded-lg aspect-[3/4] mb-4 border border-zinc-800">
-                        <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&q=80&w=600" alt="Project 3" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Littlekin</h3>
-                    <div class="flex gap-2 text-xs font-semibold">
-                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">E-commerce</span>
-                        <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded">Développement</span>
+                    <div class="swiper-slide group cursor-pointer">
+                        <div class="relative overflow-hidden rounded-2xl aspect-[4/5] mb-4 border border-zinc-800">
+                            <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&q=80&w=600" alt="Project 3" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white mb-2">EMC Immobilier</h3>
+                                    <div class="flex gap-2 text-xs font-semibold">
+                                        <span class="px-3 py-1 bg-brand-primary/90 text-white rounded-full">Développement</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="mt-10 text-center md:text-left">
-                <a href="#" class="text-brand-yellow font-bold flex items-center gap-2 hover:text-white transition w-fit">
-                    Voir plus <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
-                </a>
+                <div class="swiper-pagination"></div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="py-20 bg-brand-dark border-y border-zinc-900">
+    <section id="contact" class="py-24 bg-brand-black border-t border-zinc-900 relative">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
         <div class="container mx-auto px-6 max-w-5xl">
-            <div class="flex flex-col md:flex-row gap-16 items-start">
+            <div class="flex flex-col md:flex-row gap-16 items-center">
                 
-                <div class="md:w-1/2">
-                    <h2 class="text-4xl font-bold text-brand-yellow mb-4">Contactez-nous</h2>
-                    <p class="text-gray-300 mb-8 text-lg">
-                        Prêt à démarrer votre transformation numérique ? Laissez-nous vos coordonnées, notre équipe vous contactera rapidement.
+                <div class="md:w-1/2" data-aos="fade-right">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Boostez vos idées <br><span class="text-brand-primary">maintenant</span></h2>
+                    <p class="text-gray-400 mb-8 text-lg">
+                        Prêt à démarrer votre transformation numérique avec AUDITCOM ? Laissez-nous vos coordonnées, notre équipe vous contactera rapidement.
                     </p>
                     
                     <div class="space-y-6">
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-500 font-bold uppercase mb-1">Email</span>
-                            <a href="mailto:contact@votreagence.com" class="font-bold text-white text-lg hover:text-brand-yellow transition">contact@votreagence.com</a>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center text-brand-primary"><i data-lucide="mail"></i></div>
+                            <div>
+                                <span class="text-xs text-gray-500 font-bold uppercase mb-1 block">Email</span>
+                                <a href="mailto:contact@auditcom.ma" class="font-bold text-white hover:text-brand-primary transition">contact@auditcom.ma</a>
+                            </div>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-500 font-bold uppercase mb-1">Téléphone</span>
-                            <a href="tel:+212600000000" class="font-bold text-white text-lg hover:text-brand-yellow transition">+212 60 00 00 00</a>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center text-brand-primary"><i data-lucide="phone"></i></div>
+                            <div>
+                                <span class="text-xs text-gray-500 font-bold uppercase mb-1 block">Téléphone</span>
+                                <a href="tel:+212600000000" class="font-bold text-white hover:text-brand-primary transition">+212 60 00 00 00</a>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="md:w-1/2 w-full bg-brand-black p-8 rounded-lg border border-zinc-800 shadow-2xl relative">
+                <div class="md:w-1/2 w-full bg-brand-card p-8 rounded-2xl border border-zinc-800 shadow-2xl relative" data-aos="fade-left">
                     <form id="contactForm" class="space-y-5">
                         <div>
-                            <input id="clientName" type="text" placeholder="Nom et Prénom / Entreprise" required class="w-full px-4 py-4 rounded bg-brand-dark border border-zinc-800 text-white placeholder-gray-500 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition">
+                            <input id="clientName" type="text" placeholder="Nom et Prénom / Entreprise" required class="w-full px-4 py-4 rounded-xl bg-brand-dark border border-zinc-800 text-white placeholder-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition">
                         </div>
                         <div>
-                            <input id="clientPhone" type="tel" placeholder="Téléphone / WhatsApp" required class="w-full px-4 py-4 rounded bg-brand-dark border border-zinc-800 text-white placeholder-gray-500 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition">
+                            <input id="clientPhone" type="tel" placeholder="Téléphone / WhatsApp" required class="w-full px-4 py-4 rounded-xl bg-brand-dark border border-zinc-800 text-white placeholder-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition">
                         </div>
                         <div>
-                            <select id="serviceType" class="w-full px-4 py-4 rounded bg-brand-dark border border-zinc-800 text-gray-400 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition appearance-none">
+                            <select id="serviceType" class="w-full px-4 py-4 rounded-xl bg-brand-dark border border-zinc-800 text-gray-400 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition appearance-none">
                                 <option value="" disabled selected>Service souhaité...</option>
                                 <option value="Création Site Web">Création Site Web</option>
                                 <option value="Site E-commerce">Site E-commerce</option>
@@ -250,8 +273,8 @@
                                 <option value="Autre">Autre / Conseil</option>
                             </select>
                         </div>
-                        <button id="submitBtn" type="submit" class="w-full bg-brand-yellow hover:bg-yellow-500 text-brand-black font-bold py-4 rounded transition text-lg mt-2 uppercase tracking-wide">
-                            Envoyer la demande
+                        <button id="submitBtn" type="submit" class="w-full bg-brand-primary hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition text-lg mt-2 tracking-wide shadow-[0_4px_14px_0_rgba(37,99,235,0.39)]">
+                            ENVOYER LA DEMANDE
                         </button>
                     </form>	
                 </div>
@@ -260,33 +283,118 @@
         </div>
     </section>
 
-    <footer class="bg-brand-black text-gray-400 py-10 border-t border-zinc-900">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-                <img src="https://i.ibb.co/3sZ8XG0/chenocom-logo.png" alt="Logo" class="h-8 object-contain mb-2 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition">
-                <p class="text-sm">Votre réussite, notre engagement.</p>
+    <footer class="bg-brand-black text-gray-500 py-12 border-t border-zinc-900 text-center">
+        <div class="container mx-auto px-6">
+            <img src="117345.jpg" alt="AUDITCOM" class="h-12 mx-auto mb-6 object-contain bg-white px-2 py-1 rounded opacity-80 hover:opacity-100 transition">
+            
+            <div class="flex justify-center gap-6 mb-8 text-sm">
+                <a href="#services" class="hover:text-brand-primary transition">Qui sommes-nous ?</a>
+                <a href="#portfolio" class="hover:text-brand-primary transition">Nos références</a>
+                <a href="#contact" class="hover:text-brand-primary transition">Contact</a>
             </div>
-            <div class="flex gap-4">
-                <a href="#" class="w-10 h-10 rounded bg-zinc-900 flex items-center justify-center hover:bg-brand-yellow hover:text-black transition"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                <a href="#" class="w-10 h-10 rounded bg-zinc-900 flex items-center justify-center hover:bg-brand-yellow hover:text-black transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                <a href="#" class="w-10 h-10 rounded bg-zinc-900 flex items-center justify-center hover:bg-brand-yellow hover:text-black transition"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+
+            <div class="flex justify-center gap-4 mb-8">
+                <a href="#" class="w-10 h-10 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:border-brand-primary hover:text-white transition"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:border-brand-primary hover:text-white transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:border-brand-primary hover:text-white transition"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
             </div>
+
+            <p class="text-sm opacity-50">&copy; 2026 AUDITCOM. Agence Web & Solutions Digitales. Tous droits réservés.</p>
         </div>
     </footer>
 
-    <div class="fixed bottom-0 left-0 w-full bg-brand-black border-t border-zinc-800 flex md:hidden z-50">
-        <a href="#contact" class="flex-1 py-4 text-center font-bold text-white border-r border-zinc-800 text-sm tracking-wider uppercase">Contact</a>
-        <a href="tel:+212600000000" class="flex-1 py-4 text-center font-bold text-white text-sm tracking-wider">+212 60 00 00 00</a>
+    <div class="fixed bottom-0 left-0 w-full bg-brand-card border-t border-zinc-800 flex md:hidden z-40 pb-safe">
+        <a href="#contact" class="flex-1 py-4 text-center font-bold text-white border-r border-zinc-800 text-sm tracking-wider flex items-center justify-center gap-2">
+            <i data-lucide="mail" class="w-4 h-4 text-brand-primary"></i> Contact
+        </a>
+        <a href="tel:+212600000000" class="flex-1 py-4 text-center font-bold text-white text-sm tracking-wider flex items-center justify-center gap-2">
+            <i data-lucide="phone" class="w-4 h-4 text-brand-primary"></i> Appeler
+        </a>
     </div>
+    <div class="h-16 md:hidden"></div>
 
-    <div class="h-14 md:hidden"></div>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
     <script>
+        // 1. Initialize Icons
         lucide.createIcons();
+
+        // 2. Initialize AOS (Scroll Animations)
+        AOS.init({ once: true, offset: 50 });
+
+        // 3. Initialize Swiper Slider (Portfolio)
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            breakpoints: {
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 }
+            }
+        });
+
+        // 4. Mobile Menu Toggle
+        const btn = document.getElementById('mobileMenuBtn');
+        const menu = document.getElementById('mobileMenu');
+        const links = document.querySelectorAll('.mobile-link');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // 5. Animated Counters
+        const counters = document.querySelectorAll('.counter');
+        let hasAnimated = false;
+
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const duration = 2000; // 2 seconds
+                const increment = target / (duration / 16); // 60fps
+                
+                let current = 0;
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.innerText = Math.ceil(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCounter();
+            });
+        };
+
+        // Observer pour lancer l'animation des compteurs quand ils sont visibles
+        const observer = new IntersectionObserver((entries) => {
+            if(entries[0].isIntersecting && !hasAnimated) {
+                animateCounters();
+                hasAnimated = true;
+            }
+        });
+        observer.observe(document.getElementById('stats-section'));
+
     </script>
 
     <script>
-        // ⚠️ N'oubliez pas de mettre votre BOT_TOKEN et CHAT_ID
+        // ⚠️ ضِف الـ TOKEN و الـ CHAT ID الخاص بك هنا
         const BOT_TOKEN = "8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0"; 
         const CHAT_ID = "1335982188"; 
 
@@ -305,13 +413,13 @@
             const service = document.getElementById('serviceType').value || "Non spécifié";
 
             const message = `
-🌟 *Nouvelle Demande Client*
+🔵 *Nouveau Client - AUDITCOM*
 
 👤 *Nom / Entreprise :* ${name}
 📱 *Téléphone :* \`${phone}\`
 💻 *Service souhaité :* ${service}
 
-🚀 *Client en attente de contact !*
+🚀 *Le client attend votre appel !*
             `;
 
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
@@ -329,27 +437,27 @@
             .then(data => {
                 if (data.ok) {
                     document.getElementById('contactForm').reset();
-                    alert("🎉 Votre demande a été envoyée avec succès ! Nous vous contacterons très bientôt.");
+                    alert("🎉 Votre demande a été envoyée avec succès !");
                     
                     submitBtn.innerText = "Envoyé avec succès ✓";
-                    submitBtn.classList.remove('bg-brand-yellow', 'hover:bg-yellow-500', 'text-brand-black');
-                    submitBtn.classList.add('bg-green-600', 'text-white');
+                    submitBtn.classList.remove('bg-brand-primary', 'hover:bg-blue-700');
+                    submitBtn.classList.add('bg-green-600');
 
                     setTimeout(() => {
                         submitBtn.innerText = originalBtnText;
                         submitBtn.disabled = false;
-                        submitBtn.classList.remove('opacity-75', 'cursor-not-allowed', 'bg-green-600', 'text-white');
-                        submitBtn.classList.add('bg-brand-yellow', 'hover:bg-yellow-500', 'text-brand-black');
+                        submitBtn.classList.remove('opacity-75', 'cursor-not-allowed', 'bg-green-600');
+                        submitBtn.classList.add('bg-brand-primary', 'hover:bg-blue-700');
                     }, 3000);
                 } else {
-                    alert("Une erreur s'est produite. Veuillez réessayer.");
+                    alert("Erreur. Veuillez réessayer.");
                     submitBtn.innerText = originalBtnText;
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
                 }
             })
             .catch(error => {
-                alert("Erreur de connexion. Vérifiez votre accès internet.");
+                alert("Erreur de connexion.");
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
