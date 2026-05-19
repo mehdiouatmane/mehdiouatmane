@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
 <head>
@@ -5,14 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUDITCOM | Agence Web & Solutions Digitales</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- AOS Animation CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <!-- Swiper Slider CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
@@ -25,8 +31,8 @@
                             black: '#050505',    
                             dark: '#0f1115',     
                             card: '#16181d',
-                            primary: '#2563EB',  // أزرق متناسق مع لوغو Auditcom
-                            secondary: '#1E3A8A' // أزرق داكن
+                            primary: '#2563EB',  
+                            secondary: '#1E3A8A' 
                         }
                     }
                 }
@@ -36,431 +42,1068 @@
 
     <style>
         body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; background-color: #050505; color: #ffffff; overflow-x: hidden; }
+        
+        /* Glass Navbar Effect */
         .glass-nav { 
-            background: rgba(5, 5, 5, 0.85); 
-            backdrop-filter: blur(12px); 
+            background: rgba(5, 5, 5, 0.95); 
+            backdrop-filter: blur(10px); 
             border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
+
+        /* Custom Hamburger Icon */
+        .hamburger { cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
+        .hamburger span { display: block; height: 2px; background-color: white; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger span:nth-child(1) { width: 24px; }
+        .hamburger span:nth-child(2) { width: 32px; }
+        .hamburger span:nth-child(3) { width: 24px; }
+
+        /* Fullscreen Menu Animation */
+        #mobileMenuOverlay {
+            transition: opacity 0.4s ease, visibility 0.4s;
+            opacity: 0;
+            visibility: hidden;
+        }
+        #mobileMenuOverlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Accordion Mobile Dropdown */
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        .dropdown-content.open {
+            max-height: 200px; 
+        }
+        .dropdown-icon { transition: transform 0.3s ease; }
+        .dropdown-icon.rotate { transform: rotate(180deg); }
+
+        /* Hollow/Outline Text */
         .text-outline {
             -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
             color: transparent;
         }
+        .text-hollow {
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.15);
+            transition: all 0.4s ease;
+        }
+        .text-hollow:hover {
+            color: #2563EB;
+            -webkit-text-stroke: 0px;
+        }
+
+        /* Custom Swiper Pagination Dots (Bar design) */
+        .swiper-pagination-bullet { 
+            background: #6b7280; 
+            opacity: 0.5; 
+            width: 12px; 
+            height: 12px; 
+            transition: all 0.3s ease;
+        }
+        .swiper-pagination-bullet-active { 
+            background: #ffffff; 
+            opacity: 1; 
+            width: 40px; 
+            border-radius: 8px; 
+        }
+        
+        /* Continuous Ticker Animation (Marquee) */
+        .marquee-container {
+            display: flex;
+            overflow: hidden;
+            user-select: none;
+            gap: 2rem;
+        }
+        .marquee-content {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-around;
+            min-width: 100%;
+            gap: 2rem;
+            animation: scroll-left 25s linear infinite;
+        }
+        @keyframes scroll-left {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); }
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #050505; }
         ::-webkit-scrollbar-thumb { background: #1E3A8A; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #2563EB; }
-        
-        /* Swiper Customization */
-        .swiper-pagination-bullet { background: #6b7280; opacity: 0.5; }
-        .swiper-pagination-bullet-active { background: #2563EB; opacity: 1; width: 24px; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-brand-black text-gray-300 antialiased selection:bg-brand-primary selection:text-white">
 
-    <nav class="glass-nav fixed w-full z-50 transition-all duration-300">
+    <!-- ==========================================
+         1. NAVBAR & HEADER
+    ========================================== -->
+    <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             
-            <a href="#" class="flex flex-col items-center">
-                <img src="117345.jpg" alt="AUDITCOM Logo" class="h-12 object-contain bg-white px-2 py-1 rounded">
+            <!-- Logo -->
+            <a href="#" class="relative z-[60]">
+                <img src="117345.jpg" alt="AUDITCOM Logo" class="h-10 md:h-12 object-contain bg-white px-2 py-1 rounded">
             </a>
             
+            <!-- Desktop Links -->
             <div class="hidden md:flex items-center gap-8">
-                <a href="#services" class="text-white hover:text-brand-primary transition font-semibold text-sm tracking-wide">Nos expertises</a>
-                <a href="#portfolio" class="text-white hover:text-brand-primary transition font-semibold text-sm tracking-wide">Nos références</a>
-                <a href="#contact" class="bg-brand-primary text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-700 transition text-sm shadow-[0_0_15px_rgba(37,99,235,0.4)]">Contact</a>
+                <a href="#about" class="text-white hover:text-brand-primary transition font-medium text-sm">Qui sommes-nous ?</a>
+                <a href="#services" class="text-white hover:text-brand-primary transition font-medium text-sm">Nos expertises</a>
+                <a href="#portfolio" class="text-white hover:text-brand-primary transition font-medium text-sm">Nos rÃ©fÃ©rences</a>
+                <a href="#blog" class="text-white hover:text-brand-primary transition font-medium text-sm">Blog</a>
+                <a href="#contact" class="bg-brand-primary text-white px-6 py-2.5 rounded font-semibold hover:bg-blue-700 transition text-sm shadow-[0_0_15px_rgba(37,99,235,0.4)]">Contactez-nous</a>
             </div>
 
-            <button id="mobileMenuBtn" class="md:hidden text-white hover:text-brand-primary transition">
-                <i data-lucide="menu" class="w-8 h-8"></i>
-            </button>
-        </div>
-
-        <div id="mobileMenu" class="hidden md:hidden bg-brand-dark border-b border-zinc-800 absolute w-full left-0 top-full flex flex-col p-6 gap-4 shadow-2xl">
-            <a href="#services" class="mobile-link text-white font-semibold text-lg border-b border-zinc-800 pb-2">Nos expertises</a>
-            <a href="#portfolio" class="mobile-link text-white font-semibold text-lg border-b border-zinc-800 pb-2">Nos références</a>
-            <a href="#contact" class="mobile-link text-brand-primary font-bold text-lg">Contactez-nous</a>
+            <!-- Hamburger Button (Mobile) -->
+            <div class="md:hidden relative z-[60] hamburger" id="menuToggleBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
-    <header class="relative pt-40 pb-20 px-6 overflow-hidden flex flex-col items-center text-center min-h-screen justify-center">
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand-primary/20 rounded-full blur-[120px] -z-10"></div>
+    <!-- Fullscreen Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-brand-black/95 backdrop-blur-md z-[55] flex flex-col pt-24 px-6 overflow-y-auto pb-24">
+        <button id="closeMenuBtn" class="absolute top-6 right-6 text-gray-400 hover:text-brand-primary transition">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
 
-        <div class="container mx-auto z-10 max-w-5xl" data-aos="fade-up" data-aos-duration="1000">
-            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6 text-white tracking-tight">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-brand-primary">Des stratégies digitales</span> <br>
-                sur mesure pour catalyser votre croissance
-            </h1>
-            <p class="text-gray-400 text-base md:text-lg mb-10 leading-relaxed max-w-3xl mx-auto">
-                <strong>AUDITCOM</strong> – Votre Agence Web & Solutions Digitales de confiance. Nous créons, innovons et développons des sites puissants qui attirent et convertissent.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-                <a href="#contact" class="bg-brand-primary hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition shadow-[0_0_20px_rgba(37,99,235,0.3)] flex items-center gap-2">
-                    Démarrer un projet <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                </a>
+        <div class="flex flex-col gap-6 w-full mt-4">
+            <!-- Qui sommes-nous Dropdown -->
+            <div class="border-b border-zinc-800/50 pb-4">
+                <button class="dropdown-btn flex justify-between items-center w-full text-left text-white font-medium text-lg hover:text-brand-primary transition">
+                    Qui sommes-nous ?
+                    <i data-lucide="chevron-down" class="w-5 h-5 dropdown-icon text-gray-400"></i>
+                </button>
+                <div class="dropdown-content flex flex-col gap-3 mt-0 pl-4 text-gray-400 text-sm">
+                    <div class="pt-3 flex flex-col gap-3">
+                        <a href="#about" class="mobile-link hover:text-brand-primary transition">Agence web Maroc</a>
+                        <a href="#about" class="mobile-link hover:text-brand-primary transition">Agence web offshore</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="w-full max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-zinc-800" data-aos="zoom-in" data-aos-delay="200">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200" alt="Dashboard" class="w-full h-auto object-cover opacity-80 hover:opacity-100 transition duration-500">
+            <!-- Nos expertises Dropdown -->
+            <div class="border-b border-zinc-800/50 pb-4">
+                <button class="dropdown-btn flex justify-between items-center w-full text-left text-white font-medium text-lg hover:text-brand-primary transition">
+                    Nos expertises
+                    <i data-lucide="chevron-down" class="w-5 h-5 dropdown-icon text-gray-400"></i>
+                </button>
+                <div class="dropdown-content flex flex-col gap-3 mt-0 pl-4 text-gray-400 text-sm">
+                    <div class="pt-3 flex flex-col gap-3">
+                        <a href="#services" class="mobile-link hover:text-brand-primary transition">CrÃ©ation Site Web</a>
+                        <a href="#services" class="mobile-link hover:text-brand-primary transition">Application Mobile</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Normal Links -->
+            <a href="#portfolio" class="mobile-link text-white font-medium text-lg border-b border-zinc-800/50 pb-4 hover:text-brand-primary transition">Nos rÃ©fÃ©rences</a>
+            <a href="#testimonials" class="mobile-link text-white font-medium text-lg border-b border-zinc-800/50 pb-4 hover:text-brand-primary transition">Success Stories</a>
+            <a href="#blog" class="mobile-link text-white font-medium text-lg border-b border-zinc-800/50 pb-4 hover:text-brand-primary transition">Blog</a>
+            <a href="#contact" class="mobile-link text-white font-medium text-lg pb-4 hover:text-brand-primary transition">Contact</a>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         2. HERO SECTION
+    ========================================== -->
+    <header id="hero" class="relative pt-40 pb-16 px-6 flex flex-col items-center text-center min-h-[75vh] justify-center overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-brand-primary/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+
+        <div class="container mx-auto max-w-5xl z-10">
+            <h2 data-aos="fade-down" data-aos-duration="1000" class="text-brand-primary font-bold text-2xl md:text-3xl tracking-widest uppercase mb-6">
+                AUDITCOM
+            </h2>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8 text-white tracking-tight" data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+                <span class="text-brand-primary">Des stratÃ©gies digitales</span> <br>
+                sur mesure pour catalyser votre croissance
+            </h1>
+            <p class="text-gray-300 text-lg md:text-xl mb-12 leading-relaxed max-w-4xl mx-auto font-light" data-aos="fade-up" data-aos-delay="400" data-aos-duration="1000">
+                AUDITCOM â€“ Votre <strong>Agence Web & Solutions Digitales</strong> de confiance, crÃ©ant des sites puissants et sur mesure qui attirent et convertissent. En tant qu'Agence Digitale Maroc, nous donnons de l'Ã©clat Ã  votre projet !
+            </p>
+            <div data-aos="zoom-in" data-aos-delay="600" data-aos-duration="1000">
+                <a href="#contact" class="text-brand-primary font-bold text-xl md:text-2xl hover:text-white transition duration-300 border-b-2 border-transparent hover:border-brand-primary pb-1">
+                    Contactez-nous
+                </a>
             </div>
         </div>
     </header>
 
-    <section class="py-24 bg-brand-dark border-y border-zinc-900 relative">
-        <div class="container mx-auto px-6 max-w-6xl text-center">
-            <div class="mb-16" data-aos="fade-up">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
-                    L'excellence opérationnelle au <br> service de votre transformation numérique.
-                </h2>
-                <p class="text-brand-primary font-semibold">🔥 Votre allié créatif de confiance</p>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center" id="stats-section">
-                <div data-aos="fade-up" data-aos-delay="100">
-                    <p class="text-6xl md:text-7xl font-light text-white mb-2"><span class="counter" data-target="100">0</span><span class="text-brand-primary font-bold">+</span></p>
-                    <p class="text-sm text-gray-500 uppercase tracking-widest font-semibold">Projets finalisés</p>
+    <!-- ==========================================
+         3. HERO IMAGES SLIDER
+    ========================================== -->
+    <section id="portfolio-slider" class="py-8 bg-brand-black relative">
+        <div class="container mx-auto px-4 max-w-6xl" data-aos="fade-up" data-aos-duration="1000">
+            <div class="swiper heroSwiper pb-16">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl border border-zinc-800">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200" alt="Projet 1" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl border border-zinc-800">
+                            <img src="https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&q=80&w=1200" alt="Projet 2" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl border border-zinc-800">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200" alt="Projet 3" class="w-full h-full object-cover">
+                        </div>
+                    </div>
                 </div>
-                <div data-aos="fade-up" data-aos-delay="200">
-                    <p class="text-6xl md:text-7xl font-light text-white mb-2"><span class="counter" data-target="94">0</span><span class="text-brand-primary font-bold">%</span></p>
-                    <p class="text-sm text-gray-500 uppercase tracking-widest font-semibold">D'amélioration de conversion</p>
-                </div>
-                <div data-aos="fade-up" data-aos-delay="300">
-                    <p class="text-6xl md:text-7xl font-light text-white mb-2"><span class="counter" data-target="8">0</span><span class="text-brand-primary font-bold">+</span></p>
-                    <p class="text-sm text-gray-500 uppercase tracking-widest font-semibold">Années d'expérience</p>
-                </div>
+                <div class="swiper-pagination hero-pagination"></div>
             </div>
         </div>
     </section>
 
-    <section id="services" class="py-24 bg-brand-black relative">
-        <div class="container mx-auto px-6 max-w-6xl">
-            <div class="mb-16 md:flex justify-between items-start gap-8" data-aos="fade-right">
-                <div class="md:w-1/2">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">Une synergie de compétences pour propulser votre visibilité</h2>
-                </div>
-                <div class="md:w-1/2 text-gray-400 border-l-2 border-brand-primary pl-6">
-                    <p>Grâce à nos équipes expertes en développement web, design graphique, SEO naturel, nous réunissons toutes les compétences nécessaires pour faire de votre projet un succès.</p>
-                </div>
-            </div>
 
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="p-8 rounded-2xl bg-brand-card border border-zinc-800 hover:border-brand-primary transition group relative overflow-hidden" data-aos="fade-up" data-aos-delay="100">
-                    <div class="text-7xl font-black text-outline absolute top-4 right-4 opacity-30 group-hover:text-brand-primary group-hover:-webkit-text-stroke-0 transition duration-500">01</div>
-                    <div class="mt-12 relative z-10">
-                        <h3 class="text-xl font-bold text-white mb-3">Architecture Web : Conception de sites</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">Des sites esthétiques, performants et conçus pour convertir. Un développement humain, stratégique et sur-mesure.</p>
-                    </div>
-                </div>
-
-                <div class="p-8 rounded-2xl bg-brand-card border border-zinc-800 hover:border-brand-primary transition group relative overflow-hidden" data-aos="fade-up" data-aos-delay="200">
-                    <div class="text-7xl font-black text-outline absolute top-4 right-4 opacity-30 group-hover:text-brand-primary group-hover:-webkit-text-stroke-0 transition duration-500">02</div>
-                    <div class="mt-12 relative z-10">
-                        <h3 class="text-xl font-bold text-white mb-3">Ingénierie Mobile : Applications intuitives</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">Des applications fluides, intuitives et adaptées à vos utilisateurs. Nous allions technologie et performance.</p>
-                    </div>
-                </div>
-
-                <div class="p-8 rounded-2xl bg-brand-primary border border-brand-primary hover:shadow-[0_0_30px_rgba(37,99,235,0.3)] transition group relative overflow-hidden text-white" data-aos="fade-up" data-aos-delay="300">
-                    <div class="text-7xl font-black absolute top-4 right-4 opacity-20 transition duration-500 text-black">03</div>
-                    <div class="mt-12 relative z-10">
-                        <h3 class="text-xl font-bold mb-3">Marketing 360° : Expertise Digitale</h3>
-                        <p class="text-blue-100 text-sm leading-relaxed">Des stratégies ciblées, des contenus optimisés, et une présence digitale qui attire, engage et transforme.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="portfolio" class="py-24 bg-brand-dark border-t border-zinc-900 overflow-hidden">
-        <div class="container mx-auto px-6 max-w-7xl">
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-12" data-aos="fade-right">
-                Des créations web qui <span class="text-brand-primary">marquent les esprits</span> <br> et boostent vos performances
-            </h2>
-            
-            <div class="swiper mySwiper" data-aos="fade-up">
-                <div class="swiper-wrapper mb-12">
-                    <div class="swiper-slide group cursor-pointer">
-                        <div class="relative overflow-hidden rounded-2xl aspect-[4/5] mb-4 border border-zinc-800">
-                            <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&q=80&w=600" alt="Project 1" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
-                                <div>
-                                    <h3 class="text-2xl font-bold text-white mb-2">Opaleon</h3>
-                                    <div class="flex gap-2 text-xs font-semibold">
-                                        <span class="px-3 py-1 bg-brand-primary/90 text-white rounded-full">E-commerce</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide group cursor-pointer">
-                        <div class="relative overflow-hidden rounded-2xl aspect-[4/5] mb-4 border border-zinc-800">
-                            <img src="https://images.unsplash.com/photo-1616432043562-3671ea2e5242?auto=format&fit=crop&q=80&w=600" alt="Project 2" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
-                                <div>
-                                    <h3 class="text-2xl font-bold text-white mb-2">Elegant Morocco</h3>
-                                    <div class="flex gap-2 text-xs font-semibold">
-                                        <span class="px-3 py-1 bg-brand-primary/90 text-white rounded-full">Design UX/UI</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide group cursor-pointer">
-                        <div class="relative overflow-hidden rounded-2xl aspect-[4/5] mb-4 border border-zinc-800">
-                            <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&q=80&w=600" alt="Project 3" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
-                                <div>
-                                    <h3 class="text-2xl font-bold text-white mb-2">EMC Immobilier</h3>
-                                    <div class="flex gap-2 text-xs font-semibold">
-                                        <span class="px-3 py-1 bg-brand-primary/90 text-white rounded-full">Développement</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="py-24 bg-brand-black border-t border-zinc-900 relative">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <!-- ==========================================
+         4. PRESENTATION TEXT
+    ========================================== -->
+    <section id="about" class="py-20 bg-brand-black border-t border-zinc-900 relative">
         <div class="container mx-auto px-6 max-w-5xl">
-            <div class="flex flex-col md:flex-row gap-16 items-center">
-                
-                <div class="md:w-1/2" data-aos="fade-right">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Boostez vos idées <br><span class="text-brand-primary">maintenant</span></h2>
-                    <p class="text-gray-400 mb-8 text-lg">
-                        Prêt à démarrer votre transformation numérique avec AUDITCOM ? Laissez-nous vos coordonnées, notre équipe vous contactera rapidement.
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-8" data-aos="fade-up" data-aos-duration="1000">
+                <span class="text-brand-primary">L'excellence opÃ©rationnelle</span> au <br class="hidden md:block">
+                service de votre transformation <br class="hidden md:block">
+                numÃ©rique.
+            </h2>
+            <p class="text-gray-400 text-lg md:text-2xl leading-relaxed max-w-4xl" data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+                <span class="text-brand-primary font-bold">AUDITCOM</span> est une agence digitale marocaine de premier plan, spÃ©cialisÃ©e dans le dÃ©veloppement web sur mesure, la crÃ©ation d'applications mobiles et les solutions digitales innovantes.
+            </p>
+        </div>
+    </section>
+
+
+    <!-- ==========================================
+         5. STATS COUNTERS
+    ========================================== -->
+    <section id="stats" class="py-16 bg-brand-black relative">
+        <div class="container mx-auto px-6 max-w-4xl text-center md:text-left">
+            <p class="text-white font-semibold text-xl mb-12 flex items-center justify-center md:justify-start gap-2" data-aos="fade-up">
+                ðŸ”¥ Votre alliÃ© creative de confiance
+            </p>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-16 md:gap-8" id="stats-container">
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">
+                        <span class="counter" data-target="100">0</span><span class="text-brand-primary font-medium">+</span>
                     </p>
-                    
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center text-brand-primary"><i data-lucide="mail"></i></div>
-                            <div>
-                                <span class="text-xs text-gray-500 font-bold uppercase mb-1 block">Email</span>
-                                <a href="mailto:contact@auditcom.ma" class="font-bold text-white hover:text-brand-primary transition">contact@auditcom.ma</a>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center text-brand-primary"><i data-lucide="phone"></i></div>
-                            <div>
-                                <span class="text-xs text-gray-500 font-bold uppercase mb-1 block">Téléphone</span>
-                                <a href="tel:+212600000000" class="font-bold text-white hover:text-brand-primary transition">+212 60 00 00 00</a>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="text-sm text-gray-400 font-medium">Projets finalisÃ©s</p>
                 </div>
-                
-                <div class="md:w-1/2 w-full bg-brand-card p-8 rounded-2xl border border-zinc-800 shadow-2xl relative" data-aos="fade-left">
-                    <form id="contactForm" class="space-y-5">
-                        <div>
-                            <input id="clientName" type="text" placeholder="Nom et Prénom / Entreprise" required class="w-full px-4 py-4 rounded-xl bg-brand-dark border border-zinc-800 text-white placeholder-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition">
-                        </div>
-                        <div>
-                            <input id="clientPhone" type="tel" placeholder="Téléphone / WhatsApp" required class="w-full px-4 py-4 rounded-xl bg-brand-dark border border-zinc-800 text-white placeholder-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition">
-                        </div>
-                        <div>
-                            <select id="serviceType" class="w-full px-4 py-4 rounded-xl bg-brand-dark border border-zinc-800 text-gray-400 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition appearance-none">
-                                <option value="" disabled selected>Service souhaité...</option>
-                                <option value="Création Site Web">Création Site Web</option>
-                                <option value="Site E-commerce">Site E-commerce</option>
-                                <option value="Application Mobile">Application Mobile</option>
-                                <option value="Design UX/UI">Design UX/UI</option>
-                                <option value="Autre">Autre / Conseil</option>
-                            </select>
-                        </div>
-                        <button id="submitBtn" type="submit" class="w-full bg-brand-primary hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition text-lg mt-2 tracking-wide shadow-[0_4px_14px_0_rgba(37,99,235,0.39)]">
-                            ENVOYER LA DEMANDE
-                        </button>
-                    </form>	
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">
+                        <span class="counter" data-target="94">0</span><span class="text-brand-primary font-medium">%</span>
+                    </p>
+                    <p class="text-sm text-gray-400 font-medium">D'amÃ©lioration du taux de conversion</p>
                 </div>
-                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <p class="text-7xl md:text-8xl font-light text-white mb-2 tracking-tighter">
+                        <span class="counter" data-target="8">0</span><span class="text-brand-primary font-medium">+</span>
+                    </p>
+                    <p class="text-sm text-gray-400 font-medium">AnnÃ©es d'expÃ©rience</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-brand-black text-gray-500 py-12 border-t border-zinc-900 text-center">
-        <div class="container mx-auto px-6">
-            <img src="117345.jpg" alt="AUDITCOM" class="h-12 mx-auto mb-6 object-contain bg-white px-2 py-1 rounded opacity-80 hover:opacity-100 transition">
-            
-            <div class="flex justify-center gap-6 mb-8 text-sm">
-                <a href="#services" class="hover:text-brand-primary transition">Qui sommes-nous ?</a>
-                <a href="#portfolio" class="hover:text-brand-primary transition">Nos références</a>
-                <a href="#contact" class="hover:text-brand-primary transition">Contact</a>
-            </div>
 
-            <div class="flex justify-center gap-4 mb-8">
-                <a href="#" class="w-10 h-10 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:border-brand-primary hover:text-white transition"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                <a href="#" class="w-10 h-10 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:border-brand-primary hover:text-white transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                <a href="#" class="w-10 h-10 rounded-full bg-brand-card border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:border-brand-primary hover:text-white transition"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+    <!-- ==========================================
+         6. SCROLLING TICKER MARQUEE
+    ========================================== -->
+    <section id="services-ticker" class="py-12 bg-brand-black border-y border-zinc-900 overflow-hidden relative">
+        <div class="marquee-container">
+            <div class="marquee-content items-center">
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">DÃ©veloppement mobile</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">DÃ©veloppement web</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">RÃ©fÃ©rencement web</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">Application mobile</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">SEO/SEA</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">Site web</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">Solution digitale sur mesure</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">UI/UX design</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
             </div>
-
-            <p class="text-sm opacity-50">&copy; 2026 AUDITCOM. Agence Web & Solutions Digitales. Tous droits réservés.</p>
+            <div class="marquee-content items-center" aria-hidden="true">
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">DÃ©veloppement mobile</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">DÃ©veloppement web</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">RÃ©fÃ©rencement web</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">Application mobile</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">SEO/SEA</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">Site web</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">Solution digitale sur mesure</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+                <span class="text-6xl md:text-8xl font-black uppercase tracking-wider text-hollow whitespace-nowrap">UI/UX design</span>
+                <span class="text-3xl text-brand-primary font-black">â€¢</span>
+            </div>
         </div>
+    </section>
+
+
+    <!-- ==========================================
+         7. SERVICES INTRO TEXT
+    ========================================== -->
+    <section id="services-intro" class="py-20 bg-brand-black relative">
+        <div class="container mx-auto px-6 max-w-4xl md:text-left">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-8 leading-tight tracking-tight" data-aos="fade-up" data-aos-duration="1000">
+                Une synergie de compÃ©tences par notre Agence Digitale pour propulser votre visibilitÃ©
+            </h2>
+            <p class="text-gray-300 text-lg md:text-xl leading-relaxed mb-10 font-light" data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+                GrÃ¢ce Ã  nos Ã©quipes expertes en dÃ©veloppement web, design graphique, SEO naturel, gestion des rÃ©seaux sociaux et rÃ©daction de contenus optimisÃ©s, nous rÃ©unissons toutes les compÃ©tences nÃ©cessaires pour faire de votre projet un succÃ¨s.
+            </p>
+            <div data-aos="fade-up" data-aos-delay="400" data-aos-duration="1000">
+                <a href="#about" class="text-brand-primary font-bold text-xl md:text-2xl hover:text-white transition duration-300">
+                    Pourquoi AUDITCOM ?
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==========================================
+         8. SERVICES CARDS SLIDER
+    ========================================== -->
+    <section id="services" class="py-20 bg-brand-black overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="swiper servicesSwiper pb-16">
+                <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zinc-900/50 border border-zinc-800 p-8 md:p-10 rounded-[2rem] h-full relative group hover:border-brand-primary transition-all duration-500">
+                            <span class="absolute top-6 right-8 text-5xl md:text-6xl font-bold text-white/10 group-hover:text-brand-primary/20 transition-colors duration-500">01</span>
+                            <div class="mt-8">
+                                <h3 class="text-2xl md:text-3xl font-bold text-white mb-6 leading-tight">
+                                    Architecture Web : <br>
+                                    <span class="text-brand-primary">Conception de sites dynamiques, responsives et SEO-Ready</span>
+                                </h3>
+                                <p class="text-gray-400 text-lg leading-relaxed">
+                                    Des sites esthÃ©tiques, performants et conÃ§us pour convertir. Un dÃ©veloppement stratÃ©gique adaptÃ© Ã  vos besoins.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zinc-900/50 border border-zinc-800 p-8 md:p-10 rounded-[2rem] h-full relative group hover:border-brand-primary transition-all duration-500">
+                            <span class="absolute top-6 right-8 text-5xl md:text-6xl font-bold text-white/10 group-hover:text-brand-primary/20 transition-colors duration-500">02</span>
+                            <div class="mt-8">
+                                <h3 class="text-2xl md:text-3xl font-bold text-white mb-6 leading-tight">
+                                    IngÃ©nierie Mobile : <br>
+                                    <span class="text-brand-primary">DÃ©veloppement d'applications intuitives et performantes</span>
+                                </h3>
+                                <p class="text-gray-400 text-lg leading-relaxed">
+                                    Des applications fluides, intuitives et adaptÃ©es Ã  vos utilisateurs. Nous allions technologie, ergonomie et performance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zinc-900/50 border border-zinc-800 p-8 md:p-10 rounded-[2rem] h-full relative group hover:border-brand-primary transition-all duration-500">
+                            <span class="absolute top-6 right-8 text-5xl md:text-6xl font-bold text-white/10 group-hover:text-brand-primary/20 transition-colors duration-500">03</span>
+                            <div class="mt-8">
+                                <h3 class="text-2xl md:text-3xl font-bold text-white mb-6 leading-tight">
+                                    Marketing 360Â° : <br>
+                                    <span class="text-brand-primary">L'expertise de notre Agence Digitale pour votre croissance</span>
+                                </h3>
+                                <p class="text-gray-400 text-lg leading-relaxed">
+                                    Des stratÃ©gies ciblÃ©es, des contenus optimisÃ©s, et une prÃ©sence digitale qui attire, engage et transforme.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="swiper-pagination services-pagination"></div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==========================================
+         9. VIDEO SECTION
+    ========================================== -->
+    <section id="video-section" class="py-24 bg-brand-dark relative">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="container mx-auto px-6 max-w-5xl text-center relative z-10">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-10" data-aos="fade-up">
+                DÃ©couvrez <span class="text-brand-primary">notre vision</span> en vidÃ©o
+            </h2>
+            <div id="openVideoBtn" class="relative rounded-3xl overflow-hidden cursor-pointer group shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-zinc-800 aspect-video max-w-4xl mx-auto" data-aos="zoom-in" data-aos-delay="200">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200" alt="Video Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition-colors duration-500">
+                    <div class="w-20 h-20 md:w-24 md:h-24 bg-brand-primary rounded-full flex items-center justify-center text-white pl-2 shadow-[0_0_30px_rgba(37,99,235,0.6)] group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="play" class="w-10 h-10 md:w-12 md:h-12 fill-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <button id="closeVideoBtn" class="absolute top-6 right-6 text-gray-400 hover:text-brand-primary transition">
+            <i data-lucide="x" class="w-10 h-10"></i>
+        </button>
+        <div class="w-full max-w-5xl px-4 aspect-video">
+            <iframe id="youtubeIframe" class="w-full h-full rounded-2xl shadow-2xl border border-zinc-800" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         10. CHIFFRES CLÃ‰S (95% CARD)
+    ========================================== -->
+    <section id="chiffres-cles" class="py-20 bg-brand-black relative">
+        <div class="container mx-auto px-6 max-w-4xl flex justify-center">
+            <div class="bg-brand-primary rounded-[2.5rem] p-10 md:p-16 w-full max-w-2xl text-center shadow-[0_20px_50px_rgba(37,99,235,0.3)] relative overflow-hidden group" data-aos="flip-up" data-aos-duration="1000">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-700 pointer-events-none"></div>
+                <div class="relative z-10">
+                    <p class="text-blue-200 font-semibold tracking-[0.2em] uppercase text-sm md:text-base mb-6">Chiffres ClÃ©s</p>
+                    <h3 class="text-8xl md:text-9xl font-black text-white mb-6 tracking-tighter">
+                        <span id="counter-95">0</span>%
+                    </h3>
+                    <p class="text-white text-xl md:text-2xl font-medium leading-relaxed max-w-lg mx-auto">
+                        De nos clients recommandent les services d'<span class="font-bold tracking-wide">AUDITCOM</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==========================================
+         11. PORTFOLIO / CREATIONS
+    ========================================== -->
+    <section id="portfolio" class="py-24 bg-brand-black border-t border-zinc-900 overflow-hidden relative">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-12 max-w-3xl leading-tight" data-aos="fade-right">
+                Des <span class="text-brand-primary">crÃ©ations</span> web qui marquent les esprits et boostent vos performances
+            </h2>
+
+            <div class="swiper portfolioSwiper" data-aos="fade-up" data-aos-delay="200">
+                <div class="swiper-wrapper mb-12">
+                    
+                    <!-- Card 1 -->
+                    <div class="swiper-slide group cursor-pointer">
+                        <div class="relative overflow-hidden rounded-[2rem] aspect-[4/5] mb-6 border border-zinc-800 shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=800" alt="Littlekin" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-brand-primary transition">Littlekin</h3>
+                        <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">E-commerce</span>
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">UX/UI Design</span>
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">DÃ©veloppement</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="swiper-slide group cursor-pointer">
+                        <div class="relative overflow-hidden rounded-[2rem] aspect-[4/5] mb-6 border border-zinc-800 shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&q=80&w=800" alt="Elegant Morocco" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-brand-primary transition">Elegant morocco</h3>
+                        <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">Design UX/UI</span>
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">DÃ©veloppement</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="swiper-slide group cursor-pointer">
+                        <div class="relative overflow-hidden rounded-[2rem] aspect-[4/5] mb-6 border border-zinc-800 shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1512496015851-a1fbbf692613?auto=format&fit=crop&q=80&w=800" alt="Opaleon" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-brand-primary transition">Opaleon</h3>
+                        <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">E-commerce</span>
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">UX/UI Design</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="swiper-slide group cursor-pointer">
+                        <div class="relative overflow-hidden rounded-[2rem] aspect-[4/5] mb-6 border border-zinc-800 shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="EMC" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-brand-primary transition">EMC</h3>
+                        <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">Design UX/UI</span>
+                            <span class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-gray-300 rounded-lg">DÃ©veloppement</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center md:text-left" data-aos="fade-up">
+                <a href="#" class="text-brand-primary font-bold text-xl inline-flex items-center gap-2 hover:text-white transition duration-300">
+                    Voir plus <i data-lucide="arrow-up-right" class="w-6 h-6"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==========================================
+         12. TECH STACK / SEAMLESS LOOP SLIDER
+    ========================================== -->
+    <section id="tech-stack" class="py-24 bg-brand-black border-t border-zinc-900 overflow-hidden relative">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 max-w-5xl mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-8 leading-tight" data-aos="fade-up">
+                Une expertise digitale holistique : <br>
+                <span class="text-brand-primary">de la vision stratÃ©gique Ã  l'UX Design</span>
+            </h2>
+            <p class="text-gray-400 text-lg md:text-xl leading-relaxed max-w-3xl" data-aos="fade-up" data-aos-delay="200">
+                Nous proposons une suite complÃ¨te de services de conception web pour transformer l'histoire de votre marque en une expÃ©rience digitale immersive et Ã©lÃ©gante.
+            </p>
+        </div>
+
+        <div class="swiper techSwiper" data-aos="fade-left" data-aos-delay="400">
+            <div class="swiper-wrapper flex items-center">
+                <!-- Box JS -->
+                <div class="swiper-slide w-auto">
+                    <div class="w-40 h-40 md:w-48 md:h-48 bg-zinc-900/80 border border-zinc-800 rounded-[2.5rem] flex items-center justify-center p-8 group hover:border-brand-primary transition-all duration-500 shadow-xl">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" alt="JS" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition duration-500">
+                    </div>
+                </div>
+                <!-- Box HTML5 -->
+                <div class="swiper-slide w-auto">
+                    <div class="w-40 h-40 md:w-48 md:h-48 bg-zinc-900/80 border border-zinc-800 rounded-[2.5rem] flex items-center justify-center p-8 group hover:border-brand-primary transition-all duration-500 shadow-xl">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/HTML5_Badge.svg" alt="HTML5" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition duration-500">
+                    </div>
+                </div>
+                <!-- Box Figma -->
+                <div class="swiper-slide w-auto">
+                    <div class="w-40 h-40 md:w-48 md:h-48 bg-zinc-900/80 border border-zinc-800 rounded-[2.5rem] flex items-center justify-center p-8 group hover:border-brand-primary transition-all duration-500 shadow-xl">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg" alt="Figma" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition duration-500">
+                    </div>
+                </div>
+                <!-- Box Ps -->
+                <div class="swiper-slide w-auto">
+                    <div class="w-40 h-40 md:w-48 md:h-48 bg-zinc-900/80 border border-zinc-800 rounded-[2.5rem] flex items-center justify-center p-10 group hover:border-brand-primary transition-all duration-500 shadow-xl">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg" alt="Ps" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition duration-500">
+                    </div>
+                </div>
+                <!-- Box Ai -->
+                <div class="swiper-slide w-auto">
+                    <div class="w-40 h-40 md:w-48 md:h-48 bg-zinc-900/80 border border-zinc-800 rounded-[2.5rem] flex items-center justify-center p-10 group hover:border-brand-primary transition-all duration-500 shadow-xl">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fb/Adobe_Illustrator_CC_icon.svg" alt="Ai" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition duration-500">
+                    </div>
+                </div>
+                <!-- Box WordPress -->
+                <div class="swiper-slide w-auto">
+                    <div class="w-40 h-40 md:w-48 md:h-48 bg-zinc-900/80 border border-zinc-800 rounded-[2.5rem] flex items-center justify-center p-10 group hover:border-brand-primary transition-all duration-500 shadow-xl">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/WordPress_blue_logo.svg" alt="WordPress" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition duration-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==========================================
+         13. TESTIMONIALS SLIDER
+    ========================================== -->
+    <section id="testimonials" class="py-24 bg-brand-black border-t border-zinc-900 overflow-hidden relative">
+        <div class="container mx-auto px-6 max-w-5xl mb-16" data-aos="fade-right">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                Success Stories : <br>
+                <span class="text-brand-primary">Votre rÃ©ussite, notre engagement</span>
+            </h2>
+        </div>
+
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="swiper testimonialSwiper pb-20" data-aos="fade-up" data-aos-delay="200">
+                <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zinc-900/40 border border-zinc-800 p-8 md:p-12 rounded-[2.5rem] h-full flex flex-col justify-between hover:border-brand-primary/50 transition-all duration-500">
+                            <div>
+                                <div class="flex gap-1 text-brand-primary mb-8">
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                </div>
+                                <p class="text-gray-300 text-lg md:text-xl leading-relaxed italic mb-10">
+                                    "J'ai fait confiance Ã  AUDITCOM pour crÃ©er le site web de mon restaurant, et je suis vraiment satisfait du rÃ©sultat. Le design est moderne, la navigation est simple, et mes clients peuvent facilement rÃ©server. Un travail pro, rapide et efficace !"
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-brand-primary/30 flex items-center justify-center bg-brand-dark">
+                                    <i data-lucide="user" class="text-gray-500 w-8 h-8"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold text-lg">Zakaria</h4>
+                                    <p class="text-gray-500 text-sm">Fondateur de Beity Ibn Rushd</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zinc-900/40 border border-zinc-800 p-8 md:p-12 rounded-[2.5rem] h-full flex flex-col justify-between hover:border-brand-primary/50 transition-all duration-500">
+                            <div>
+                                <div class="flex gap-1 text-brand-primary mb-8">
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                </div>
+                                <p class="text-gray-300 text-lg md:text-xl leading-relaxed italic mb-10">
+                                    "L'Ã©quipe a parfaitement compris notre vision et l'a traduite en un site moderne et engageant. Le rendu est Ã©lÃ©gant, rapide et pensÃ© pour les utilisateurs. Nous sommes trÃ¨s satisfaits de la rÃ©activitÃ© tout au long du projet."
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-brand-primary/30 flex items-center justify-center bg-brand-dark">
+                                    <i data-lucide="user" class="text-gray-500 w-8 h-8"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold text-lg">Zakaria</h4>
+                                    <p class="text-gray-500 text-sm">Fondateur de Shadeexplore</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zinc-900/40 border border-zinc-800 p-8 md:p-12 rounded-[2.5rem] h-full flex flex-col justify-between hover:border-brand-primary/50 transition-all duration-500">
+                            <div>
+                                <div class="flex gap-1 text-brand-primary mb-8">
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-brand-primary"></i>
+                                </div>
+                                <p class="text-gray-300 text-lg md:text-xl leading-relaxed italic mb-10">
+                                    "Nous avons collaborÃ© avec AUDITCOM sur plusieurs projets, et Ã  chaque fois, l'expÃ©rience a Ã©tÃ© au rendez-vous. L'Ã©quipe est rÃ©active, Ã  l'Ã©coute, et la communication toujours fluide. C'est un vrai plaisir."
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-brand-primary/30 flex items-center justify-center bg-brand-dark">
+                                    <i data-lucide="user" class="text-gray-500 w-8 h-8"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold text-lg">Hiba oubad</h4>
+                                    <p class="text-gray-500 text-sm">Responsable Marketing</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="swiper-pagination testimonial-pagination"></div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==========================================
+         14. BLOG SECTION
+    ========================================== -->
+    <section id="blog" class="py-24 bg-brand-black border-t border-zinc-900 overflow-hidden relative">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div data-aos="fade-right">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+                        <span class="text-brand-primary">Boostez</span> vos idÃ©es <br>
+                        maintenant avec notre <br>
+                        Agence Digitale Maroc
+                    </h2>
+                </div>
+                <div data-aos="fade-left">
+                    <a href="#" class="text-brand-primary font-bold text-lg inline-flex items-center gap-2 hover:text-white transition duration-300">
+                        Tous les articles <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="swiper blogSwiper pb-16" data-aos="fade-up" data-aos-delay="200">
+                <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide h-auto group cursor-pointer">
+                        <div class="h-full flex flex-col">
+                            <div class="relative overflow-hidden rounded-3xl aspect-[16/10] mb-6 border border-zinc-800">
+                                <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800" alt="IA design web" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            </div>
+                            <div class="flex-1 flex flex-col">
+                                <div class="flex flex-wrap items-center gap-3 mb-4">
+                                    <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 text-gray-300 text-xs font-semibold rounded-lg">Blog</span>
+                                    <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 text-gray-300 text-xs font-semibold rounded-lg">UX/UI & Design</span>
+                                    <span class="text-gray-500 text-sm ml-auto">Septembre 29, 2026</span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-3 leading-snug group-hover:text-brand-primary transition">
+                                    L'IA dans le design web : crÃ©ativitÃ© augmentÃ©e ou automatisation intelligente ?
+                                </h3>
+                                <p class="text-gray-400 text-base leading-relaxed line-clamp-3">
+                                    Le design web Ã©volue rapidement, et l'Intelligence Artificielle transforme la maniÃ¨re dont les interfaces sont pensÃ©es et crÃ©Ã©es. Loin de remplacer les designers, l'IA...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto group cursor-pointer">
+                        <div class="h-full flex flex-col">
+                            <div class="relative overflow-hidden rounded-3xl aspect-[16/10] mb-6 border border-zinc-800">
+                                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800" alt="Erreurs site" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            </div>
+                            <div class="flex-1 flex flex-col">
+                                <div class="flex flex-wrap items-center gap-3 mb-4">
+                                    <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 text-gray-300 text-xs font-semibold rounded-lg">DÃ©veloppement web</span>
+                                    <span class="text-gray-500 text-sm ml-auto">Octobre 13, 2026</span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-3 leading-snug group-hover:text-brand-primary transition">
+                                    5 erreurs Ã  Ã©viter avant de lancer son site web
+                                </h3>
+                                <p class="text-gray-400 text-base leading-relaxed line-clamp-3">
+                                    Lancer un site web est un moment stratÃ©gique pour toute entreprise. Un lancement rÃ©ussi repose sur une prÃ©paration minutieuse et la vÃ©rification de plusieurs points clÃ©s...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide h-auto group cursor-pointer">
+                        <div class="h-full flex flex-col">
+                            <div class="relative overflow-hidden rounded-3xl aspect-[16/10] mb-6 border border-zinc-800">
+                                <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=800" alt="Mobile first" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            </div>
+                            <div class="flex-1 flex flex-col">
+                                <div class="flex flex-wrap items-center gap-3 mb-4">
+                                    <span class="px-3 py-1 bg-zinc-900 border border-zinc-800 text-gray-300 text-xs font-semibold rounded-lg">DÃ©veloppement web</span>
+                                    <span class="text-gray-500 text-sm ml-auto">Octobre 06, 2026</span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-3 leading-snug group-hover:text-brand-primary transition">
+                                    Pourquoi penser "mobile-first" en 2026 ?
+                                </h3>
+                                <p class="text-gray-400 text-base leading-relaxed line-clamp-3">
+                                    Aujourd'hui, plus de 60 % du trafic web mondial provient des smartphones et tablettes. Ce chiffre ne cesse de croÃ®tre, rendant l'approche mobile-first indispensable...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==========================================
+         15. FOOTER & NEWSLETTER / TELEGRAM
+    ========================================== -->
+    <footer class="bg-brand-black pt-20 pb-10 border-t border-zinc-900 relative">
+        <div class="container mx-auto px-6 max-w-4xl text-center">
+            
+            <div class="mb-8 flex justify-center" data-aos="fade-up">
+                <img src="117345.jpg" alt="AUDITCOM Logo" class="h-16 object-contain bg-white px-3 py-2 rounded-lg">
+            </div>
+
+            <div class="flex justify-center gap-4 mb-16" data-aos="fade-up" data-aos-delay="100">
+                <a href="#" class="w-10 h-10 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:text-white transition-all duration-300">
+                    <i data-lucide="instagram" class="w-5 h-5 text-gray-400"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:text-white transition-all duration-300">
+                    <i data-lucide="facebook" class="w-5 h-5 text-gray-400"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:text-white transition-all duration-300">
+                    <i data-lucide="youtube" class="w-5 h-5 text-gray-400"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:bg-brand-primary hover:text-white transition-all duration-300">
+                    <i data-lucide="message-circle" class="w-5 h-5 text-gray-400"></i>
+                </a>
+            </div>
+
+            <div class="grid gap-12 mb-16">
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h4 class="text-brand-primary font-bold text-xl mb-6">L'agence</h4>
+                    <ul class="space-y-4 text-gray-400 font-medium">
+                        <li><a href="#about" class="hover:text-white transition">Qui sommes-nous ?</a></li>
+                        <li><a href="#portfolio" class="hover:text-white transition">Nos rÃ©fÃ©rences</a></li>
+                        <li><a href="#services" class="hover:text-white transition">Nos expertises</a></li>
+                    </ul>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <h4 class="text-brand-primary font-bold text-xl mb-6">Heures de travail</h4>
+                    <ul class="space-y-4 text-gray-400 font-medium">
+                        <li>Lundi â€“ Vendredi : 9h00 â€“ 18h00</li>
+                        <li>Samedi & Dimanche : fermÃ©</li>
+                    </ul>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="400" id="contact">
+                    <h4 class="text-brand-primary font-bold text-xl mb-6">Contactez-nous</h4>
+                    <ul class="space-y-4 text-gray-400 font-medium">
+                        <li><a href="mailto:contact@auditcom.ma" class="hover:text-white transition">contact@auditcom.ma</a></li>
+                        <li><a href="tel:+212808576507" class="hover:text-white transition">+212 80 85 76 507</a></li>
+                        <li class="max-w-xs mx-auto">NÂ° 1095 3Ã¨me Ã©tage Apt nÂ°4, Amal 5 Massira CYM Rabat</li>
+                    </ul>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="500">
+                    <h4 class="text-brand-primary font-bold text-xl mb-6">Newsletter</h4>
+                    <form id="newsletterForm" class="relative max-w-sm mx-auto flex items-center">
+                        <input type="email" id="nlEmail" placeholder="Entrez votre email" required class="w-full bg-white text-black px-6 py-4 rounded-full outline-none font-medium placeholder-gray-400">
+                        <button type="submit" id="nlSubmitBtn" class="absolute right-1 top-1 bottom-1 w-12 bg-brand-primary rounded-full flex items-center justify-center hover:bg-blue-700 transition">
+                            <i data-lucide="send" class="w-5 h-5 text-white"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-zinc-900 text-sm text-gray-600 font-medium">
+                &copy; 2026 AUDITCOM. Tous droits rÃ©servÃ©s.
+            </div>
+        </div>
+
+        <a href="#" class="absolute bottom-8 right-8 w-12 h-12 bg-brand-primary rounded-full flex items-center justify-center hover:bg-blue-700 transition shadow-lg z-50">
+            <i data-lucide="arrow-up" class="w-6 h-6 text-white"></i>
+        </a>
     </footer>
 
-    <div class="fixed bottom-0 left-0 w-full bg-brand-card border-t border-zinc-800 flex md:hidden z-40 pb-safe">
-        <a href="#contact" class="flex-1 py-4 text-center font-bold text-white border-r border-zinc-800 text-sm tracking-wider flex items-center justify-center gap-2">
-            <i data-lucide="mail" class="w-4 h-4 text-brand-primary"></i> Contact
-        </a>
-        <a href="tel:+212600000000" class="flex-1 py-4 text-center font-bold text-white text-sm tracking-wider flex items-center justify-center gap-2">
-            <i data-lucide="phone" class="w-4 h-4 text-brand-primary"></i> Appeler
-        </a>
+    <!-- Fixed Bottom Mobile Bar -->
+    <div class="fixed bottom-0 left-0 w-full bg-brand-card border-t border-zinc-900 flex md:hidden z-40">
+        <a href="#contact" class="flex-1 py-4 text-center font-bold text-white border-r border-zinc-900 text-sm tracking-wider">CONTACT</a>
+        <a href="tel:+212808576507" class="flex-1 py-4 text-center font-bold text-white text-sm tracking-wider">+212 80 85 76 507</a>
     </div>
     <div class="h-16 md:hidden"></div>
 
+
+    <!-- ==========================================
+         SCRIPTS IMPLEMENTATION
+    ========================================== -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
     <script>
         // 1. Initialize Icons
         lucide.createIcons();
 
-        // 2. Initialize AOS (Scroll Animations)
+        // 2. Initialize AOS
         AOS.init({ once: true, offset: 50 });
 
-        // 3. Initialize Swiper Slider (Portfolio)
-        var swiper = new Swiper(".mySwiper", {
+        // 3. Fullscreen Mobile Menu toggle
+        const menuToggleBtn = document.getElementById('menuToggleBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            mobileMenuOverlay.classList.toggle('active');
+            if(mobileMenuOverlay.classList.contains('active')) {
+                menuToggleBtn.style.opacity = '0';
+                document.body.style.overflow = 'hidden';
+            } else {
+                menuToggleBtn.style.opacity = '1';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        menuToggleBtn.addEventListener('click', toggleMenu);
+        closeMenuBtn.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        // 4. Mobile Menu Dropdowns Accordion
+        const dropdownBtns = document.querySelectorAll('.dropdown-btn');
+        dropdownBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('.dropdown-icon');
+                content.classList.toggle('open');
+                icon.classList.toggle('rotate');
+            });
+        });
+
+        // 5. Initialize Swipers
+        var heroSwiper = new Swiper(".heroSwiper", {
+            loop: true,
+            autoplay: { delay: 3000, disableOnInteraction: false },
+            pagination: { el: ".hero-pagination", clickable: true },
+            spaceBetween: 20,
+        });
+
+        var servicesSwiper = new Swiper(".servicesSwiper", {
             slidesPerView: 1,
             spaceBetween: 20,
             loop: true,
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
+            autoplay: { delay: 4000, disableOnInteraction: false },
+            pagination: { el: ".services-pagination", clickable: true },
             breakpoints: {
                 768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 }
+                1024: { slidesPerView: 3, spaceBetween: 30 },
+            },
+        });
+
+        var portfolioSwiper = new Swiper(".portfolioSwiper", {
+            slidesPerView: 1.2,
+            spaceBetween: 20,
+            loop: true,
+            autoplay: { delay: 3500, disableOnInteraction: false },
+            breakpoints: {
+                640: { slidesPerView: 2 },
+                1024: { slidesPerView: 3, spaceBetween: 30 },
+                1280: { slidesPerView: 4, spaceBetween: 30 }
             }
         });
 
-        // 4. Mobile Menu Toggle
-        const btn = document.getElementById('mobileMenuBtn');
-        const menu = document.getElementById('mobileMenu');
-        const links = document.querySelectorAll('.mobile-link');
-
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
+        var techSwiper = new Swiper(".techSwiper", {
+            slidesPerView: "auto",
+            spaceBetween: 30,
+            loop: true,
+            speed: 5000,
+            freeMode: true,
+            autoplay: { delay: 0, disableOnInteraction: false },
+            allowTouchMove: false,
         });
 
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.add('hidden');
-            });
+        var testimonialSwiper = new Swiper(".testimonialSwiper", {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: { delay: 5000, disableOnInteraction: false },
+            pagination: { el: ".testimonial-pagination", clickable: true },
         });
 
-        // 5. Animated Counters
+        var blogSwiper = new Swiper(".blogSwiper", {
+            slidesPerView: 1.2,
+            spaceBetween: 20,
+            breakpoints: {
+                640: { slidesPerView: 2, spaceBetween: 24 },
+                1024: { slidesPerView: 2.5, spaceBetween: 30 }
+            }
+        });
+
+        // 6. YouTube Video Popup Modal
+        const openVideoBtn = document.getElementById('openVideoBtn');
+        const closeVideoBtn = document.getElementById('closeVideoBtn');
+        const videoModal = document.getElementById('videoModal');
+        const youtubeIframe = document.getElementById('youtubeIframe');
+        const YOUTUBE_VIDEO_ID = "dQw4w9WgXcQ"; 
+
+        openVideoBtn.addEventListener('click', () => {
+            youtubeIframe.src = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`;
+            videoModal.classList.remove('pointer-events-none', 'opacity-0');
+            document.body.style.overflow = 'hidden';
+        });
+
+        const closeVideo = () => {
+            videoModal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => { youtubeIframe.src = ""; }, 300);
+        };
+        closeVideoBtn.addEventListener('click', closeVideo);
+        videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideo(); });
+
+        // 7. Stats Counters Observer
         const counters = document.querySelectorAll('.counter');
         let hasAnimated = false;
-
         const animateCounters = () => {
             counters.forEach(counter => {
                 const target = +counter.getAttribute('data-target');
-                const duration = 2000; // 2 seconds
-                const increment = target / (duration / 16); // 60fps
-                
+                const increment = target / 120; 
                 let current = 0;
-                const updateCounter = () => {
+                const update = () => {
                     current += increment;
                     if (current < target) {
                         counter.innerText = Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        counter.innerText = target;
-                    }
+                        requestAnimationFrame(update);
+                    } else { counter.innerText = target; }
                 };
-                updateCounter();
+                update();
             });
         };
-
-        // Observer pour lancer l'animation des compteurs quand ils sont visibles
-        const observer = new IntersectionObserver((entries) => {
+        const statsObserver = new IntersectionObserver((entries) => {
             if(entries[0].isIntersecting && !hasAnimated) {
                 animateCounters();
                 hasAnimated = true;
             }
         });
-        observer.observe(document.getElementById('stats-section'));
+        statsObserver.observe(document.getElementById('stats-container'));
 
-    </script>
+        // 8. Chiffres ClÃ©s (95%) Card Observer
+        const counter95 = document.getElementById('counter-95');
+        let hasAnimated95 = false;
+        const animateCounter95 = () => {
+            const target = 95;
+            const increment = target / 120;
+            let current = 0;
+            const update = () => {
+                current += increment;
+                if (current < target) {
+                    counter95.innerText = Math.ceil(current);
+                    requestAnimationFrame(update);
+                } else { counter95.innerText = target; }
+            };
+            update();
+        };
+        const observer95 = new IntersectionObserver((entries) => {
+            if(entries[0].isIntersecting && !hasAnimated95) {
+                animateCounter95();
+                hasAnimated95 = true;
+            }
+        });
+        observer95.observe(document.getElementById('chiffres-cles'));
 
-    <script>
-        // ⚠️ ضِف الـ TOKEN و الـ CHAT ID الخاص بك هنا
-        const BOT_TOKEN = "8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0"; 
-        const CHAT_ID = "1335982188"; 
+        // 9. Telegram Form Integration for Newsletter
+        const TG_BOT_TOKEN = "8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0"; 
+        const TG_CHAT_ID = "1335982188"; 
 
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const submitBtn = document.getElementById('submitBtn');
-            const originalBtnText = submitBtn.innerText;
+            const btn = document.getElementById('nlSubmitBtn');
+            const email = document.getElementById('nlEmail').value;
+            const originalIcon = btn.innerHTML;
             
-            submitBtn.innerText = "Envoi en cours...";
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 text-white animate-spin"></i>';
+            lucide.createIcons();
+            btn.disabled = true;
 
-            const name = document.getElementById('clientName').value;
-            const phone = document.getElementById('clientPhone').value;
-            const service = document.getElementById('serviceType').value || "Non spécifié";
-
-            const message = `
-🔵 *Nouveau Client - AUDITCOM*
-
-👤 *Nom / Entreprise :* ${name}
-📱 *Téléphone :* \`${phone}\`
-💻 *Service souhaité :* ${service}
-
-🚀 *Le client attend votre appel !*
-            `;
-
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            const message = `ðŸ“¬ *Nouvel AbonnÃ© (Newsletter) - AUDITCOM*\n\nðŸ“§ *Email :* ${email}`;
+            const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
 
             fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
+                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.ok) {
-                    document.getElementById('contactForm').reset();
-                    alert("🎉 Votre demande a été envoyée avec succès !");
-                    
-                    submitBtn.innerText = "Envoyé avec succès ✓";
-                    submitBtn.classList.remove('bg-brand-primary', 'hover:bg-blue-700');
-                    submitBtn.classList.add('bg-green-600');
-
-                    setTimeout(() => {
-                        submitBtn.innerText = originalBtnText;
-                        submitBtn.disabled = false;
-                        submitBtn.classList.remove('opacity-75', 'cursor-not-allowed', 'bg-green-600');
-                        submitBtn.classList.add('bg-brand-primary', 'hover:bg-blue-700');
-                    }, 3000);
-                } else {
-                    alert("Erreur. Veuillez réessayer.");
-                    submitBtn.innerText = originalBtnText;
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-                }
+                    document.getElementById('newsletterForm').reset();
+                    alert("âœ… Merci ! Vous Ãªtes inscrit Ã  notre newsletter.");
+                } else { alert("âŒ Erreur. Veuillez rÃ©essayer."); }
             })
-            .catch(error => {
-                alert("Erreur de connexion.");
-                submitBtn.innerText = originalBtnText;
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            .catch(error => { alert("âŒ Erreur de connexion."); })
+            .finally(() => {
+                btn.innerHTML = originalIcon;
+                lucide.createIcons();
+                btn.disabled = false;
             });
         });
     </script>
