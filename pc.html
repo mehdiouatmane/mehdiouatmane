@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PC-Check SaaS | خبير الحواسيب الشامل</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pc: { dark: '#09090b', primary: '#10b981', secondary: '#0ea5e9', surface: '#18181b', card: '#27272a' },
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out', 'slide-up': 'slideUp 0.4s ease-out' },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Cairo', sans-serif; background-color: #09090b; color: #e4e4e7; }</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    // ==========================================
+    // 1. قاعدة بيانات الثقافة العامة (Education)
+    // ==========================================
+    const educationData = {
+        pyramid: [
+            { title: 'أسياد المواد الأولية (Raw Materials)', desc: 'الطاقة: Amin Nasser (Aramco). الكوبالت: Gary Nagle (Glencore). الليثيوم: Jiang Weiping. السيليكون: Luo Liguo. المعادن النادرة: China Rare Earth Group.' },
+            { title: 'أسياد التصنيع والتكنولوجيا', desc: 'صناعة الرقائق: C.C. Wei & Morris Chang (TSMC). السحابة والـ AI: Andy Jassy (AWS) & Satya Nadella (Azure). القرارات المالية: Jerome Powell (FED) & Larry Fink (BlackRock).' },
+            { title: 'حيتان السوق المغربي (الرسمي)', desc: 'Hakim Belmaachi (Disway) و Younes El Himdy (Disty). يسيطرون على الاستيراد الرسمي والبورصة.' },
+            { title: 'مسار السوق الموازي (Grey Market)', desc: 'أجهزة تأتي من دبي (JAFZA: Redington, Ingram Micro)، هونغ كونغ، وميامي. تدخل عبر الكركرات، سبتة ومليلية لتصل إلى درب غلف وكراج علال بدون رسوم جمركية.' }
+        ],
+        techSpecs: [
+            { title: 'المعالجات (CPU) و كروت الشاشة (GPU)', desc: 'القمة حالياً: Intel Core i9-14900HX / AMD Ryzen 9 8000 مع كروت شاشة RTX 4080/4090 (وفي الطريق 5070/5080). تدعم Ray Tracing و DLSS 3.' },
+            { title: 'الرام والتخزين (RAM & SSD)', desc: 'الرام: 32GB/64GB DDR5 بسرعة تصل لـ 7200MHz. التخزين: SSD NVMe Gen 4 PCIe 4.0 بسرعة 7000MB/s (ماركات: Samsung, SK Hynix, Crucial).' },
+            { title: 'الشاشات والتبريد', desc: 'شاشات QHD+ (2560x1600) بتردد 240Hz/360Hz. التبريد يعتمد على ColdFront، Liquid Metal، وغرف البخار (Vapor Chambers).' }
+        ]
+    };
+
+    // ==========================================
+    // 2. قاعدة بيانات بروتوكول الفحص (Inspection)
+    // ==========================================
+    const pcInspection = [
+        {
+            title: 'الشاشة والضمان (Display & Warranty)', icon: 'fa-desktop',
+            instruction: 'افتح CMD واكتب: wmic bios get serialnumber. تأكد من الضمان في موقع الشركة. افحص الشاشة باختبار Dead Pixel Test.',
+            options: [
+                { text: 'بقع ميتة / تسرب إضاءة (Bleeding) / ضمان منتهي', status: 'bad', defect: 'شاشة معيبة أو جهاز قديم.', price: 1500 },
+                { text: 'الشاشة نقية / السيريال مطابق للضمان', status: 'good', defect: '', price: 0 }
+            ]
+        },
+        {
+            title: 'كارت الشاشة (GPU) - الأخطر!', icon: 'fa-microchip',
+            instruction: 'شغل برنامج FurMark (دقة 1080p) لـ 10 دقائق وراقب بـ HWMonitor. ركز على شكل الـ Donut (الدائرة).',
+            options: [
+                { text: 'حرارة تجاوزت 86° / ظهور خطوط وتشويه (Artifacts)', status: 'bad', defect: 'كارت الشاشة GPU يحتضر (تلف بالبوردة).', price: 4000 },
+                { text: 'الحرارة تحت 82° والـ Donut تدور بنقاء', status: 'good', defect: '', price: 0 }
+            ]
+        },
+        {
+            title: 'المعالج المركزي (CPU)', icon: 'fa-server',
+            instruction: 'شغل Cinebench R23 (Multi-core) لـ 10 دقائق وراقب HWMonitor.',
+            options: [
+                { text: 'حرارة وصلت 100° / اختناق (Thermal Throttling: YES)', status: 'warn', defect: 'مشكل تبريد (يحتاج معجون حراري أو مراوح).', price: 400 },
+                { text: 'حرارة بين 80-95° / لا يوجد Throttling', status: 'good', defect: '', price: 0 }
+            ]
+        },
+        {
+            title: 'الرام (RAM)', icon: 'fa-memory',
+            instruction: 'افتح Run واكتب mdsched.exe لفحص الرام، أو استخدم TestMem5.',
+            options: [
+                { text: 'ظهور أخطاء (Errors) أو شاشة زرقاء (BSOD)', status: 'bad', defect: 'شريحة الرام تالفة.', price: 600 },
+                { text: 'رسالة: No memory errors were detected', status: 'good', defect: '', price: 0 }
+            ]
+        },
+        {
+            title: 'صحة التخزين (SSD)', icon: 'fa-hard-drive',
+            instruction: 'شغل CrystalDiskInfo. تحقق من الحرارة، ساعات العمل (Power On Hours)، و TBW.',
+            options: [
+                { text: 'الحالة Caution / ساعات عمل فوق 8000 ساعة', status: 'bad', defect: 'القرص مستهلك جداً وفي نهاية عمره.', price: 800 },
+                { text: 'الحالة Good (100%) / حرارة تحت 50°', status: 'good', defect: '', price: 0 }
+            ]
+        },
+        {
+            title: 'البطارية والطاقة (Battery)', icon: 'fa-battery-half',
+            instruction: 'افتح CMD واكتب: powercfg /batteryreport. قارن Design Capacity مع Full Charge Capacity.',
+            options: [
+                { text: 'سعة الشحن نزلت عن 70% من السعة الأصلية', status: 'bad', defect: 'بطارية ميتة وتحتاج تغيير.', price: 700 },
+                { text: 'السعة قريبة من 90% أو 100%', status: 'good', defect: '', price: 0 }
+            ]
+        }
+    ];
+
+    // ==========================================
+    // 3. قاعدة بيانات المتاجر (Stores & Markets)
+    // ==========================================
+    const storesMapData = [
+        {
+            category: "السوق الرسمي والمعتمد (Garantie 1 An)", border: "border-pc-secondary", icon: "fa-certificate text-pc-secondary",
+            shops: [
+                { name: "Disway / Disty", owner: "مستوردون رسميون للبورصة", phone: "B2B Only", location: "الدار البيضاء" },
+                { name: "Marjane / Electroplanet / Virgin", owner: "متاجر التجزئة الكبرى", phone: "080 200 0000", location: "جميع المدن المغربية" }
+            ]
+        },
+        {
+            category: "السوق الموازي (Grey Market - أرخص 30%)", border: "border-pc-primary", icon: "fa-box-open text-pc-primary",
+            shops: [
+                { name: "تجار درب غلف وكراج علال", owner: "Azzamphone, GSM Al Maghrib...", phone: "0600-000000", location: "الدار البيضاء" },
+                { name: "Cosmos", owner: "مستوردون مستقلون", phone: "0522-000000", location: "عدة مدن" }
+            ]
+        },
+        {
+            category: "سوق الإصلاح المتقدم (Hardware Solutions)", border: "border-yellow-500", icon: "fa-screwdriver-wrench text-yellow-500",
+            shops: [
+                { name: "محترفو Schematics و Boardview", owner: "مستخدمي أدوات (ZXW, Borneo, FlexBV)", phone: "محلي", location: "مراكز الصيانة الكبرى" }
+            ]
+        },
+        {
+            category: "سوق المجدد والمزور (خطر - Refurbished/Carding)", border: "border-red-500", icon: "fa-skull-crossbones text-red-500",
+            shops: [
+                { name: "Liquidators / Open Box العشوائي", owner: "مجهولون", phone: "لا يوجد", location: "الإنترنت والأسواق غير المنظمة" }
+            ]
+        }
+    ];
+
+    // ==========================================
+    // 4. التطبيق الرئيسي (React)
+    // ==========================================
+    function App() {
+        const [phase, setPhase] = React.useState(0); 
+        
+        // Advisor State
+        const [needsStep, setNeedsStep] = React.useState(0);
+        const [userProfile, setUserProfile] = React.useState({ usage: '', budget: '' });
+        const [recommendedDevice, setRecommendedDevice] = React.useState(null);
+
+        // Inspection State
+        const [inspectStep, setInspectStep] = React.useState(0);
+        const [defects, setDefects] = React.useState([]);
+
+        // Navigation
+        const startJourney = () => setPhase(1);
+        const startAdvisor = () => setPhase(2);
+        const startInspection = () => { setInspectStep(0); setDefects([]); setPhase(3); };
+        const startStores = () => setPhase(4);
+
+        // Advisor Logic
+        const handleNeeds = (key, value) => {
+            const newProfile = { ...userProfile, [key]: value };
+            setUserProfile(newProfile);
+            
+            if (needsStep === 0) {
+                setNeedsStep(1);
+            } else {
+                let rec = {};
+                if (newProfile.usage === 'fai9a') {
+                    rec = {
+                        class: 'الفئة الفائقة (High-End)', name: 'Lenovo Legion Pro 7i / MSI Titan / Asus ROG Strix',
+                        cpu: 'Intel Core i9-14900HX / Ryzen 9', gpu: 'Nvidia RTX 4080 / 4090', ram: '32GB DDR5 6000MHz',
+                        screen: '16" QHD+ 240Hz 500nits', power: 'البطارية: 99.9Whr | استهلاك: 165W | شاحن: 330W (20V x 16.5A)',
+                        priceOfficial: '25,000 - 35,000 DH', priceGrey: '18,000 - 28,000 DH'
+                    };
+                } else if (newProfile.usage === '3olya') {
+                    rec = {
+                        class: 'الفئة العليا (Mid-High)', name: 'Lenovo Legion Pro 5i / HP Omen / Acer Predator',
+                        cpu: 'Intel Core i7-13700HX / 14th Gen', gpu: 'Nvidia RTX 4060 / 4070 (8GB)', ram: '16GB/32GB DDR5',
+                        screen: '16" QHD+ 165Hz/240Hz', power: 'البطارية: 80Whr | استهلاك: 100W | شاحن: 230W/300W',
+                        priceOfficial: '15,000 - 20,000 DH', priceGrey: '13,000 - 16,000 DH'
+                    };
+                } else if (newProfile.usage === 'motawasita') {
+                    rec = {
+                        class: 'الفئة المتوسطة (Budget Gaming/Editing)', name: 'Lenovo LOQ 15irh8 / HP Victus 15/16 / Acer Nitro 5',
+                        cpu: 'Intel Core i5-12th/13th Gen', gpu: 'Nvidia RTX 3050 / 4060', ram: '16GB DDR5',
+                        screen: '15.6" FHD 144Hz 300nits', power: 'البطارية: 60Whr | استهلاك: 60W | شاحن: 170W (20V x 8.5A)',
+                        priceOfficial: '9,000 - 12,000 DH', priceGrey: '7,500 - 10,000 DH'
+                    };
+                } else {
+                    rec = {
+                        class: 'فئة الأعمال (Office & Study)', name: 'HP Elitebook 840 G9 / Dell Latitude 5430 / ThinkPad T14',
+                        cpu: 'Intel Core i5-12th U-Series', gpu: 'Intel Iris Xe', ram: '16GB DDR4/DDR5',
+                        screen: '14" FHD IPS Anti-glare', power: 'البطارية: 50Whr | استهلاك: 15W | شاحن: Type-C 65W',
+                        priceOfficial: '8,000 - 11,000 DH', priceGrey: '5,000 - 7,000 DH'
+                    };
+                }
+                setRecommendedDevice(rec);
+                setNeedsStep(2);
+            }
+        };
+
+        // Inspection Logic
+        const handleInspect = (option) => {
+            if (option.status !== 'good') setDefects([...defects, option]);
+            if (inspectStep < pcInspection.length - 1) setInspectStep(inspectStep + 1);
+            else setInspectStep(99); // 99 means report
+        };
+
+        return (
+            <div className="min-h-screen flex flex-col font-cairo pb-20 selection:bg-pc-primary selection:text-white">
+                
+                {/* Navbar */}
+                <nav className="bg-pc-surface border-b border-zinc-800 p-4 sticky top-0 z-50 shadow-lg flex justify-center">
+                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => {setPhase(0); setNeedsStep(0); setInspectStep(0);}}>
+                        <div className="bg-gradient-to-r from-pc-primary to-pc-secondary p-1.5 rounded-lg text-pc-dark">
+                            <i className="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h1 className="text-xl font-black text-white tracking-wide">PC<span className="text-pc-primary">Check</span> <span className="text-xs bg-red-600 px-1 rounded text-white font-bold ml-1">SaaS</span></h1>
+                    </div>
+                </nav>
+
+                {/* Progress Bar */}
+                {phase > 0 && (
+                    <div className="w-full bg-zinc-900 h-1.5 flex">
+                        <div className={`h-full ${phase >= 1 ? 'bg-blue-500' : 'bg-transparent'} flex-1 transition-colors duration-500 border-r border-zinc-900`}></div>
+                        <div className={`h-full ${phase >= 2 ? 'bg-purple-500' : 'bg-transparent'} flex-1 transition-colors duration-500 border-r border-zinc-900`}></div>
+                        <div className={`h-full ${phase >= 3 ? 'bg-yellow-500' : 'bg-transparent'} flex-1 transition-colors duration-500 border-r border-zinc-900`}></div>
+                        <div className={`h-full ${phase >= 4 ? 'bg-green-500' : 'bg-transparent'} flex-1 transition-colors duration-500`}></div>
+                    </div>
+                )}
+
+                <main className="flex-1 container mx-auto p-4 max-w-md">
+                    
+                    {/* ====================================================
+                        PHASE 0: HOME
+                    ==================================================== */}
+                    {phase === 0 && (
+                        <div className="flex flex-col items-center mt-6 animate-fade-in space-y-6">
+                            <div className="text-center bg-pc-card border border-zinc-800 p-8 rounded-3xl shadow-xl w-full relative overflow-hidden">
+                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-pc-primary/10 rounded-full blur-3xl"></div>
+                                <h2 className="text-3xl font-black text-white mb-3">رحلة حريف البيسيات</h2>
+                                <p className="text-gray-400 text-sm leading-relaxed mb-6">من كواليس تصنيع كروت الشاشة، إلى فحـص الـ Throttling والـ Artifacts، وصولاً للشراء الآمن.</p>
+                                <button onClick={startJourney} className="w-full bg-gradient-to-l from-pc-primary to-pc-secondary text-pc-dark font-black py-4 rounded-xl shadow-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                                    إبدأ الرحلة الآن <i className="fa-solid fa-power-off"></i>
+                                </button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 w-full text-xs text-gray-400 font-bold">
+                                <div className="bg-pc-surface p-3 rounded-xl border border-zinc-800 text-center"><i className="fa-solid fa-microchip text-blue-500 mb-2 block text-2xl"></i> ثقافة الهاردوير</div>
+                                <div className="bg-pc-surface p-3 rounded-xl border border-zinc-800 text-center"><i className="fa-solid fa-brain text-purple-500 mb-2 block text-2xl"></i> الذكاء الشرائي</div>
+                                <div className="bg-pc-surface p-3 rounded-xl border border-zinc-800 text-center"><i className="fa-solid fa-stethoscope text-yellow-500 mb-2 block text-2xl"></i> بروتوكول الفحص</div>
+                                <div className="bg-pc-surface p-3 rounded-xl border border-zinc-800 text-center"><i className="fa-solid fa-map-location-dot text-green-500 mb-2 block text-2xl"></i> دليل الأسواق</div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ====================================================
+                        PHASE 1: EDUCATION (خلف الستار)
+                    ==================================================== */}
+                    {phase === 1 && (
+                        <div className="animate-slide-up space-y-6 mt-4">
+                            <div className="text-center mb-6">
+                                <span className="bg-blue-500/20 text-blue-400 font-bold px-3 py-1 rounded-full text-xs">المرحلة الأولى</span>
+                                <h2 className="text-2xl font-black text-white mt-3">خلف ستار التكنولوجيا 🌐</h2>
+                                <p className="text-gray-400 text-sm mt-1">افهم الهرم التقني من المنجم إلى درب غلف.</p>
+                            </div>
+
+                            <div className="bg-pc-card border-r-4 border-blue-500 p-5 rounded-2xl">
+                                <h3 className="font-bold text-white mb-4"><i className="fa-solid fa-sitemap text-blue-500 ml-2"></i>الهرم التقني العالمي والمغربي</h3>
+                                {educationData.pyramid.map((item, i) => (
+                                    <div key={i} className="mb-3 border-b border-zinc-800 pb-3 last:border-0 last:pb-0">
+                                        <h4 className="text-blue-400 text-sm font-bold">{item.title}</h4>
+                                        <p className="text-xs text-gray-400 leading-relaxed mt-1">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="bg-pc-card border-r-4 border-pc-secondary p-5 rounded-2xl">
+                                <h3 className="font-bold text-white mb-4"><i className="fa-solid fa-memory text-pc-secondary ml-2"></i>آخر تكنولوجيا الحواسيب</h3>
+                                {educationData.techSpecs.map((item, i) => (
+                                    <div key={i} className="mb-3 border-b border-zinc-800 pb-3 last:border-0 last:pb-0">
+                                        <h4 className="text-pc-secondary text-sm font-bold">{item.title}</h4>
+                                        <p className="text-xs text-gray-400 leading-relaxed mt-1">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button onClick={startAdvisor} className="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg hover:bg-blue-700 transition flex justify-center items-center gap-2">
+                                دوز للمرحلة الثانية: شنو نشري؟ <i className="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+                    )}
+
+                    {/* ====================================================
+                        PHASE 2: ADVISOR (الذكاء الشرائي)
+                    ==================================================== */}
+                    {phase === 2 && (
+                        <div className="animate-slide-up mt-4">
+                            <div className="text-center mb-6">
+                                <span className="bg-purple-500/20 text-purple-400 font-bold px-3 py-1 rounded-full text-xs">المرحلة الثانية</span>
+                                <h2 className="text-2xl font-black text-white mt-3">الذكاء الشرائي 🧠</h2>
+                                <p className="text-gray-400 text-sm mt-1">غادي نحدد ليك الحاسوب لي يوافق خدمتك بلا ماتضيع فلوسك.</p>
+                            </div>
+
+                            {needsStep === 0 && (
+                                <div className="bg-pc-card p-6 rounded-2xl border border-zinc-800 space-y-4">
+                                    <h3 className="text-lg font-bold text-white mb-4">فاش غادي تستعمل هاد البيسي بالأساس؟</h3>
+                                    
+                                    <button onClick={() => handleNeeds('usage', 'fai9a')} className="w-full bg-pc-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition">
+                                        <strong className="text-white block mb-1">أداء خارق (3D Rendering / 4K Gaming)</strong>
+                                        <p className="text-xs text-gray-500">Unreal Engine, Premiere 4K, Cyberpunk 2077...</p>
+                                    </button>
+                                    
+                                    <button onClick={() => handleNeeds('usage', '3olya')} className="w-full bg-pc-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition">
+                                        <strong className="text-white block mb-1">أداء عالي (Heavy Editing / Gaming)</strong>
+                                        <p className="text-xs text-gray-500">After Effects, Virtual Machines, Warzone...</p>
+                                    </button>
+                                    
+                                    <button onClick={() => handleNeeds('usage', 'motawasita')} className="w-full bg-pc-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition">
+                                        <strong className="text-white block mb-1">أداء متوسط (Programming / eSports)</strong>
+                                        <p className="text-xs text-gray-500">Android Studio, Valorant, FIFA, GTA 5...</p>
+                                    </button>
+                                    
+                                    <button onClick={() => handleNeeds('usage', 'office')} className="w-full bg-pc-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition">
+                                        <strong className="text-white block mb-1">عمل إداري وتصفح (Office / Browsing)</strong>
+                                        <p className="text-xs text-gray-500">Word, Excel, Netflix, تصفح سريع...</p>
+                                    </button>
+                                </div>
+                            )}
+
+                            {needsStep === 1 && (
+                                <div className="bg-pc-card p-6 rounded-2xl border border-zinc-800 space-y-4 animate-fade-in">
+                                    <h3 className="text-lg font-bold text-white mb-4">شنو الميزانية التقريبية ديالك؟</h3>
+                                    <button onClick={() => handleNeeds('budget', 'high')} className="w-full bg-pc-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition"><strong className="text-white">ميزانية مفتوحة (High-End)</strong></button>
+                                    <button onClick={() => handleNeeds('budget', 'mid')} className="w-full bg-pc-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition"><strong className="text-white">ميزانية متوسطة (Value for Money)</strong></button>
+                                    <button onClick={() => handleNeeds('budget', 'low')} className="w-full bg-pc-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition"><strong className="text-white">ميزانية محدودة جداً (Budget)</strong></button>
+                                </div>
+                            )}
+
+                            {needsStep === 2 && recommendedDevice && (
+                                <div className="animate-fade-in space-y-4">
+                                    <div className="bg-purple-900/20 border border-purple-600/50 p-6 rounded-2xl text-center shadow-lg">
+                                        <i className="fa-solid fa-bullseye text-4xl text-purple-500 mb-3"></i>
+                                        <h3 className="text-xl font-bold text-white mb-1">هذا هو الحاسوب المناسب لاستهلاكك</h3>
+                                        <p className="text-xs text-purple-200">هذه المواصفات تلبي طلبك بالضبط. (لا تشتري أقل منها).</p>
+                                    </div>
+
+                                    <div className="bg-pc-card border border-zinc-800 p-5 rounded-2xl space-y-3">
+                                        <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded font-bold">{recommendedDevice.class}</span>
+                                        <h4 className="font-black text-white text-lg mt-2">{recommendedDevice.name}</h4>
+                                        
+                                        <div className="grid grid-cols-2 gap-2 text-sm mt-3">
+                                            <div className="bg-pc-surface p-2 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">المعالج (CPU)</span> {recommendedDevice.cpu}</div>
+                                            <div className="bg-pc-surface p-2 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">كارت الشاشة (GPU)</span> {recommendedDevice.gpu}</div>
+                                            <div className="bg-pc-surface p-2 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">الرام (RAM)</span> {recommendedDevice.ram}</div>
+                                            <div className="bg-pc-surface p-2 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">الشاشة</span> {recommendedDevice.screen}</div>
+                                        </div>
+
+                                        <div className="mt-4 bg-zinc-900 p-3 rounded-lg border border-zinc-800">
+                                            <h5 className="font-bold text-yellow-500 text-xs mb-1"><i className="fa-solid fa-bolt"></i> الطاقة والاستهلاك (Volt x Ampere)</h5>
+                                            <p className="text-xs text-gray-300">{recommendedDevice.power}</p>
+                                        </div>
+
+                                        <div className="mt-4 pt-4 border-t border-zinc-800 space-y-2">
+                                            <div className="flex justify-between items-center"><span className="text-xs text-gray-400"><i className="fa-solid fa-store w-4"></i> المتجر الرسمي:</span><span className="font-bold text-red-400">{recommendedDevice.priceOfficial}</span></div>
+                                            <div className="flex justify-between items-center"><span className="text-xs text-gray-400"><i className="fa-solid fa-box-open w-4"></i> الموازي (درب غلف):</span><span className="font-bold text-pc-primary">{recommendedDevice.priceGrey}</span></div>
+                                        </div>
+                                    </div>
+                                    <button onClick={startInspection} className="w-full bg-purple-600 text-white font-black py-4 rounded-xl shadow-lg hover:bg-purple-700 transition flex justify-center items-center gap-2">
+                                        دوز للمرحلة الثالثة: بروتوكول الفحص <i className="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ====================================================
+                        PHASE 3: INSPECTION (بروتوكول الفحص)
+                    ==================================================== */}
+                    {phase === 3 && (
+                        <div className="animate-slide-up mt-4">
+                            <div className="text-center mb-6">
+                                <span className="bg-yellow-500/20 text-yellow-500 font-bold px-3 py-1 rounded-full text-xs">المرحلة الثالثة</span>
+                                <h2 className="text-2xl font-black text-white mt-3">بروتوكول الفحص الصارم 🔍</h2>
+                                <p className="text-gray-400 text-sm mt-1">اختبر الحاسوب بالبرامج (FurMark, Cinebench) وأجب بصدق.</p>
+                            </div>
+
+                            {inspectStep < 99 ? (
+                                <div className="bg-pc-card border border-zinc-800 rounded-3xl p-6 shadow-2xl relative animate-fade-in">
+                                    <div className="flex justify-between text-xs text-gray-500 mb-4 font-bold border-b border-zinc-800 pb-2">
+                                        <span>اختبار {inspectStep + 1} من {pcInspection.length}</span>
+                                    </div>
+                                    
+                                    <div className="flex flex-col items-center mb-6 text-center">
+                                        <div className="w-16 h-16 bg-pc-surface rounded-full flex items-center justify-center text-3xl mb-3 border border-yellow-600/30 text-yellow-500 shadow-inner">
+                                            <i className={`fa-solid ${pcInspection[inspectStep].icon}`}></i>
+                                        </div>
+                                        <h3 className="text-lg font-bold text-white">{pcInspection[inspectStep].title}</h3>
+                                        <p className="text-blue-200 bg-blue-900/20 p-3 rounded-lg text-sm mt-4 border border-blue-900/50">
+                                            <i className="fa-solid fa-circle-info mr-1"></i> {pcInspection[inspectStep].instruction}
+                                        </p>
+                                    </div>
+
+                                    <div className="grid gap-3">
+                                        {pcInspection[inspectStep].options.map((opt, i) => (
+                                            <button key={i} onClick={() => handleInspect(opt)} className="w-full bg-pc-surface hover:bg-zinc-800 text-white p-4 rounded-xl border border-zinc-700 font-bold text-right flex justify-between items-center group transition">
+                                                <span className="text-sm leading-relaxed">{opt.text}</span><i className="fa-solid fa-chevron-left text-gray-600 group-hover:text-yellow-500 mr-2"></i>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                // التقرير النهائي للفحص
+                                <div className="animate-fade-in space-y-4">
+                                    <div className="text-center mb-6">
+                                        <h3 className="text-2xl font-black text-white">النتيجة النهائية للفحص 📋</h3>
+                                    </div>
+                                    
+                                    {defects.length === 0 ? (
+                                        <div className="bg-pc-primary/20 border border-pc-primary/50 p-6 rounded-2xl text-center shadow-lg">
+                                            <i className="fa-solid fa-shield-check text-5xl text-pc-primary mb-3"></i>
+                                            <h4 className="text-xl font-bold text-white mb-2">حاسوب ناضي وممتاز!</h4>
+                                            <p className="text-pc-primary text-sm">GPU و CPU بحالة ممتازة. لا يوجد Throttling ولا Artifacts. توكل على الله.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            <div className="bg-red-900/20 border border-red-900/50 p-4 rounded-xl text-center">
+                                                <h4 className="text-red-500 font-black text-lg"><i className="fa-solid fa-skull-crossbones"></i> تم رصد أعطاب في الهاردوير!</h4>
+                                            </div>
+                                            {defects.map((def, i) => (
+                                                <div key={i} className="bg-pc-surface p-4 rounded-xl border-r-4 border-red-500 flex justify-between items-center">
+                                                    <p className="text-sm font-bold text-white">{def.defect}</p>
+                                                    <span className="text-xs bg-red-900/50 text-red-200 px-2 py-1 rounded font-bold">خصم {def.price} DH</span>
+                                                </div>
+                                            ))}
+                                            <div className="bg-zinc-800 p-4 rounded-xl flex justify-between items-center border border-zinc-700">
+                                                <span className="text-gray-300 text-sm font-bold">قيمة التفاوض (نقص):</span>
+                                                <span className="text-xl font-black text-red-400">{defects.reduce((a, b) => a + (b.price || 0), 0)} DH</span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <button onClick={startStores} className="w-full bg-pc-primary text-pc-dark font-black py-4 rounded-xl shadow-lg hover:bg-emerald-400 transition flex justify-center items-center gap-2 mt-6">
+                                        دوز للمرحلة الأخيرة: منين نشري؟ <i className="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ====================================================
+                        PHASE 4: STORES (دليل المتاجر والأسواق)
+                    ==================================================== */}
+                    {phase === 4 && (
+                        <div className="animate-slide-up mt-4 space-y-6">
+                            <div className="text-center mb-6">
+                                <span className="bg-pc-primary/20 text-pc-primary font-bold px-3 py-1 rounded-full text-xs">المرحلة الرابعة والأخيرة</span>
+                                <h2 className="text-2xl font-black text-white mt-3">منين تشري؟ شكون هما الحيتان؟ 🗺️</h2>
+                                <p className="text-gray-400 text-sm mt-1">الآن أنت واعي تماماً. تفضل خريطة السوق.</p>
+                            </div>
+
+                            {storesMapData.map((market, i) => (
+                                <div key={i} className={`bg-pc-card border-r-4 ${market.border} p-5 rounded-2xl shadow-lg mb-4`}>
+                                    <h3 className="font-bold text-white text-lg mb-3"><i className={market.icon + " ml-2"}></i>{market.category}</h3>
+                                    <div className="space-y-3">
+                                        {market.shops.map((shop, j) => (
+                                            <div key={j} className="bg-pc-surface p-4 rounded-xl border border-zinc-800">
+                                                <h4 className="font-black text-white text-md mb-2">{shop.name}</h4>
+                                                <p className="text-xs text-gray-400 mb-1"><i className="fa-solid fa-user-tie w-4"></i> <strong>الجهة/المالك:</strong> {shop.owner}</p>
+                                                <p className="text-xs text-gray-400 mb-1"><i className="fa-solid fa-phone w-4"></i> <strong>الهاتف:</strong> {shop.phone}</p>
+                                                <p className="text-xs text-gray-400"><i className="fa-solid fa-location-dot w-4"></i> <strong>الموقع:</strong> {shop.location}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+
+                            <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 p-6 rounded-2xl text-center border border-zinc-700 shadow-2xl mt-8">
+                                <i className="fa-solid fa-medal text-5xl text-yellow-400 mb-3"></i>
+                                <h3 className="text-xl font-black text-white mb-2">تهانينا! أنت الآن حريف بيسيات.</h3>
+                                <p className="text-xs text-gray-300">بفضل هذه المنصة، لن يتم النصب عليك، وستعرف كيف تقرأ الـ Schematics وتفحص الـ VRAM.</p>
+                                <button onClick={() => {setPhase(0); setNeedsStep(0); setInspectStep(0);}} className="mt-5 w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-gray-200 transition">العودة للرئيسية</button>
+                            </div>
+                        </div>
+                    )}
+
+                </main>
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+</body>
+</html>
