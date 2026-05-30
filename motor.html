@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MotoCheck SaaS - رحلة المشتري الذكي</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        moto: { dark: '#0a0a0a', primary: '#f97316', secondary: '#ef4444', surface: '#171717', card: '#262626' },
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out', 'slide-up': 'slideUp 0.4s ease-out' },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Cairo', sans-serif; background-color: #0a0a0a; color: #f5f5f5; }</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    // ==========================================
+    // 1. قاعدة البيانات الشاملة للمنصة
+    // ==========================================
+
+    const educationData = {
+        pyramid: [
+            { title: 'أسياد المحركات والقطع', desc: 'Honda, Yamaha, BMW في الواجهة. ولكن القطع الداخلية من أسياد آخرين: Bosch (ECU & ABS)، Hitachi Astemo (الحقن والمساعدات)، Michelin و Pirelli (المطاط).' },
+            { title: 'أسياد السوق المغربي', desc: 'Saïda Lamrani (SMEIA للـ BMW)، Abdeslam Sijelmassi (MIFA للـ Yamaha)، و Abdltif Filali (SOCOMADIS للمحركات الصينية و Docker/C50).' },
+            { title: 'الأسواق الموازية والمافيا', desc: 'سوق الـ Doublette القادم من إسبانيا (أرقام تسلسلية مزورة). المافيا تستخدم K-TAG و AutoTuner لتهكير الـ ECU (خاصة TMAX و GS 1250). وهناك من يشتري الـ Ferraille ويعيد بيعه كجديد.' }
+        ],
+        mechanics: [
+            { title: 'كيف تعمل الدراجة؟ (دورة الحياة)', desc: 'البطارية 12V ⬅️ الديمارور ⬅️ الفيبروكان ⬅️ بيسطون وسوباب (سحب هواء/بنزين من الكاربيراتور) ⬅️ دينامو يرسل لكهرباء للـ CDI ثم البوجي ⬅️ شرارة واحتراق.' },
+            { title: 'نقل الحركة', desc: 'الفيبروكان ⬅️ لومبرياج (يفصل الحركة عن الفيتاس) ⬅️ بوات فيتاس ⬅️ الكيت شين (بينيو وسنسلة) ⬅️ العجلة.' }
+        ],
+        maintenance: [
+            { title: 'الزيوت (Rodage و العادي)', desc: 'عند تركيب سيلان جديد: فيدونج بعد 500كم ثم 1500كم. الأفضل Motul 5000 10W-40 (Semi-Synthetic) بـ 70 درهم، أو Mannol Ester بـ 60 درهم.' },
+            { title: 'الاستهلاك الشهري (حساب حقيقي)', desc: 'لـ 160km تحتاج 40DH بنزين. الاستهلاك الشهري تقريباً: بنزين 1200DH + زيت 210DH + تأمين 140DH + ضريبة 100DH. الإجمالي حوالي 1800DH.' }
+        ]
+    };
+
+    const inspectionQuestions = [
+        { 
+            title: 'الهيكل (Chassis) والكاريناج', icon: 'fa-motorcycle', 
+            instruction: 'افحص الفورش (Fourche)، الشاصي (الحديدة التحتية)، والكاريناج. هل تلاحظ أي تلحيم (Soudure) أو كسور؟', 
+            options: [ 
+                { text: 'يوجد تلحيم، اعوجاج، أو أجزاء مكسورة', status: 'bad', defect: 'دراجة تعرضت لحادثة خطيرة.', price: 1500 }, 
+                { text: 'هيكل نقي وسليم 100%', status: 'good', defect: '', price: 0 } 
+            ] 
+        },
+        { 
+            title: 'تسربات الزيوت (Fuites)', icon: 'fa-oil-can', 
+            instruction: 'افحص تحت الكارتيرة، بين السيلان والكيلاس، وجهة البينيو والمانيفير.', 
+            options: [ 
+                { text: 'يوجد تسرب للزيت (قطرات أو بلل)', status: 'warn', defect: 'جوانات تالفة (Joint Spi, Joint Culasse).', price: 250 }, 
+                { text: 'المحرك ناشف ونظيف', status: 'good', defect: '', price: 0 } 
+            ] 
+        },
+        { 
+            title: 'المحرك في وضع الخمول (Ralenti)', icon: 'fa-ear-listen', 
+            instruction: 'شغل الدراجة على البامور (Point Mort). استمع للمحرك.', 
+            options: [ 
+                { text: 'تكتكة (سوباب) أو دكدكة وخشخشة (فيبروكان/رولمات)', status: 'bad', defect: 'الفيبروكان أو البيلات ميتة.', price: 1000 }, 
+                { text: 'صوت المحرك نقي ودائري', status: 'good', defect: '', price: 0 } 
+            ] 
+        },
+        { 
+            title: 'اختبار الاحتراق والدخان', icon: 'fa-smog', 
+            instruction: 'قم بزيادة السرعة (كسيري) في البامور بقوة ولاحظ لون الدخان من الشاكمة.', 
+            options: [ 
+                { text: 'دخان أزرق (زيت) أو أبيض كثيف', status: 'bad', defect: 'تآكل في السواكم، البيسطون، والسيلان.', price: 800 }, 
+                { text: 'دخان أسود مع فشل بالاختناق', status: 'warn', defect: 'مشكل كاربيراتور أو فلتر الهواء.', price: 150 }, 
+                { text: 'لا يوجد دخان مرئي', status: 'good', defect: '', price: 0 } 
+            ] 
+        },
+        { 
+            title: 'لومبرياج (Embrayage)', icon: 'fa-circle-notch', 
+            instruction: 'ضع السرعة (Vitesse) دون أن ترفع الكسيراتور كثيراً. هل ترتفع الـ RPM دون زيادة فعلية في السرعة؟', 
+            options: [ 
+                { text: 'نعم، المحرك يغوت ولا ينطلق بقوة (Patinage)', status: 'bad', defect: 'أقراص لومبرياج ميتة (Disques Embrayage).', price: 300 }, 
+                { text: 'لا، الدراجة تستجيب فوراً بقوة', status: 'good', defect: '', price: 0 } 
+            ] 
+        },
+        { 
+            title: 'بوات فيتاس (Boîte de Vitesses)', icon: 'fa-gears', 
+            instruction: 'اثناء المشي، جرب تمرير السرعات من 1 إلى 4 صعوداً ونزولاً.', 
+            options: [ 
+                { text: 'السرعات تنزلق (تفلت) / صوت احتكاك قوي', status: 'bad', defect: 'تروس البوات فيتاس أو الرولمات تالفة.', price: 700 }, 
+                { text: 'التمرير سلس وسهل', status: 'good', defect: '', price: 0 } 
+            ] 
+        },
+        { 
+            title: 'الطاقة والكهرباء', icon: 'fa-car-battery', 
+            instruction: 'شغل الدراجة عبر (Start). جرب الكلاكسون والأضواء. ثم اتركها 5 دقائق.', 
+            options: [ 
+                { text: 'تأخر في التشغيل / الأضواء تضعف / تنطفئ', status: 'bad', defect: 'مشكل بالبطارية، الدينامو، أو البوجي.', price: 400 }, 
+                { text: 'تشغيل فوري وأضواء مستقرة', status: 'good', defect: '', price: 0 } 
+            ] 
+        }
+    ];
+
+    const storesMapData = [
+        { category: "السوق الرسمي والمستوردون الكبار", icon: "fa-certificate text-blue-500", border: "border-blue-500", desc: "أجهزة مضمونة، رسوم جمارك و Tva.", shops: [ { name: "SOCOMADIS (C50/Docker)", owner: "Abdltif Filali", phone: "B2B Only", location: "الدار البيضاء / التوزيع الوطني", mapLink: "https://maps.google.com/?q=disway+casablanca1" }, { name: "MIFA Motors (Yamaha)", owner: "Abdeslam Sijelmassi", phone: "0522-000000", location: "الدار البيضاء / وكالات ياماها", mapLink: "https://maps.google.com/?q=disway+casablanca2" } ] },
+        { category: "السوق الموازي (أرخص بدون ضمان شركة)", icon: "fa-box-open text-green-500", border: "border-green-500", desc: "سوق القريعة، كراج علال. شراء جملة وتوزيع.", shops: [ { name: "سوق القريعة / كراج علال للمحركات", owner: "تجار الجملة والتقسيط", phone: "محلي", location: "القريعة، الدار البيضاء", mapLink: "https://maps.google.com/?q=disway+casablanca3" } ] },
+        { category: "سوق الإصلاح المتقدم (Hardware & Tunning)", icon: "fa-screwdriver-wrench text-yellow-500", border: "border-yellow-500", desc: "لحام، تعديل، فك الشفرات والميكانيك.", shops: [ { name: "ورشات تعديل وبرمجة الـ ECU", owner: "محترفو TMAX و GS", phone: "محلي", location: "عين عتيق / الدار البيضاء", mapLink: "https://maps.google.com/?q=disway+casablanca4" }, { name: "محلات قطع الغيار والـ Soudure a froid", owner: "ميكانيكيو الدراجات (J-B Weld, Poxipol)", phone: "ابحث في حيك", location: "الأحياء الصناعية", mapLink: "https://maps.google.com/?q=disway+casablanca5" } ] },
+        { category: "سوق التزوير والخردة (خطر!)", icon: "fa-skull-crossbones text-red-500", border: "border-red-500", desc: "دراجات Doublette، مسروقة، أو مجمعة من الخردة (Ferraille).", shops: [ { name: "الأسواق العشوائية والإنترنت", owner: "شبكات التهريب / المزورون", phone: "مجهول", location: "Facebook Marketplace / أسواق أسبوعية", mapLink: null } ] }
+    ];
+
+    // ==========================================
+    // 2. التطبيق الرئيسي (React Component)
+    // ==========================================
+
+    function App() {
+        const [phase, setPhase] = React.useState(0); 
+        
+        // Advisor State
+        const [needsStep, setNeedsStep] = React.useState(0);
+        const [userProfile, setUserProfile] = React.useState({ usage: '', budget: '' });
+        const [recommendedDevice, setRecommendedDevice] = React.useState(null);
+
+        // Inspection State
+        const [inspectStep, setInspectStep] = React.useState(0);
+        const [defects, setDefects] = React.useState([]);
+
+        // Navigation
+        const startJourney = () => setPhase(1);
+        const startAdvisor = () => setPhase(2);
+        const startInspection = () => { setInspectStep(0); setDefects([]); setPhase(3); };
+        const startStores = () => setPhase(4);
+
+        // Advisor Logic
+        const handleNeeds = (key, value) => {
+            const newProfile = { ...userProfile, [key]: value };
+            setUserProfile(newProfile);
+            
+            if (needsStep === 0) {
+                setNeedsStep(1);
+            } else {
+                let rec = {};
+                if (newProfile.usage === 'delivery') {
+                    rec = {
+                        class: 'دراجة عملية واقتصادية (التوصيل)', name: 'Docker C50 / Sanya Fym / Becane',
+                        engine: '49cc أو 110cc (تستهلك 1.5L لـ 80km)', parts: 'قطع غيار رخيصة، كيت شين 80DH، سيلان بسيط.',
+                        gps: 'ينصح بـ Coban GPS303 بـ 450DH',
+                        priceOfficial: '6,500 - 8,000 DH', priceGrey: '5,000 - 6,000 DH'
+                    };
+                } else if (newProfile.usage === 'city') {
+                    rec = {
+                        class: 'سكوتر للمدينة والتنقل اليومي', name: 'Yamaha Jog / Honda SH / Kymco',
+                        engine: '125cc (سحب أوتوماتيكي)', parts: 'ركز على جودة لومبرياج، والفرامل القرصية (Disque).',
+                        gps: 'ينصح بـ Sinotrack ST-901',
+                        priceOfficial: '25,000 - 35,000 DH', priceGrey: '18,000 - 22,000 DH (حذار من Doublette)'
+                    };
+                } else {
+                    rec = {
+                        class: 'دراجة قوية للأسفار والطرق الطويلة', name: 'Yamaha TMAX 560 / BMW R 1250 GS',
+                        engine: '500cc+ (تتطلب رخصة سياقة)', parts: 'أداء عالي، تبريد مائي، أنظمة ABS و Traction Control.',
+                        gps: 'ينصح بـ Monimoto 7 اللاسلكي بـ 1800DH',
+                        priceOfficial: '120,000+ DH', priceGrey: 'تجنب السوق الموازي (سرقات وتزوير ECU مجنون)'
+                    };
+                }
+                setRecommendedDevice(rec);
+                setNeedsStep(2);
+            }
+        };
+
+        // Inspection Logic
+        const handleInspect = (option) => {
+            if (option.status !== 'good') setDefects([...defects, option]);
+            if (inspectStep < inspectionQuestions.length - 1) setInspectStep(inspectStep + 1);
+            else setInspectStep(99); 
+        };
+
+        return (
+            <div className="min-h-screen flex flex-col font-cairo pb-20 selection:bg-moto-primary selection:text-white">
+                
+                {/* Navbar */}
+                <nav className="bg-moto-surface border-b border-zinc-800 p-4 sticky top-0 z-50 shadow-lg flex justify-center">
+                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => {setPhase(0); setNeedsStep(0); setInspectStep(0);}}>
+                        <div className="bg-gradient-to-r from-moto-primary to-yellow-500 p-1.5 rounded-lg text-moto-dark">
+                            <i className="fa-solid fa-motorcycle"></i>
+                        </div>
+                        <h1 className="text-xl font-black text-white tracking-wide">Moto<span className="text-moto-primary">Check</span> <span className="text-xs bg-red-600 px-1 rounded text-white font-bold ml-1">SaaS</span></h1>
+                    </div>
+                </nav>
+
+                {/* Progress Bar */}
+                {phase > 0 && (
+                    <div className="w-full bg-zinc-900 h-1.5 flex">
+                        <div className={`h-full ${phase >= 1 ? 'bg-blue-500' : 'bg-transparent'} flex-1 transition-colors duration-500 border-r border-zinc-900`}></div>
+                        <div className={`h-full ${phase >= 2 ? 'bg-purple-500' : 'bg-transparent'} flex-1 transition-colors duration-500 border-r border-zinc-900`}></div>
+                        <div className={`h-full ${phase >= 3 ? 'bg-yellow-500' : 'bg-transparent'} flex-1 transition-colors duration-500 border-r border-zinc-900`}></div>
+                        <div className={`h-full ${phase >= 4 ? 'bg-green-500' : 'bg-transparent'} flex-1 transition-colors duration-500`}></div>
+                    </div>
+                )}
+
+                <main className="flex-1 container mx-auto p-4 max-w-md">
+                    
+                    {/* ====================================================
+                        PHASE 0: HOME
+                    ==================================================== */}
+                    {phase === 0 && (
+                        <div className="flex flex-col items-center mt-6 animate-fade-in space-y-6">
+                            <div className="text-center bg-moto-card border border-zinc-800 p-8 rounded-3xl shadow-xl w-full relative overflow-hidden">
+                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-moto-primary/10 rounded-full blur-3xl"></div>
+                                <h2 className="text-3xl font-black text-white mb-3">رحلة حريف الموطورات</h2>
+                                <p className="text-gray-400 text-sm leading-relaxed mb-6">من كواليس أسياد السوق، إلى فحص الماكينة (السيلان والكيلاس)، وصولاً لتجنب التزوير والشراء بذكاء.</p>
+                                <button onClick={startJourney} className="w-full bg-gradient-to-l from-moto-primary to-yellow-500 text-moto-dark font-black py-4 rounded-xl shadow-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                                    إبدأ الرحلة الآن <i className="fa-solid fa-gauge-high"></i>
+                                </button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 w-full text-xs text-gray-400 font-bold">
+                                <div className="bg-moto-surface p-3 rounded-xl border border-zinc-800 text-center"><i className="fa-solid fa-cogs text-blue-500 mb-2 block text-2xl"></i> ثقافة الميكانيك</div>
+                                <div className="bg-moto-surface p-3 rounded-xl border border-zinc-800 text-center"><i className="fa-solid fa-brain text-purple-500 mb-2 block text-2xl"></i> الذكاء الشرائي</div>
+                                <div className="bg-moto-surface p-3 rounded-xl border border-zinc-800 text-center"><i className="fa-solid fa-clipboard-list text-yellow-500 mb-2 block text-2xl"></i> بروتوكول الفحص</div>
+                                <div className="bg-moto-surface p-3 rounded-xl border border-zinc-800 text-center"><i className="fa-solid fa-map-location-dot text-green-500 mb-2 block text-2xl"></i> دليل الأسواق</div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ====================================================
+                        PHASE 1: EDUCATION (خلف الستار)
+                    ==================================================== */}
+                    {phase === 1 && (
+                        <div className="animate-slide-up space-y-6 mt-4">
+                            <div className="text-center mb-6">
+                                <span className="bg-blue-500/20 text-blue-400 font-bold px-3 py-1 rounded-full text-xs">المرحلة الأولى</span>
+                                <h2 className="text-2xl font-black text-white mt-3">خلف ستار الدراجات 🌐</h2>
+                                <p className="text-gray-400 text-sm mt-1">افهم الماكينة ومن يتحكم في السوق.</p>
+                            </div>
+
+                            <div className="bg-moto-card border-r-4 border-blue-500 p-5 rounded-2xl">
+                                <h3 className="font-bold text-white mb-4"><i className="fa-solid fa-sitemap text-blue-500 ml-2"></i>الهرم التقني وأسياد السوق</h3>
+                                {educationData.pyramid.map((item, i) => (
+                                    <div key={i} className="mb-3 border-b border-zinc-800 pb-3 last:border-0 last:pb-0">
+                                        <h4 className="text-blue-400 text-sm font-bold">{item.title}</h4>
+                                        <p className="text-xs text-gray-400 leading-relaxed mt-1">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="bg-moto-card border-r-4 border-moto-primary p-5 rounded-2xl">
+                                <h3 className="font-bold text-white mb-4"><i className="fa-solid fa-gears text-moto-primary ml-2"></i>كيف تعمل الماكينة؟</h3>
+                                {educationData.mechanics.map((item, i) => (
+                                    <div key={i} className="mb-3 border-b border-zinc-800 pb-3 last:border-0 last:pb-0">
+                                        <h4 className="text-moto-primary text-sm font-bold">{item.title}</h4>
+                                        <p className="text-xs text-gray-400 leading-relaxed mt-1">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="bg-moto-card border-r-4 border-yellow-500 p-5 rounded-2xl">
+                                <h3 className="font-bold text-white mb-4"><i className="fa-solid fa-oil-can text-yellow-500 ml-2"></i>أسرار الزيوت والاستهلاك</h3>
+                                {educationData.maintenance.map((item, i) => (
+                                    <div key={i} className="mb-3 border-b border-zinc-800 pb-3 last:border-0 last:pb-0">
+                                        <h4 className="text-yellow-500 text-sm font-bold">{item.title}</h4>
+                                        <p className="text-xs text-gray-400 leading-relaxed mt-1">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button onClick={startAdvisor} className="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg hover:bg-blue-700 transition flex justify-center items-center gap-2">
+                                دوز للمرحلة الثانية: شنو نشري؟ <i className="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+                    )}
+
+                    {/* ====================================================
+                        PHASE 2: ADVISOR (الذكاء الشرائي)
+                    ==================================================== */}
+                    {phase === 2 && (
+                        <div className="animate-slide-up mt-4">
+                            <div className="text-center mb-6">
+                                <span className="bg-purple-500/20 text-purple-400 font-bold px-3 py-1 rounded-full text-xs">المرحلة الثانية</span>
+                                <h2 className="text-2xl font-black text-white mt-3">الذكاء الشرائي 🧠</h2>
+                                <p className="text-gray-400 text-sm mt-1">غادي نحدد ليك الموطور لي يوافق خدمتك بلا ماتضيع فلوسك.</p>
+                            </div>
+
+                            {needsStep === 0 && (
+                                <div className="bg-moto-card p-6 rounded-2xl border border-zinc-800 space-y-4">
+                                    <h3 className="text-lg font-bold text-white mb-4">فاش غادي تستعمل الموطور بالأساس؟</h3>
+                                    
+                                    <button onClick={() => handleNeeds('usage', 'delivery')} className="w-full bg-moto-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition">
+                                        <strong className="text-white block mb-1">خدمة التوصيل (Glovo, Delivery)</strong>
+                                        <p className="text-xs text-gray-500">استهلاك بنزين قليل، بياس رخيص، وسهولة في الصيانة.</p>
+                                    </button>
+                                    
+                                    <button onClick={() => handleNeeds('usage', 'city')} className="w-full bg-moto-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition">
+                                        <strong className="text-white block mb-1">المدينة والتنقل اليومي للعمل/الدراسة</strong>
+                                        <p className="text-xs text-gray-500">سكوتر مريح، أوتوماتيك، ومظهر جميل.</p>
+                                    </button>
+                                    
+                                    <button onClick={() => handleNeeds('usage', 'travel')} className="w-full bg-moto-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition">
+                                        <strong className="text-white block mb-1">السفر والطرق السريعة (Touring)</strong>
+                                        <p className="text-xs text-gray-500">قوة محرك كبيرة، تبريد مائي، راحة في المسافات الطويلة.</p>
+                                    </button>
+                                </div>
+                            )}
+
+                            {needsStep === 1 && (
+                                <div className="bg-moto-card p-6 rounded-2xl border border-zinc-800 space-y-4 animate-fade-in">
+                                    <h3 className="text-lg font-bold text-white mb-4">شنو الميزانية التقريبية ديالك؟</h3>
+                                    <button onClick={() => handleNeeds('budget', 'high')} className="w-full bg-moto-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition"><strong className="text-white">ميزانية مفتوحة (جديد من الوكالة)</strong></button>
+                                    <button onClick={() => handleNeeds('budget', 'mid')} className="w-full bg-moto-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition"><strong className="text-white">ميزانية متوسطة (مستعمل نقي)</strong></button>
+                                    <button onClick={() => handleNeeds('budget', 'low')} className="w-full bg-moto-surface p-4 rounded-xl text-right hover:border-purple-500 border border-zinc-700 transition"><strong className="text-white">ميزانية محدودة (اقتصادي جداً)</strong></button>
+                                </div>
+                            )}
+
+                            {needsStep === 2 && recommendedDevice && (
+                                <div className="animate-fade-in space-y-4">
+                                    <div className="bg-purple-900/20 border border-purple-600/50 p-6 rounded-2xl text-center shadow-lg">
+                                        <i className="fa-solid fa-bullseye text-4xl text-purple-500 mb-3"></i>
+                                        <h3 className="text-xl font-bold text-white mb-1">هذه الدراجة المناسبة لاستهلاكك</h3>
+                                        <p className="text-xs text-purple-200">هذه المواصفات تلبي طلبك بالضبط. (لا تشتري أقل منها).</p>
+                                    </div>
+
+                                    <div className="bg-moto-card border border-zinc-800 p-5 rounded-2xl space-y-3">
+                                        <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded font-bold">{recommendedDevice.class}</span>
+                                        <h4 className="font-black text-white text-lg mt-2">{recommendedDevice.name}</h4>
+                                        
+                                        <div className="grid gap-2 text-sm mt-3">
+                                            <div className="bg-moto-surface p-3 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">المحرك (Engine)</span> {recommendedDevice.engine}</div>
+                                            <div className="bg-moto-surface p-3 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">نصيحة الصيانة/القطع</span> {recommendedDevice.parts}</div>
+                                            <div className="bg-moto-surface p-3 rounded border border-zinc-800"><span className="text-gray-500 block text-xs"><i className="fa-solid fa-satellite-dish text-blue-400"></i> حماية GPS</span> {recommendedDevice.gps}</div>
+                                        </div>
+
+                                        <div className="mt-4 pt-4 border-t border-zinc-800 space-y-2">
+                                            <div className="flex justify-between items-center"><span className="text-xs text-gray-400"><i className="fa-solid fa-store w-4"></i> المتجر الرسمي:</span><span className="font-bold text-red-400">{recommendedDevice.priceOfficial}</span></div>
+                                            <div className="flex justify-between items-center"><span className="text-xs text-gray-400"><i className="fa-solid fa-box-open w-4"></i> الموازي (كراج علال):</span><span className="font-bold text-moto-primary">{recommendedDevice.priceGrey}</span></div>
+                                        </div>
+                                    </div>
+                                    <button onClick={startInspection} className="w-full bg-purple-600 text-white font-black py-4 rounded-xl shadow-lg hover:bg-purple-700 transition flex justify-center items-center gap-2">
+                                        دوز للمرحلة الثالثة: بروتوكول الفحص <i className="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ====================================================
+                        PHASE 3: INSPECTION (بروتوكول الفحص)
+                    ==================================================== */}
+                    {phase === 3 && (
+                        <div className="animate-slide-up mt-4">
+                            <div className="text-center mb-6">
+                                <span className="bg-yellow-500/20 text-yellow-500 font-bold px-3 py-1 rounded-full text-xs">المرحلة الثالثة</span>
+                                <h2 className="text-2xl font-black text-white mt-3">بروتوكول الفحص الصارم 🔍</h2>
+                                <p className="text-gray-400 text-sm mt-1">اختبر الدراجة خطوة بخطوة وأجب بصدق.</p>
+                            </div>
+
+                            {inspectStep < 99 ? (
+                                <div className="bg-moto-card border border-zinc-800 rounded-3xl p-6 shadow-2xl relative animate-fade-in">
+                                    <div className="flex justify-between text-xs text-gray-500 mb-4 font-bold border-b border-zinc-800 pb-2">
+                                        <span>اختبار {inspectStep + 1} من {inspectionQuestions.length}</span>
+                                    </div>
+                                    
+                                    <div className="flex flex-col items-center mb-6 text-center">
+                                        <div className="w-16 h-16 bg-moto-surface rounded-full flex items-center justify-center text-3xl mb-3 border border-yellow-600/30 text-yellow-500 shadow-inner">
+                                            <i className={`fa-solid ${inspectionQuestions[inspectStep].icon}`}></i>
+                                        </div>
+                                        <h3 className="text-lg font-bold text-white">{inspectionQuestions[inspectStep].title}</h3>
+                                        <p className="text-blue-200 bg-blue-900/20 p-3 rounded-lg text-sm mt-4 border border-blue-900/50">
+                                            <i className="fa-solid fa-circle-info mr-1"></i> {inspectionQuestions[inspectStep].instruction}
+                                        </p>
+                                    </div>
+
+                                    <div className="grid gap-3">
+                                        {inspectionQuestions[inspectStep].options.map((opt, i) => (
+                                            <button key={i} onClick={() => handleInspect(opt)} className="w-full bg-moto-surface hover:bg-zinc-800 text-white p-4 rounded-xl border border-zinc-700 font-bold text-right flex justify-between items-center group transition">
+                                                <span className="text-sm leading-relaxed">{opt.text}</span><i className="fa-solid fa-chevron-left text-gray-600 group-hover:text-yellow-500 mr-2"></i>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                // التقرير النهائي للفحص
+                                <div className="animate-fade-in space-y-4">
+                                    <div className="text-center mb-6">
+                                        <h3 className="text-2xl font-black text-white">النتيجة النهائية للفحص 📋</h3>
+                                    </div>
+                                    
+                                    {defects.length === 0 ? (
+                                        <div className="bg-moto-primary/20 border border-moto-primary/50 p-6 rounded-2xl text-center shadow-lg">
+                                            <i className="fa-solid fa-shield-check text-5xl text-moto-primary mb-3"></i>
+                                            <h4 className="text-xl font-bold text-white mb-2">موطور ناضي (Mlih)!</h4>
+                                            <p className="text-moto-primary text-sm">السيلان، الكيلاس، والفيبروكان بحالة ممتازة. لا توجد تسربات أو دخان. توكل على الله.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            <div className="bg-red-900/20 border border-red-900/50 p-4 rounded-xl text-center">
+                                                <h4 className="text-red-500 font-black text-lg"><i className="fa-solid fa-skull-crossbones"></i> تم رصد أعطاب خطيرة!</h4>
+                                            </div>
+                                            {defects.map((def, i) => (
+                                                <div key={i} className="bg-moto-surface p-4 rounded-xl border-r-4 border-red-500 flex justify-between items-center">
+                                                    <p className="text-sm font-bold text-white">{def.defect}</p>
+                                                    <span className="text-xs bg-red-900/50 text-red-200 px-2 py-1 rounded font-bold">خصم {def.price} DH</span>
+                                                </div>
+                                            ))}
+                                            <div className="bg-zinc-800 p-4 rounded-xl flex justify-between items-center border border-zinc-700">
+                                                <span className="text-gray-300 text-sm font-bold">قيمة التفاوض (نقص هاد الثمن):</span>
+                                                <span className="text-xl font-black text-red-400">{defects.reduce((a, b) => a + (b.price || 0), 0)} DH</span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <button onClick={startStores} className="w-full bg-moto-primary text-moto-dark font-black py-4 rounded-xl shadow-lg hover:bg-yellow-500 transition flex justify-center items-center gap-2 mt-6">
+                                        دوز للمرحلة الأخيرة: منين نشري؟ <i className="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ====================================================
+                        PHASE 4: STORES (دليل المتاجر والأسواق)
+                    ==================================================== */}
+                    {phase === 4 && (
+                        <div className="animate-slide-up mt-4 space-y-6">
+                            <div className="text-center mb-6">
+                                <span className="bg-green-500/20 text-green-500 font-bold px-3 py-1 rounded-full text-xs">المرحلة الرابعة والأخيرة</span>
+                                <h2 className="text-2xl font-black text-white mt-3">منين تشري؟ وفين تصلح؟ 🗺️</h2>
+                                <p className="text-gray-400 text-sm mt-1">الآن أنت واعي تماماً. تفضل خريطة السوق المعتمدة.</p>
+                            </div>
+
+                            {storesMapData.map((market, i) => (
+                                <div key={i} className={`bg-moto-card border-r-4 ${market.border} p-5 rounded-2xl shadow-lg mb-4`}>
+                                    <h3 className="font-bold text-white text-lg mb-2"><i className={market.icon + " ml-2"}></i>{market.category}</h3>
+                                    <p className="text-xs text-gray-400 mb-4 bg-zinc-900 p-2 rounded">{market.desc}</p>
+                                    <div className="space-y-3">
+                                        {market.shops.map((shop, j) => (
+                                            <div key={j} className="bg-moto-surface p-4 rounded-xl border border-zinc-800">
+                                                <h4 className="font-black text-white text-md mb-2">{shop.name}</h4>
+                                                <p className="text-xs text-gray-400 mb-1"><i className="fa-solid fa-user-tie w-4"></i> <strong>الجهة/المالك:</strong> {shop.owner}</p>
+                                                <p className="text-xs text-gray-400 mb-1"><i className="fa-solid fa-phone w-4"></i> <strong>الهاتف:</strong> {shop.phone}</p>
+                                                <p className="text-xs text-gray-400"><i className="fa-solid fa-location-dot w-4"></i> <strong>الموقع:</strong> {shop.location}</p>
+                                                
+                                                {shop.mapLink && (
+                                                    <a href={shop.mapLink} target="_blank" rel="noopener noreferrer" className="mt-3 w-full bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold py-2 rounded-lg flex items-center justify-center gap-2 transition">
+                                                        <i className="fa-solid fa-map-location-dot text-blue-400"></i> إذهب إليه عبر Google Maps
+                                                    </a>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+
+                            <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 p-6 rounded-2xl text-center border border-zinc-700 shadow-2xl mt-8">
+                                <i className="fa-solid fa-medal text-5xl text-yellow-400 mb-3"></i>
+                                <h3 className="text-xl font-black text-white mb-2">تهانينا! أنت الآن حريف موطورات.</h3>
+                                <p className="text-xs text-gray-300">بفضل هذه المنصة، لن يتم النصب عليك، وستعرف كيف تختبر السيلان وتكتشف التزوير.</p>
+                                <button onClick={() => {setPhase(0); setNeedsStep(0); setInspectStep(0);}} className="mt-5 w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-gray-200 transition">العودة للرئيسية</button>
+                            </div>
+                        </div>
+                    )}
+
+                </main>
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+</body>
+</html>
