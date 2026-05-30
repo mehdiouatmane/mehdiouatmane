@@ -37,6 +37,8 @@ francais
 <div><a href="https://mehdiouatmane.github.io/mehdiouatmane/siya9a2.html">siya9a2</a></div>
 <div><a href="https://mehdiouatmane.github.io/mehdiouatmane/motocheck.html">motocheck</a></div>
 <div><a href="https://mehdiouatmane.github.io/mehdiouatmane/voiturecheck.html">voiturecheck</a></div>
+<div><a href="https://mehdiouatmane.github.io/mehdiouatmane/motor.html">motor</a></div>
+
 ########
 #######
 <div><a href="https://mehdiouatmane.github.io/mehdiouatmane/phone.html">phone</a></div>
