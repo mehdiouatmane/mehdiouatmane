@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TechCheck SaaS - الموسوعة والفحص الشامل</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tech: { dark: '#050505', primary: '#3B82F6', secondary: '#8B5CF6', surface: '#111113', card: '#18181B' },
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.3s ease-out', 'slide-up': 'slideUp 0.4s ease-out' },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(15px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Cairo', sans-serif; background-color: #050505; color: white; }</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    // ==========================================
+    // 1. قاعدة بيانات الفحص (Inspection Data)
+    // ==========================================
+    const phoneInspection = [
+        {
+            title: 'الشاشة واللمس (Display & Touch)', icon: 'fa-mobile-screen',
+            instruction: 'ركب الكود *#0*# (لسامسونج) وجرب الألوان الأساسية (أحمر، أخضر، أزرق) لتكتشف البقع الميتة (Dead Pixels).',
+            options: [
+                { text: 'يوجد خطوط أو بقع / اللمس ثقيل', status: 'bad', result: 'شاشة غير أصلية أو تالفة.', advice: 'الشاشة هي أغلى قطعة، تجنب هذا الجهاز.', price: 1500 },
+                { text: 'الألوان صافية واللمس سريع', status: 'good', result: 'شاشة أصلية سليمة.', advice: 'جودة العرض ممتازة.', price: 0 }
+            ]
+        },
+        {
+            title: 'الهوية والشبكة (IMEI & Network)', icon: 'fa-tower-cell',
+            instruction: 'ركب *#06# وقارن رقم الـ IMEI مع العلبة وموقع IMEI.info. جرب شريحة 5G أو 4G VoLTE.',
+            options: [
+                { text: 'الرقم لا يتطابق / الشبكة ضعيفة', status: 'bad', result: 'مسروق أو مشكل في RF Circuit.', advice: 'هاتف Blacklisted أو معدل ببرامج Unlocktool.', price: 800 },
+                { text: 'الرقم متطابق والشبكة 5G قوية', status: 'good', result: 'هاتف قانوني وسليم.', advice: 'المودم يعمل بكفاءة.', price: 0 }
+            ]
+        },
+        {
+            title: 'البطارية والشحن (Battery)', icon: 'fa-battery-three-quarters',
+            instruction: 'شغل فيديو 4K على يوتيوب لمدة 10 دقائق متواصلة وبسطوع كامل.',
+            options: [
+                { text: 'نقصت أكثر من 8% أو انطفأ', status: 'bad', result: 'خلايا البطارية ميتة.', advice: 'تحتاج بطارية جديدة.', price: 350 },
+                { text: 'نقصت بين 2% و 4% فقط', status: 'good', result: 'بطارية ممتازة.', advice: 'استهلاك طبيعي للطاقة.', price: 0 }
+            ]
+        }
+    ];
+
+    const pcInspection = [
+        {
+            title: 'كارت الشاشة (GPU) - الأهم!', icon: 'fa-microchip',
+            instruction: 'حمل FurMark و HWMonitor. شغل اختبار 1080p لمدة 10 دقائق.',
+            options: [
+                { text: 'حرارة فوق 86° / ظهور خطوط (Artifacts)', status: 'bad', result: 'كارت الشاشة يحتضر.', advice: 'أخطر مشكل! الموذر بورد تالفة. ابتعد فوراً.', price: 3000 },
+                { text: 'حرارة مستقرة تحت 80° وصورة نقية', status: 'good', result: 'GPU ممتاز وسليم.', advice: 'VRAM والتبريد يعملان جيداً.', price: 0 }
+            ]
+        },
+        {
+            title: 'المعالج المركزي (CPU)', icon: 'fa-server',
+            instruction: 'شغل Cinebench R23 لـ 10 دقائق وراقب HWMonitor.',
+            options: [
+                { text: 'حرارة فوق 95° أو الجهاز انطفأ', status: 'warn', result: 'اختناق حراري (Throttling).', advice: 'يحتاج معجون حراري (Thermal Paste) أو تنظيف الفرافر.', price: 300 },
+                { text: 'الحرارة بين 80°-90° والتردد ثابت', status: 'good', result: 'تبريد CPU ممتاز.', advice: 'نظام ColdFront يعمل بكفاءة.', price: 0 }
+            ]
+        },
+        {
+            title: 'صحة القرص (Storage SSD)', icon: 'fa-hard-drive',
+            instruction: 'شغل برنامج CrystalDiskInfo لترى صحة الديسك وكم ساعة اشتغل.',
+            options: [
+                { text: 'الحالة Caution / ساعات العمل تفوق 8000', status: 'bad', result: 'الـ SSD في نهاية عمره (TBW عالي).', advice: 'سيفقد بياناتك قريباً.', price: 600 },
+                { text: 'الحالة Good (100%)', status: 'good', result: 'SSD سليم.', advice: 'سرعة القراءة/الكتابة طبيعية.', price: 0 }
+            ]
+        },
+        {
+            title: 'حالة البطارية (Battery Report)', icon: 'fa-plug',
+            instruction: 'افتح CMD واكتب: powercfg /batteryreport وقارن Design Capacity مع Full Charge.',
+            options: [
+                { text: 'القدرة الاستيعابية أقل من 75%', status: 'bad', result: 'بطارية مستهلكة بشدة.', advice: 'يجب تغيير البطارية.', price: 700 },
+                { text: 'القدرة 90% فما فوق', status: 'good', result: 'بطارية شبه جديدة.', advice: 'خلايا الليثيوم سليمة.', price: 0 }
+            ]
+        }
+    ];
+
+    // ==========================================
+    // 2. قاعدة بيانات أسرار السوق (Market Secrets)
+    // ==========================================
+    const marketSecrets = [
+        {
+            category: 'الهرم التقني العالمي', icon: 'fa-globe',
+            items: [
+                { title: 'أسياد المواد الأولية', desc: 'Gary Nagle (Glencore الكوبالت)، Jiang Weiping (الليثيوم)، Luo Liguo (السيليكون)، Amin Nasser (Aramco طاقة).' },
+                { title: 'أسياد التصنيع والتقنية', desc: 'Morris Chang و C.C. Wei (TSMC الرقائق)، Satya Nadella و Andy Jassy (السيرفرات والذكاء الاصطناعي)، Larry Fink (التمويل BlackRock).' }
+            ]
+        },
+        {
+            category: 'الهرم المغربي والسوق', icon: 'fa-store',
+            items: [
+                { title: 'السوق الرسمي (المستوردون الكبار)', desc: 'شخصيات مثل Hakim Belmaachi (Disway) و Younes El Himdy (Disty). يسيطرون على البورصة والاستيراد المباشر مع رسوم جمارك و TVA.' },
+                { title: 'السوق الموازي (Grey Market)', desc: 'الأجهزة تأتي من دبي (JAFZA/DAFZA عبر Redington/Ingram Micro) أو ميامي/هونغ كونغ. تدخل عبر سبتة، مليلية، والكركرات. تباع في درب غلف، كراج علال (بأسعار أرخص بـ 20-30% ولكن بضمان المحل فقط).' }
+            ]
+        },
+        {
+            category: 'أسرار التسعير (مثال لهاتف)', icon: 'fa-money-bill-wave',
+            items: [
+                { title: 'تكلفة المصنع (فيتنام/الهند)', desc: 'تكلفة المكونات + البحث + هامش الربح = 700 درهم.' },
+                { title: 'السوق الموازي (تجار الجملة)', desc: 'ضرائب منخفضة، تهريب، استيراد ضخم = 800 إلى 900 درهم.' },
+                { title: 'المتجر الرسمي (Marjane, Fnac)', desc: 'TVA + جمارك + ANRT + رواتب موظفين + ضمان الوكالة = 1350 درهم إلى 1500 درهم.' }
+            ]
+        }
+    ];
+
+    // ==========================================
+    // 3. التطبيق الرئيسي (React App)
+    // ==========================================
+    function App() {
+        const [view, setView] = React.useState('home');
+        const [deviceType, setDeviceType] = React.useState(null);
+        const [currentStep, setCurrentStep] = React.useState(0);
+        const [stepResult, setStepResult] = React.useState(null);
+        const [defects, setDefects] = React.useState([]);
+
+        // Needs Assessment State
+        const [needsTarget, setNeedsTarget] = React.useState(null); // 'phone' or 'pc'
+        const [needsStep, setNeedsStep] = React.useState(0);
+        const [userAnswers, setUserAnswers] = React.useState({ usage: '', budget: '' });
+        const [recommendedDevice, setRecommendedDevice] = React.useState(null);
+
+        const activeInspection = deviceType === 'phone' ? phoneInspection : pcInspection;
+
+        // --- دوال الفحص ---
+        const startInspection = (type) => {
+            setDeviceType(type);
+            setCurrentStep(0);
+            setStepResult(null);
+            setDefects([]);
+            setView('inspection');
+        };
+
+        const handleAnswer = (option) => {
+            setStepResult(option);
+            if (option.status !== 'good') {
+                setDefects([...defects, { title: activeInspection[currentStep].title, ...option }]);
+            }
+        };
+
+        const nextStep = () => {
+            setStepResult(null);
+            if (currentStep < activeInspection.length - 1) setCurrentStep(currentStep + 1);
+            else setView('report');
+        };
+
+        // --- دوال تحديد الاحتياجات (Needs Assessment) ---
+        const startNeedsAssessment = (type) => {
+            setNeedsTarget(type);
+            setNeedsStep(0);
+            setUserAnswers({ usage: '', budget: '' });
+            setRecommendedDevice(null);
+            setView('needs');
+        };
+
+        const handleNeedsAnswer = (key, value) => {
+            const newAnswers = { ...userAnswers, [key]: value };
+            setUserAnswers(newAnswers);
+            
+            if (needsStep === 0) setNeedsStep(1);
+            else generateRecommendation(newAnswers);
+        };
+
+        const generateRecommendation = (answers) => {
+            let rec = {};
+            if (needsTarget === 'pc') {
+                if (answers.usage === 'gaming_heavy') {
+                    rec = {
+                        name: 'High-End Gaming / 3D Rendering (Lenovo Legion Pro 7i / Asus ROG)',
+                        cpu: 'Intel i9-14900HX / Ryzen 9', gpu: 'RTX 4080 (12GB) / RTX 4070', ram: '32GB DDR5 6000MHz',
+                        screen: '16" QHD+ 240Hz 500nits', power: 'استهلاك: 165Whr - شاحن 330W',
+                        priceOfficial: '25,000 DH', priceGrey: '19,000 DH (درب غلف)'
+                    };
+                } else if (answers.usage === 'gaming_mid') {
+                    rec = {
+                        name: 'Mid-Range Gaming / Editing (Lenovo LOQ / HP Victus 16)',
+                        cpu: 'Intel i7-13th / Ryzen 7', gpu: 'RTX 4060 (8GB)', ram: '16GB DDR5 4800MHz',
+                        screen: '15.6" FHD 144Hz 300nits', power: 'استهلاك: 80Whr - شاحن 170W',
+                        priceOfficial: '14,000 DH', priceGrey: '11,000 DH'
+                    };
+                } else {
+                    rec = {
+                        name: 'Office / Light Use (HP Elitebook 840 / Dell Latitude)',
+                        cpu: 'Intel i5-12th U-series', gpu: 'Intel Iris Xe', ram: '16GB DDR4/5',
+                        screen: '14" FHD 60Hz', power: 'استهلاك: 30Whr - شاحن Type-C 65W',
+                        priceOfficial: '9,000 DH', priceGrey: '6,000 DH'
+                    };
+                }
+            } else {
+                // Phone recommendations
+                if (answers.usage === 'gaming_heavy') {
+                    rec = {
+                        name: 'Flagship (S24 Ultra / iPhone 15 Pro Max)',
+                        cpu: 'Snapdragon 8 Gen 3 / A17 Pro', storage: '256GB UFS 4.0 / 12GB LPDDR5X',
+                        screen: 'QHD+ 120Hz 2600nits', power: 'بطارية 5000mAh - شحن 45W',
+                        priceOfficial: '14,000 DH', priceGrey: '10,500 DH'
+                    };
+                } else {
+                    rec = {
+                        name: 'Mid-Range Solid (Samsung A55 / Xiaomi 13T)',
+                        cpu: 'Exynos 1480 / MediaTek Dimensity', storage: '256GB UFS 3.1 / 8GB RAM',
+                        screen: 'FHD+ 120Hz AMOLED', power: 'بطارية 5000mAh - شحن 25W',
+                        priceOfficial: '4,500 DH', priceGrey: '3,500 DH'
+                    };
+                }
+            }
+            setRecommendedDevice(rec);
+            setNeedsStep(2); // Show results
+        };
+
+        return (
+            <div className="min-h-screen flex flex-col font-cairo pb-20 selection:bg-tech-primary selection:text-white">
+                
+                {/* Navbar */}
+                <nav className="bg-tech-surface border-b border-zinc-800 p-4 sticky top-0 z-50 flex justify-between items-center shadow-lg">
+                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
+                        <div className="bg-gradient-to-r from-tech-primary to-tech-secondary p-1.5 rounded-lg text-white">
+                            <i className="fa-solid fa-microchip"></i>
+                        </div>
+                        <h1 className="text-xl font-black text-white tracking-wide">Tech<span className="text-tech-primary">Check</span> <span className="text-xs bg-red-600 px-1 rounded text-white font-bold ml-1">SaaS</span></h1>
+                    </div>
+                    {view !== 'home' && <button onClick={() => setView('home')} className="text-gray-400 hover:text-white"><i className="fa-solid fa-house"></i></button>}
+                </nav>
+
+                <main className="flex-1 container mx-auto p-4 max-w-md">
+                    
+                    {/* --- الصفحة الرئيسية --- */}
+                    {view === 'home' && (
+                        <div className="flex flex-col items-center justify-center mt-6 animate-fade-in space-y-6">
+                            
+                            <div className="text-center w-full bg-tech-card border border-zinc-800 p-6 rounded-3xl shadow-xl">
+                                <h2 className="text-2xl font-black text-white mb-2">مرحباً بك في الموسوعة التقنية</h2>
+                                <p className="text-gray-400 text-sm">حدد احتياجك، افحص جهازك، واكشف أسرار المافيا التقنية.</p>
+                            </div>
+
+                            {/* أداة تحديد الاحتياجات (جديد) */}
+                            <div className="w-full bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-tech-secondary/30 p-5 rounded-3xl">
+                                <h3 className="font-bold text-white mb-1"><i className="fa-solid fa-wand-magic-sparkles text-tech-secondary"></i> الذكاء الشرائي (شنو نشري؟)</h3>
+                                <p className="text-xs text-gray-400 mb-4">نجاوبك على شنو الموطور/البيسي لي يوافق خدمتك بلا ماتضيع فلوسك.</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <button onClick={() => startNeedsAssessment('pc')} className="bg-tech-surface border border-zinc-700 p-3 rounded-xl hover:border-tech-primary text-sm font-bold transition">للحواسيب <i className="fa-solid fa-laptop ml-1"></i></button>
+                                    <button onClick={() => startNeedsAssessment('phone')} className="bg-tech-surface border border-zinc-700 p-3 rounded-xl hover:border-tech-primary text-sm font-bold transition">للهواتف <i className="fa-solid fa-mobile ml-1"></i></button>
+                                </div>
+                            </div>
+                            
+                            <hr className="w-full border-zinc-800" />
+
+                            <div className="w-full">
+                                <h3 className="font-bold text-white mb-3"><i className="fa-solid fa-stethoscope text-tech-primary"></i> بروتوكول الفحص الصارم</h3>
+                                <div className="grid grid-cols-2 gap-4 w-full">
+                                    <div onClick={() => startInspection('pc')} className="bg-tech-card border border-zinc-800 rounded-2xl p-5 flex flex-col items-center cursor-pointer hover:border-tech-primary transition group shadow-md">
+                                        <i className="fa-solid fa-laptop-code text-3xl text-tech-primary mb-2 group-hover:scale-110 transition-transform"></i>
+                                        <h3 className="font-bold text-white text-sm">فحص حاسوب</h3>
+                                    </div>
+                                    <div onClick={() => startInspection('phone')} className="bg-tech-card border border-zinc-800 rounded-2xl p-5 flex flex-col items-center cursor-pointer hover:border-tech-secondary transition group shadow-md">
+                                        <i className="fa-solid fa-mobile-screen text-3xl text-tech-secondary mb-2 group-hover:scale-110 transition-transform"></i>
+                                        <h3 className="font-bold text-white text-sm">فحص هاتف</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onClick={() => setView('market')} className="w-full bg-tech-card border border-yellow-600/30 p-4 rounded-2xl flex items-center justify-between hover:border-yellow-500 transition shadow-lg">
+                                <div className="flex items-center gap-3">
+                                    <i className="fa-solid fa-user-secret text-2xl text-yellow-500"></i>
+                                    <div className="text-right">
+                                        <h3 className="font-bold text-white">أسرار السوق والمافيا</h3>
+                                        <p className="text-xs text-gray-400">من المصنع إلى درب غلف (Grey Market)</p>
+                                    </div>
+                                </div>
+                                <i className="fa-solid fa-chevron-left text-gray-500"></i>
+                            </button>
+                        </div>
+                    )}
+
+                    {/* --- نظام تحديد الاحتياجات (Needs Assessment) --- */}
+                    {view === 'needs' && (
+                        <div className="animate-slide-up mt-4">
+                            <h2 className="text-xl font-bold text-white border-r-4 border-tech-secondary pr-3 mb-6">المستشار التقني الخاص بك</h2>
+                            
+                            {needsStep === 0 && (
+                                <div className="bg-tech-card p-6 rounded-2xl border border-zinc-800 space-y-4">
+                                    <h3 className="text-lg font-bold text-white mb-2">فاش غادي تستعمل الـ {needsTarget === 'pc' ? 'PC' : 'هاتف'} بالأساس؟</h3>
+                                    <button onClick={() => handleNeedsAnswer('usage', 'gaming_heavy')} className="w-full bg-tech-surface p-4 rounded-xl text-right hover:border-tech-primary border border-zinc-700 transition">
+                                        <strong className="text-white">ألعاب ثقيلة ومونتاج (AAA Games, 3D Rendering)</strong>
+                                        <p className="text-xs text-gray-400 mt-1">تخدم Unreal Engine, Premiere 4K, Cyberpunk...</p>
+                                    </button>
+                                    <button onClick={() => handleNeedsAnswer('usage', 'gaming_mid')} className="w-full bg-tech-surface p-4 rounded-xl text-right hover:border-tech-primary border border-zinc-700 transition">
+                                        <strong className="text-white">ألعاب أونلاين وتصميم (Valorant, Photoshop)</strong>
+                                        <p className="text-xs text-gray-400 mt-1">خدمة متوسطة، ألعاب eSports، وبرمجة عادية...</p>
+                                    </button>
+                                    <button onClick={() => handleNeedsAnswer('usage', 'office')} className="w-full bg-tech-surface p-4 rounded-xl text-right hover:border-tech-primary border border-zinc-700 transition">
+                                        <strong className="text-white">خدمة خفيفة (Office, Browsing, Movies)</strong>
+                                        <p className="text-xs text-gray-400 mt-1">تصفح، أفلام، وخدمة إدارية خفيفة.</p>
+                                    </button>
+                                </div>
+                            )}
+
+                            {needsStep === 1 && (
+                                <div className="bg-tech-card p-6 rounded-2xl border border-zinc-800 space-y-4">
+                                    <h3 className="text-lg font-bold text-white mb-2">شنو الميزانية التقريبية ديالك؟</h3>
+                                    <button onClick={() => handleNeedsAnswer('budget', 'high')} className="w-full bg-tech-surface p-4 rounded-xl text-right hover:border-tech-primary border border-zinc-700 transition">
+                                        <strong className="text-white">ميزانية مفتوحة (High-End)</strong>
+                                    </button>
+                                    <button onClick={() => handleNeedsAnswer('budget', 'mid')} className="w-full bg-tech-surface p-4 rounded-xl text-right hover:border-tech-primary border border-zinc-700 transition">
+                                        <strong className="text-white">ميزانية متوسطة (Value for Money)</strong>
+                                    </button>
+                                    <button onClick={() => handleNeedsAnswer('budget', 'low')} className="w-full bg-tech-surface p-4 rounded-xl text-right hover:border-tech-primary border border-zinc-700 transition">
+                                        <strong className="text-white">ميزانية محدودة (Budget)</strong>
+                                    </button>
+                                </div>
+                            )}
+
+                            {needsStep === 2 && recommendedDevice && (
+                                <div className="animate-fade-in space-y-4">
+                                    <div className="bg-green-900/20 border border-green-600/50 p-6 rounded-2xl text-center">
+                                        <i className="fa-solid fa-bullseye text-4xl text-green-500 mb-3"></i>
+                                        <h3 className="text-lg font-bold text-white mb-1">هذا هو الجهاز لي يناسبك 100%</h3>
+                                        <p className="text-xs text-green-200">ماتضيعش فلوسك فشي حاجة كثر من هادشي، وماتاخدش قل منو.</p>
+                                    </div>
+
+                                    <div className="bg-tech-card border border-zinc-800 p-5 rounded-2xl space-y-3">
+                                        <h4 className="font-black text-tech-primary text-lg">{recommendedDevice.name}</h4>
+                                        <div className="grid grid-cols-2 gap-2 text-sm">
+                                            <div className="bg-tech-surface p-2 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">المعالج (CPU)</span> {recommendedDevice.cpu}</div>
+                                            {recommendedDevice.gpu && <div className="bg-tech-surface p-2 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">الجرافيك (GPU)</span> {recommendedDevice.gpu}</div>}
+                                            {recommendedDevice.ram && <div className="bg-tech-surface p-2 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">الرام (RAM)</span> {recommendedDevice.ram}</div>}
+                                            {recommendedDevice.storage && <div className="bg-tech-surface p-2 rounded border border-zinc-800"><span className="text-gray-500 block text-xs">التخزين</span> {recommendedDevice.storage}</div>}
+                                            <div className="bg-tech-surface p-2 rounded border border-zinc-800 col-span-2"><span className="text-gray-500 block text-xs">الشاشة (Display)</span> {recommendedDevice.screen}</div>
+                                        </div>
+
+                                        <div className="mt-4 bg-blue-900/20 p-3 rounded-lg border border-blue-800/50">
+                                            <h5 className="font-bold text-blue-400 text-xs mb-1"><i className="fa-solid fa-bolt"></i> الطاقة والاستهلاك (V × A = W)</h5>
+                                            <p className="text-xs text-blue-200">{recommendedDevice.power}</p>
+                                        </div>
+
+                                        <div className="mt-4 pt-4 border-t border-zinc-800">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-xs text-gray-400"><i className="fa-solid fa-store"></i> المتجر الرسمي:</span>
+                                                <span className="font-bold text-red-400">{recommendedDevice.priceOfficial}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xs text-gray-400"><i className="fa-solid fa-box-open"></i> السوق الموازي (درب غلف):</span>
+                                                <span className="font-bold text-green-400">{recommendedDevice.priceGrey}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onClick={() => setView('home')} className="w-full border border-zinc-700 py-3 rounded-xl hover:bg-zinc-800 text-gray-300 font-bold transition">رجوع</button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* --- صفحة أسرار السوق --- */}
+                    {view === 'market' && (
+                        <div className="animate-slide-up space-y-6 mt-4">
+                            <h2 className="text-2xl font-black text-white border-r-4 border-yellow-500 pr-3">كواليس المافيا التقنية</h2>
+                            <p className="text-sm text-gray-400 mb-6 bg-tech-card p-3 rounded-lg border border-zinc-800">من المنجم والصين إلى موزع درب غلف.. هكذا تتحرك الأجهزة.</p>
+                            
+                            {marketSecrets.map((secret, i) => (
+                                <div key={i} className="bg-tech-card border border-zinc-800 p-5 rounded-2xl shadow-md">
+                                    <h3 className="font-bold text-yellow-500 mb-4 text-lg border-b border-zinc-800 pb-2"><i className={`fa-solid ${secret.icon} mr-2`}></i> {secret.category}</h3>
+                                    <div className="space-y-4">
+                                        {secret.items.map((item, j) => (
+                                            <div key={j}>
+                                                <h4 className="font-bold text-white text-sm mb-1">{item.title}</h4>
+                                                <p className="text-xs text-gray-400 leading-relaxed">{item.desc}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                            <button onClick={() => setView('home')} className="w-full bg-tech-surface border border-zinc-800 py-3 rounded-xl font-bold text-gray-300">رجوع</button>
+                        </div>
+                    )}
+
+                    {/* --- صفحة الفحص خطوة بخطوة --- */}
+                    {view === 'inspection' && (
+                        <div className="h-full flex flex-col animate-fade-in mt-4">
+                            <div className="flex justify-between text-xs text-gray-500 mb-2 font-bold">
+                                <span>المرحلة {currentStep + 1} من {activeInspection.length}</span>
+                                <span className="uppercase">{deviceType} TEST</span>
+                            </div>
+                            <div className="w-full bg-zinc-800 h-1.5 rounded-full mb-6 overflow-hidden">
+                                <div className="bg-gradient-to-r from-tech-primary to-tech-secondary h-1.5 rounded-full transition-all duration-500" style={{ width: `${((currentStep + 1) / activeInspection.length) * 100}%` }}></div>
+                            </div>
+                            
+                            <div className="bg-tech-card border border-zinc-800 rounded-3xl p-6 shadow-2xl relative">
+                                <div className="flex flex-col items-center mb-6">
+                                    <div className="w-16 h-16 bg-tech-surface rounded-full flex items-center justify-center text-3xl mb-3 border border-zinc-700 shadow-inner">
+                                        <i className={`fa-solid ${activeInspection[currentStep].icon} text-transparent bg-clip-text bg-gradient-to-br from-tech-primary to-tech-secondary`}></i>
+                                    </div>
+                                    <h2 className="text-xl font-bold text-white text-center">{activeInspection[currentStep].title}</h2>
+                                </div>
+
+                                {!stepResult && (
+                                    <div className="bg-blue-900/10 border border-blue-900/50 p-4 rounded-xl mb-6 animate-slide-up">
+                                        <p className="text-blue-200 text-center font-bold text-sm leading-relaxed"><i className="fa-solid fa-circle-info ml-1 text-blue-400"></i> {activeInspection[currentStep].instruction}</p>
+                                    </div>
+                                )}
+
+                                {!stepResult ? (
+                                    <div className="grid gap-3 animate-slide-up">
+                                        {activeInspection[currentStep].options.map((opt, i) => (
+                                            <button key={i} onClick={() => handleAnswer(opt)} className="w-full bg-tech-surface hover:bg-zinc-800 text-white p-4 rounded-xl border border-zinc-700 font-bold text-right flex justify-between items-center transition-all group">
+                                                <span>{opt.text}</span><i className="fa-solid fa-chevron-left text-gray-600 group-hover:text-tech-primary"></i>
+                                            </button>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="animate-fade-in text-center space-y-4">
+                                        <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl mb-2 ${stepResult.status === 'good' ? 'bg-green-900/30 text-green-500 border border-green-800' : 'bg-red-900/30 text-red-500 border border-red-800'}`}>
+                                            <i className={`fa-solid ${stepResult.status === 'good' ? 'fa-check' : 'fa-triangle-exclamation'}`}></i>
+                                        </div>
+                                        <h3 className={`text-xl font-black ${stepResult.status === 'good' ? 'text-green-400' : 'text-red-400'}`}>{stepResult.result}</h3>
+                                        <p className="text-gray-300 text-sm bg-tech-surface p-3 rounded-lg border border-zinc-800">{stepResult.advice}</p>
+
+                                        <button onClick={nextStep} className="w-full bg-white text-black font-black py-3 rounded-xl shadow-lg hover:bg-gray-200 transition mt-4 flex items-center justify-center gap-2">
+                                            {currentStep < activeInspection.length - 1 ? 'المرحلة التالية' : 'عرض التقرير النهائي'} <i className="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- التقرير النهائي --- */}
+                    {view === 'report' && (
+                        <div className="animate-fade-in space-y-6 mt-4">
+                            <div className="text-center">
+                                <h2 className="text-2xl font-black text-white">تقرير الفحص النهائي 📋</h2>
+                                <p className="text-gray-400 text-sm mt-1">النتيجة العلمية والمادية لـ {deviceType === 'pc' ? 'الحاسوب' : 'الهاتف'}</p>
+                            </div>
+
+                            {defects.length === 0 ? (
+                                <div className="bg-green-900/20 border border-green-600/50 p-8 rounded-3xl text-center shadow-lg">
+                                    <i className="fa-solid fa-shield-check text-6xl text-green-500 mb-4"></i>
+                                    <h3 className="text-2xl font-bold text-white mb-2">جهاز ممتاز جداً!</h3>
+                                    <p className="text-green-200 text-sm">كل القطع (Hardware) سليمة ولا يوجد Thermal Throttling أو عيوب شاشة. يمكنك شراؤه بأمان.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className="bg-red-900/20 border border-red-900/50 p-4 rounded-xl mb-4">
+                                        <p className="text-red-400 font-bold text-center text-sm"><i className="fa-solid fa-triangle-exclamation"></i> تم رصد أعطاب تقنية تؤثر على السعر والأداء</p>
+                                    </div>
+                                    {defects.map((def, i) => (
+                                        <div key={i} className="bg-tech-card p-4 rounded-xl border-r-4 border-red-500 flex justify-between items-center shadow-md">
+                                            <div>
+                                                <h4 className="font-bold text-white text-sm">{def.title}</h4>
+                                                <p className="text-xs text-red-400 mt-1">{def.result}</p>
+                                            </div>
+                                            <span className="font-black text-gray-300 text-sm bg-zinc-800 px-2 py-1 rounded">خصم -{def.price}DH</span>
+                                        </div>
+                                    ))}
+                                    <div className="bg-gradient-to-l from-zinc-800 to-zinc-900 p-5 rounded-2xl flex justify-between items-center border border-zinc-700 shadow-xl">
+                                        <span className="text-gray-300 font-bold text-sm">قيمة التفاوض (نقص هاد الثمن):</span>
+                                        <span className="text-2xl font-black text-red-400">{defects.reduce((a, b) => a + b.price, 0)} DH</span>
+                                    </div>
+                                    <p className="text-xs text-center text-gray-500 mt-2">إذا كان العطب في كارت الشاشة (GPU)، نوصي بإلغاء الشراء تماماً.</p>
+                                </div>
+                            )}
+
+                            <hr className="border-zinc-800 my-6" />
+
+                            <div className="bg-blue-900/10 border border-blue-900/30 p-5 rounded-2xl">
+                                <h3 className="text-blue-400 font-bold text-sm mb-3"><i className="fa-solid fa-lightbulb"></i> نصائح المستقبل (Future-Proofing)</h3>
+                                <ul className="text-xs text-blue-100 space-y-2 leading-relaxed">
+                                    <li><i className="fa-solid fa-check text-blue-500 ml-1"></i> <strong>الرام:</strong> لا تشتري أقل من 16GB (للهواتف LPDDR5X) أو 32GB (للحواسيب DDR5).</li>
+                                    <li><i className="fa-solid fa-check text-blue-500 ml-1"></i> <strong>التخزين:</strong> يجب أن يكون UFS 4.0 للهواتف أو NVMe Gen 4 للحواسيب (سرعة 7000MB/s).</li>
+                                    <li><i className="fa-solid fa-check text-blue-500 ml-1"></i> <strong>إكسسوارات معتمدة:</strong> استخدم شواحن Anker أو Baseus وكابلات Braided لتجنب إتلاف دوائر الـ PMIC.</li>
+                                </ul>
+                            </div>
+
+                            <button onClick={() => setView('home')} className="w-full bg-tech-surface border border-zinc-700 text-white py-3 rounded-xl hover:bg-zinc-800 transition font-bold shadow-md">رجوع للرئيسية</button>
+                        </div>
+                    )}
+
+                </main>
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+</body>
+</html>
