@@ -39,6 +39,7 @@
 </head>
 <body class="bg-brand-black text-gray-300 antialiased">
 
+    <!-- NAVBAR -->
     <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="relative z-[60]">
@@ -48,7 +49,8 @@
                 <a href="#accueil" class="text-white hover:text-brand-primary transition font-medium text-sm">Accueil</a>
                 <a href="#expertises" class="text-white hover:text-brand-primary transition font-medium text-sm">Nos Expertises</a>
                 <a href="#realisations" class="text-white hover:text-brand-primary transition font-medium text-sm">Réalisations</a>
-                <a href="a-propos.html" class="text-white hover:text-brand-primary transition font-medium text-sm">À propos</a>
+                <!-- الرابط معدل هنا -->
+                <a href="https://mehdiouatmane.github.io/mehdiouatmane/auditcom/a-propos.html" class="text-white hover:text-brand-primary transition font-medium text-sm">À propos</a>
                 <a href="#contact" class="bg-brand-primary text-white px-6 py-2.5 rounded font-semibold hover:bg-blue-700 transition text-sm">Demander un devis gratuit</a>
             </div>
             <div class="md:hidden relative z-[60] hamburger" id="menuToggleBtn">
@@ -57,16 +59,19 @@
         </div>
     </nav>
 
+    <!-- MOBILE MENU -->
     <div id="mobileMenuOverlay" class="fixed inset-0 bg-brand-black/95 backdrop-blur-md z-[55] flex flex-col pt-24 px-6 overflow-y-auto pb-24">
         <button id="closeMenuBtn" class="absolute top-6 right-6 text-gray-400 hover:text-brand-primary transition"><i data-lucide="x" class="w-8 h-8"></i></button>
         <div class="flex flex-col gap-6 w-full mt-4">
             <a href="#accueil" class="mobile-link text-white font-medium text-lg border-b border-zinc-800/50 pb-4">Accueil</a>
             <a href="#expertises" class="mobile-link text-white font-medium text-lg border-b border-zinc-800/50 pb-4">Nos Expertises</a>
-            <a href="a-propos.html" class="mobile-link text-white font-medium text-lg border-b border-zinc-800/50 pb-4">À propos</a>
+            <!-- الرابط معدل هنا -->
+            <a href="https://mehdiouatmane.github.io/mehdiouatmane/auditcom/a-propos.html" class="mobile-link text-white font-medium text-lg border-b border-zinc-800/50 pb-4">À propos</a>
             <a href="#contact" class="mobile-link text-white font-medium text-lg pb-4 text-brand-primary">Demander un devis gratuit</a>
         </div>
     </div>
 
+    <!-- HERO SECTION -->
     <header id="accueil" class="relative pt-40 pb-20 px-6 flex flex-col items-center text-center min-h-[85vh] justify-center overflow-hidden">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-brand-primary/20 rounded-full blur-[120px] pointer-events-none -z-10"></div>
         <div class="container mx-auto max-w-4xl z-10">
@@ -83,6 +88,7 @@
         </div>
     </header>
 
+    <!-- POURQUOI NOUS CHOISIR -->
     <section class="py-20 bg-brand-dark border-t border-zinc-900">
         <div class="container mx-auto px-6 max-w-6xl">
             <div class="text-center mb-16" data-aos="fade-up">
@@ -109,14 +115,17 @@
         </div>
     </section>
 
+    <!-- NOS EXPERTISES -->
     <section id="expertises" class="py-20 bg-brand-black">
         <div class="container mx-auto px-6 max-w-6xl">
             <h2 class="text-3xl md:text-4xl font-bold text-white mb-12 text-center" data-aos="fade-up">Des solutions web complètes pour chaque étape de votre croissance.</h2>
             <div class="grid md:grid-cols-2 gap-6">
+                <!-- Carte 1 -->
                 <div class="bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 group hover:border-brand-primary transition">
                     <h3 class="text-2xl font-bold text-white mb-4">Création de site WordPress</h3>
                     <p class="text-gray-400 mb-6 min-h-[80px]">Site vitrine ou e-commerce (WooCommerce), développé sur mesure pour répondre précisément à vos objectifs commerciaux.</p>
-                    <a href="creation-site.html" class="text-brand-primary font-bold inline-flex items-center gap-2 group-hover:text-white transition">En savoir plus <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                    <!-- الرابط معدل هنا -->
+                    <a href="https://mehdiouatmane.github.io/mehdiouatmane/auditcom/creasitweb.html" class="text-brand-primary font-bold inline-flex items-center gap-2 group-hover:text-white transition">En savoir plus <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
                 <div class="bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 group hover:border-brand-primary transition">
                     <h3 class="text-2xl font-bold text-white mb-4">Refonte & Optimisation</h3>
@@ -137,6 +146,7 @@
         </div>
     </section>
 
+    <!-- NOTRE MÉTHODOLOGIE -->
     <section class="py-20 bg-brand-dark border-y border-zinc-900">
         <div class="container mx-auto px-6 max-w-5xl">
             <h2 class="text-3xl md:text-4xl font-bold text-white mb-16 text-center" data-aos="fade-up">Un processus clair, de l'idée à la mise en ligne.</h2>
@@ -173,6 +183,7 @@
         </div>
     </section>
 
+    <!-- TÉMOIGNAGES & STATS -->
     <section class="py-20 bg-brand-black">
         <div class="container mx-auto px-6 max-w-5xl">
             <h2 class="text-3xl md:text-4xl font-bold text-white mb-12 text-center" data-aos="fade-up">Ils nous ont fait confiance pour leur présence en ligne.</h2>
@@ -205,6 +216,7 @@
         </div>
     </section>
 
+    <!-- CONTACT FORM -->
     <section id="contact" class="py-24 bg-brand-primary relative overflow-hidden">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div class="container mx-auto px-6 max-w-5xl relative z-10 grid md:grid-cols-2 gap-12 items-center">
@@ -242,6 +254,7 @@
         </div>
     </section>
 
+    <!-- FOOTER -->
     <footer class="bg-brand-black pt-20 pb-10 border-t border-zinc-900 relative">
         <div class="container mx-auto px-6 max-w-6xl">
             <div class="grid md:grid-cols-4 gap-12 mb-16">
@@ -259,8 +272,9 @@
                     <ul class="space-y-3 text-sm text-gray-400">
                         <li><a href="#accueil" class="hover:text-brand-primary transition">Accueil</a></li>
                         <li><a href="#expertises" class="hover:text-brand-primary transition">Services</a></li>
-                        <li><a href="mentions-legales.html" class="hover:text-brand-primary transition">Mentions légales</a></li>
-                        <li><a href="rgpd.html" class="hover:text-brand-primary transition">Politique de confidentialité</a></li>
+                        <!-- الروابط معدلة هنا -->
+                        <li><a href="https://mehdiouatmane.github.io/mehdiouatmane/auditcom/menlega.html" class="hover:text-brand-primary transition">Mentions légales</a></li>
+                        <li><a href="https://mehdiouatmane.github.io/mehdiouatmane/auditcom/audirg.html" class="hover:text-brand-primary transition">Politique de confidentialité</a></li>
                     </ul>
                 </div>
 
@@ -331,13 +345,12 @@
 
         // Formulaires Fix (Newsletter & Contact)
         document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // <-- هادي لي كانت ناقصة باش الصفحة ماديرش Refresh
+            e.preventDefault(); 
             const btn = document.getElementById('nlSubmitBtn');
             const msg = document.getElementById('nlMessage');
             btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
             lucide.createIcons();
             
-            // محاكاة إرسال البيانات
             setTimeout(() => {
                 this.reset();
                 btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-white"></i>';
