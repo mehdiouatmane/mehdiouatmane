@@ -1,1 +1,88 @@
-jjj
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentions Légales | AUDITCOM</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'poppins': ['Poppins', 'sans-serif'] },
+                    colors: {
+                        brand: { black: '#050505', dark: '#0f1115', card: '#16181d', primary: '#2563EB' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>body { font-family: 'Poppins', sans-serif; background-color: #050505; color: #ffffff; }</style>
+</head>
+<body class="bg-brand-black text-gray-300 antialiased">
+
+    <!-- NAVBAR SIMPLE -->
+    <nav class="border-b border-zinc-800 bg-brand-black sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html">
+                <img src="https://mehdiouatmane.github.io/mehdiouatmane/auditcom.jpg" alt="AUDITCOM" class="h-10 bg-white px-2 py-1 rounded">
+            </a>
+            <a href="index.html" class="text-gray-400 hover:text-white flex items-center gap-2 text-sm font-medium">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Retour à l'accueil
+            </a>
+        </div>
+    </nav>
+
+    <!-- HEADER DE LA PAGE -->
+    <header class="py-16 bg-brand-dark border-b border-zinc-900 text-center px-6">
+        <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">Mentions Légales</h1>
+        <p class="text-brand-primary font-medium">Informations légales et conditions d'utilisation</p>
+    </header>
+
+    <!-- ZONE DE CONTENU -->
+    <main class="py-16 px-6">
+        <div class="container mx-auto max-w-4xl bg-brand-card p-8 md:p-12 rounded-3xl border border-zinc-800 shadow-2xl">
+            <article class="prose prose-invert prose-lg max-w-none prose-a:text-brand-primary hover:prose-a:text-blue-400">
+                
+                <p>Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du site <strong>[www.auditcom.fr]</strong> l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.</p>
+
+                <h2>1. Édition du site</h2>
+                <p>Le présent site, accessible à l’URL <strong>[www.auditcom.fr]</strong>, est édité par :<br>
+                La société <strong>Auditcom</strong>, [Forme juridique : ex. SASU / SARL / Auto-entrepreneur], au capital de [Montant] euros, inscrite au R.C.S. de [Ville du greffe] sous le numéro [Numéro SIREN/SIRET], dont le siège social est situé au [Adresse complète du siège social].<br>
+                Représentée par <strong>[Prénom Nom du dirigeant]</strong>, en sa qualité de [Gérant / Président].<br>
+                Numéro de TVA intracommunautaire : [FR XX XXXXXXXXX].<br>
+                Contact : [votre.email@auditcom.fr] / [Votre numéro de téléphone].</p>
+
+                <h2>2. Hébergement</h2>
+                <p>Le site est hébergé par la société :<br>
+                <strong>[Nom de l'hébergeur, ex : OVH, O2Switch, Hostinger]</strong>,<br>
+                [Forme juridique de l'hébergeur], au capital de [Montant] euros, dont le siège social est situé au : [Adresse complète de l'hébergeur].<br>
+                Téléphone : [Numéro de l'hébergeur].</p>
+
+                <h2>3. Propriété intellectuelle et contrefaçons</h2>
+                <p>La société <strong>Auditcom</strong> est propriétaire des droits de propriété intellectuelle et détient les droits d’usage sur tous les éléments accessibles sur le site internet, notamment les textes, images, graphismes, logos, vidéos, architecture, icônes et sons.</p>
+                <p>Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de la société Auditcom.</p>
+                <p>Toute exploitation non autorisée du site ou de l’un quelconque des éléments qu’il contient sera considérée comme constitutive d’une contrefaçon et poursuivie conformément aux dispositions des articles L.335-2 et suivants du Code de Propriété Intellectuelle.</p>
+
+                <h2>4. Limitations de responsabilité</h2>
+                <p>La société Auditcom ne pourra être tenue pour responsable des dommages directs et indirects causés au matériel de l’utilisateur, lors de l’accès au site. La société Auditcom décline toute responsabilité quant à l’utilisation qui pourrait être faite des informations et contenus présents sur ce site.</p>
+
+                <h2>5. Données personnelles et RGPD</h2>
+                <p>Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés, vous disposez d’un droit d’accès, de rectification, de suppression et d’opposition aux données personnelles vous concernant. Vous pouvez l’exercer en nous contactant à l’adresse suivante : <strong>[votre.email@auditcom.fr]</strong>.</p>
+                <p><em>Pour plus d'informations sur l'utilisation de vos données, veuillez consulter notre <a href="rgpd.html">Politique de confidentialité</a>.</em></p>
+
+                <h2>6. Droit applicable et attribution de juridiction</h2>
+                <p>Tout litige en relation avec l’utilisation du site <strong>[www.auditcom.fr]</strong> est soumis au droit français. En dehors des cas où la loi ne le permet pas, il est fait attribution exclusive de juridiction aux tribunaux compétents de <strong>[Ville de votre tribunal de commerce]</strong>.</p>
+
+            </article>
+        </div>
+    </main>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
