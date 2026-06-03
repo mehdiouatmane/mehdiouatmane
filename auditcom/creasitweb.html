@@ -1,1 +1,90 @@
-jjj
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création de Site Vitrine | AUDITCOM</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'poppins': ['Poppins', 'sans-serif'] },
+                    colors: {
+                        brand: { black: '#050505', dark: '#0f1115', card: '#16181d', primary: '#2563EB' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>body { font-family: 'Poppins', sans-serif; background-color: #050505; color: #ffffff; }</style>
+</head>
+<body class="bg-brand-black text-gray-300 antialiased">
+
+    <!-- NAVBAR SIMPLE -->
+    <nav class="border-b border-zinc-800 bg-brand-black sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html">
+                <img src="https://mehdiouatmane.github.io/mehdiouatmane/auditcom.jpg" alt="AUDITCOM" class="h-10 bg-white px-2 py-1 rounded">
+            </a>
+            <a href="index.html" class="text-gray-400 hover:text-white flex items-center gap-2 text-sm font-medium">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Retour à l'accueil
+            </a>
+        </div>
+    </nav>
+
+    <!-- HEADER DE LA PAGE (Section Héro de la demande) -->
+    <header class="py-20 bg-brand-dark border-b border-zinc-900 text-center px-6 relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-brand-primary/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+        <div class="container mx-auto max-w-4xl z-10">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">Création de Site Vitrine WordPress</h1>
+            <p class="text-brand-primary text-xl font-bold mb-4">Votre entreprise, enfin visible et crédible en ligne.</p>
+            <p class="text-gray-300 text-lg leading-relaxed mb-10">Offrez à votre activité une présence digitale professionnelle, rapide et optimisée pour Google. Chez <strong>Auditcom</strong>, nous transformons votre savoir-faire en un site web moderne qui inspire confiance et génère des contacts qualifiés.</p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="index.html#contact" class="bg-brand-primary text-white font-bold py-4 px-8 rounded-xl hover:bg-blue-700 transition w-full sm:w-auto text-center">Demander un devis gratuit pour mon site</a>
+                <a href="index.html#realisations" class="bg-transparent border border-zinc-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-zinc-800 transition w-full sm:w-auto text-center">Voir nos réalisations</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ZONE DE CONTENU -->
+    <main class="py-16 px-6">
+        <div class="container mx-auto max-w-4xl bg-brand-card p-8 md:p-12 rounded-3xl border border-zinc-800 shadow-2xl">
+            <article class="prose prose-invert prose-lg max-w-none prose-a:text-brand-primary hover:prose-a:text-blue-400">
+                
+                <h2>Un site web ne doit pas être une dépense, mais votre meilleur commercial.</h2>
+                <p>Vous avez une expertise exceptionnelle, mais votre présence en ligne ne la reflète pas ? Un site lent, un design daté, ou une absence totale sur le web vous coûtent des clients chaque jour au profit de vos concurrents.</p>
+                <p>Avec <strong>Auditcom</strong>, fini les sites "bricolés" ou les templates génériques. Nous concevons des sites vitrines sur mesure, pensés pour mettre en valeur votre identité de marque et guider vos visiteurs vers la prise de contact.</p>
+
+                <h2>Un site vitrine complet, conçu pour performer.</h2>
+                <p>Voici ce qui est inclus dans notre offre :</p>
+                
+                <ul>
+                    <li>🎨 <strong>Design 100% Sur Mesure :</strong> Une charte graphique unique, alignée avec votre logo et vos valeurs, pour une image de marque irréprochable.</li>
+                    <li>📱 <strong>100% Responsive (Mobile First) :</strong> Votre site s’adapte parfaitement à tous les écrans (smartphone, tablette, ordinateur), car plus de 60% de vos visiteurs vous consulteront depuis un mobile.</li>
+                    <li>🔍 <strong>Optimisation SEO (Référencement) :</strong> Nous intégrons les bonnes pratiques de référencement naturel dès la conception (structure des titres, balises, vitesse) pour aider votre site à apparaître sur Google.</li>
+                    <li>⚡ <strong>Performance & Vitesse :</strong> Un site qui se charge en moins de 2 secondes pour offrir une expérience utilisateur fluide et satisfaire les algorithmes de Google.</li>
+                </ul>
+
+            </article>
+
+            <!-- CTA BAS DE PAGE -->
+            <div class="mt-16 pt-8 border-t border-zinc-800 text-center">
+                <h3 class="text-xl font-bold text-white mb-6">Prêt à attirer de nouveaux clients ?</h3>
+                <a href="index.html#contact" class="inline-flex items-center gap-2 bg-brand-primary text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-600 transition">
+                    Discutons de votre projet <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
