@@ -254,6 +254,10 @@
         </div>
     </section>
 
+
+
+
+    
     <!-- FOOTER -->
     <footer class="bg-brand-black pt-20 pb-10 border-t border-zinc-900 relative">
         <div class="container mx-auto px-6 max-w-6xl">
@@ -343,45 +347,82 @@
         const statsContainer = document.getElementById('stats-container');
         if(statsContainer) observer.observe(statsContainer);
 
-        // Formulaires Fix (Newsletter & Contact)
-        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            const btn = document.getElementById('nlSubmitBtn');
-            const msg = document.getElementById('nlMessage');
-            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
-            lucide.createIcons();
-            
-            setTimeout(() => {
-                this.reset();
-                btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-white"></i>';
-                lucide.createIcons();
-                msg.classList.remove('hidden');
-                setTimeout(() => {
-                    btn.innerHTML = '<i data-lucide="send" class="w-4 h-4 text-white"></i>';
-                    lucide.createIcons();
-                    msg.classList.add('hidden');
-                }, 3000);
-            }, 1000);
-        });
 
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = this.querySelector('button');
-            const originalContent = btn.innerHTML;
-            btn.innerHTML = 'Envoi en cours... <i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
-            lucide.createIcons();
-            
-            setTimeout(() => {
-                this.reset();
-                btn.innerHTML = 'Message envoyé avec succès ! <i data-lucide="check" class="w-4 h-4 text-white"></i>';
-                btn.classList.replace('bg-brand-primary', 'bg-green-600');
-                lucide.createIcons();
-                setTimeout(() => {
-                    btn.innerHTML = originalContent;
-                    btn.classList.replace('bg-green-600', 'bg-brand-primary');
-                }, 4000);
-            }, 1500);
+        
+        // Formulaires Fix (Newsletter & Contact)
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button');
+    const name = this.querySelector('input[type="text"]').value;
+    const email = this.querySelector('input[type="email"]').value;
+    const message = this.querySelector('textarea').value;
+
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = 'Envoi en cours... <i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
+    lucide.createIcons();
+
+    const text = `📩 *Nouvelle demande de devis Auditcom*\n\n👤 *Nom:* ${name}\n📧 *Email:* ${email}\n💬 *Message:* ${message}`;
+
+    try {
+        await fetch(`https://api.telegram.org/bot8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: "1335982188", text: text, parse_mode: "Markdown" })
         });
+        
+        this.reset();
+        btn.innerHTML = 'Message envoyé ! <i data-lucide="check" class="w-4 h-4 text-white"></i>';
+        btn.classList.replace('bg-brand-primary', 'bg-green-600');
+    } catch (error) {
+        btn.innerHTML = 'Erreur...';
+    }
+    
+    setTimeout(() => {
+        btn.innerHTML = originalContent;
+        btn.classList.replace('bg-green-600', 'bg-brand-primary');
+    }, 4000);
+});
+
+
+
+        
+
+document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('nlEmail').value;
+    const btn = document.getElementById('nlSubmitBtn');
+    const msg = document.getElementById('nlMessage');
+    
+    btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
+    
+    const text = `📧 *Nouvelle inscription Newsletter*\n\n📧 *Email:* ${email}`;
+
+    try {
+        await fetch(`https://api.telegram.org/bot8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: "1335982188", text: text, parse_mode: "Markdown" })
+        });
+        
+        this.reset();
+        msg.classList.remove('hidden');
+        msg.innerText = "Inscription réussie !";
+    } catch (error) {
+        msg.innerText = "Erreur d'envoi.";
+        msg.classList.remove('hidden');
+    }
+
+    setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="send" class="w-4 h-4 text-white"></i>';
+        msg.classList.add('hidden');
+    }, 3000);
+});
+
+
+
+
+        
+        
     </script>
 </body>
 </html>
