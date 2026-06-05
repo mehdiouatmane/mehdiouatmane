@@ -446,79 +446,125 @@
         if(statsContainer) observer.observe(statsContainer);
 
 
+
+
+
+
+
+
+
+
+
+
+
+        // Formulaires Fix (Newsletter & Contact) - Mises à jour via Google Apps Script
         
-        // Formulaires Fix (Newsletter & Contact)
-document.getElementById('contactForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = this.querySelector('button');
-    const name = this.querySelector('input[type="text"]').value;
-    const email = this.querySelector('input[type="email"]').value;
-    const message = this.querySelector('textarea').value;
+        // رابط الـ Web App الخاص بك (تم استخراجه من صورتك)
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHfI8cgPBhDs5Zio-IBpWF49Q2bc246QNpuNij7po4_75xRAmPylXkgXqQoqh7LqrmkA/exec";
 
-    const originalContent = btn.innerHTML;
-    btn.innerHTML = 'Envoi en cours... <i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
-    lucide.createIcons();
+        // 1. كود فورم طلب التسعيرة (Devis)
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            const name = this.querySelector('input[type="text"]').value;
+            const email = this.querySelector('input[type="email"]').value;
+            const message = this.querySelector('textarea').value;
 
-    const text = `📩 *Nouvelle demande de devis Auditcom*\n\n👤 *Nom:* ${name}\n📧 *Email:* ${email}\n💬 *Message:* ${message}`;
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = 'Envoi en cours... <i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
+            lucide.createIcons();
 
-    try {
-        await fetch(`https://api.telegram.org/bot8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: "1335982188", text: text, parse_mode: "Markdown" })
+            // تجهيز البيانات للإرسال للسكريبت
+            const data = {
+                type: "devis",
+                name: name,
+                email: email,
+                project: message
+            };
+
+            try {
+                // إرسال البيانات إلى Google Apps Script بدلاً من تيليغرام مباشرة
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                    // لا نحتاج لـ headers لكي لا نواجه مشاكل CORS
+                });
+                
+                const result = await response.json();
+                
+                if(result.status === "success") {
+                    this.reset();
+                    btn.innerHTML = 'Message envoyé ! <i data-lucide="check" class="w-4 h-4 text-white"></i>';
+                    btn.classList.replace('bg-brand-primary', 'bg-green-600');
+                } else {
+                    btn.innerHTML = 'Erreur...';
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                btn.innerHTML = 'Erreur de connexion';
+            }
+            
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.classList.replace('bg-green-600', 'bg-brand-primary');
+                lucide.createIcons(); // إعادة تفعيل الأيقونات
+            }, 4000);
         });
-        
-        this.reset();
-        btn.innerHTML = 'Message envoyé ! <i data-lucide="check" class="w-4 h-4 text-white"></i>';
-        btn.classList.replace('bg-brand-primary', 'bg-green-600');
-    } catch (error) {
-        btn.innerHTML = 'Erreur...';
-    }
-    
-    setTimeout(() => {
-        btn.innerHTML = originalContent;
-        btn.classList.replace('bg-green-600', 'bg-brand-primary');
-    }, 4000);
-});
 
+        // 2. كود النشرة الإخبارية (Newsletter)
+        document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('nlEmail').value;
+            const btn = document.getElementById('nlSubmitBtn');
+            const msg = document.getElementById('nlMessage');
+            
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
+            lucide.createIcons();
+            
+            const data = {
+                type: "newsletter",
+                email: email
+            };
 
+            try {
+                // إرسال البيانات إلى Google Apps Script
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
 
-        
+                if(result.status === "success") {
+                    this.reset();
+                    msg.classList.remove('hidden');
+                    msg.innerText = "Inscription réussie ! Un email a été envoyé.";
+                } else {
+                    msg.innerText = "Erreur d'inscription.";
+                    msg.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                msg.innerText = "Erreur de connexion.";
+                msg.classList.remove('hidden');
+            }
 
-document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const email = document.getElementById('nlEmail').value;
-    const btn = document.getElementById('nlSubmitBtn');
-    const msg = document.getElementById('nlMessage');
-    
-    btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
-    
-    const text = `📧 *Nouvelle inscription Newsletter*\n\n📧 *Email:* ${email}`;
-
-    try {
-        await fetch(`https://api.telegram.org/bot8408154510:AAFwy1wUjPKaAutPZ6dTlO08KxiFkTuKy_0/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: "1335982188", text: text, parse_mode: "Markdown" })
+            setTimeout(() => {
+                btn.innerHTML = '<i data-lucide="send" class="w-4 h-4 text-white"></i>';
+                lucide.createIcons();
+                msg.classList.add('hidden');
+            }, 4000);
         });
+
+
+
+
+
         
-        this.reset();
-        msg.classList.remove('hidden');
-        msg.innerText = "Inscription réussie !";
-    } catch (error) {
-        msg.innerText = "Erreur d'envoi.";
-        msg.classList.remove('hidden');
-    }
 
-    setTimeout(() => {
-        btn.innerHTML = '<i data-lucide="send" class="w-4 h-4 text-white"></i>';
-        msg.classList.add('hidden');
-    }, 3000);
-});
-
-
-
-
+        
+        
+        
         
         
     </script>
