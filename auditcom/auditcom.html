@@ -497,11 +497,17 @@
 
 
 
+
+
+
+    
+
+
     
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
-    <script>
+        <script>
         lucide.createIcons();
         AOS.init({ once: true, offset: 50 });
 
@@ -535,6 +541,7 @@
         const statsContainer = document.getElementById('stats-container');
         if(statsContainer) observer.observe(statsContainer);
 
+        </script>
 
 
 
@@ -544,12 +551,9 @@
 
 
 
-
-
-
+        <script>
         // Formulaires Fix (Newsletter & Contact) - Mises à jour via Google Apps Script
         
-        // رابط الـ Web App الخاص بك (تم استخراجه من صورتك)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHfI8cgPBhDs5Zio-IBpWF49Q2bc246QNpuNij7po4_75xRAmPylXkgXqQoqh7LqrmkA/exec";
 
         // 1. كود فورم طلب التسعيرة (Devis)
@@ -564,7 +568,6 @@
             btn.innerHTML = 'Envoi en cours... <i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>';
             lucide.createIcons();
 
-            // تجهيز البيانات للإرسال للسكريبت
             const data = {
                 type: "devis",
                 name: name,
@@ -573,11 +576,13 @@
             };
 
             try {
-                // إرسال البيانات إلى Google Apps Script بدلاً من تيليغرام مباشرة
+                // التعديل هنا: إضافة headers لتخطي مشكلة CORS
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8",
+                    },
                     body: JSON.stringify(data)
-                    // لا نحتاج لـ headers لكي لا نواجه مشاكل CORS
                 });
                 
                 const result = await response.json();
@@ -597,7 +602,7 @@
             setTimeout(() => {
                 btn.innerHTML = originalContent;
                 btn.classList.replace('bg-green-600', 'bg-brand-primary');
-                lucide.createIcons(); // إعادة تفعيل الأيقونات
+                lucide.createIcons();
             }, 4000);
         });
 
@@ -617,9 +622,12 @@
             };
 
             try {
-                // إرسال البيانات إلى Google Apps Script
+                // التعديل هنا: إضافة headers لتخطي مشكلة CORS
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8",
+                    },
                     body: JSON.stringify(data)
                 });
                 
@@ -645,12 +653,8 @@
                 msg.classList.add('hidden');
             }, 4000);
         });
-        
-
-
-
-        
-    </script>
+            
+        </script>
 
 
 
