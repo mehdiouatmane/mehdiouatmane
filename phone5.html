@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المرجع التقني الشامل | Tech Hub</title>
+    
+    <!-- Tailwind CSS للتصميم -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel لترجمة JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { font-family: 'Tajawal', system-ui, -apple-system, sans-serif; background-color: #f3f4f6; }
+        .tab-active { border-bottom: 4px solid #3b82f6; color: #1d4ed8; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // مكون الفحص الميداني
+        const DiagnosticDiagnostic = () => (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">🔍 المحقق التقني والفحص المباشر</h2>
+                <p className="text-gray-600 mb-4">أدخل نتائج الفحص من المحل للتأكد من سلامة القطع:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button className="bg-blue-100 text-blue-700 p-4 rounded-lg hover:bg-blue-200 transition">فحص حالة البطارية (Battery Health)</button>
+                    <button className="bg-blue-100 text-blue-700 p-4 rounded-lg hover:bg-blue-200 transition">فحص الشاشة (Dead Pixels)</button>
+                    <button className="bg-blue-100 text-blue-700 p-4 rounded-lg hover:bg-blue-200 transition">فحص القرص الصلب (eMMC / UFS / SSD)</button>
+                    <button className="bg-blue-100 text-blue-700 p-4 rounded-lg hover:bg-blue-200 transition">فحص الحماية (FRP / iCloud Lock)</button>
+                </div>
+            </div>
+        );
+
+        // مكون بوصلة الأسواق
+        const MarketCompass = () => (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">🧭 بوصلة الأسواق والأسعار</h2>
+                <p className="text-gray-600 mb-4">مقارنة الأثمنة بين السوق الرسمي والسوق الموازي:</p>
+                <table className="w-full text-right border-collapse">
+                    <thead>
+                        <tr className="bg-gray-200">
+                            <th className="p-3 border">الجهاز</th>
+                            <th className="p-3 border">السوق الرسمي (وكالة)</th>
+                            <th className="p-3 border">سوق الجملة (درب غلف/القريعة)</th>
+                            <th className="p-3 border">سوق المستعمل (الكابا)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className="p-3 border font-bold">iPhone 15 Pro Max</td>
+                            <td className="p-3 border text-red-600">16,000 درهم</td>
+                            <td className="p-3 border text-yellow-600">12,500 درهم</td>
+                            <td className="p-3 border text-green-600">10,000 درهم</td>
+                        </tr>
+                        <tr className="bg-gray-50">
+                            <td className="p-3 border font-bold">Samsung S24 Ultra</td>
+                            <td className="p-3 border text-red-600">14,500 درهم</td>
+                            <td className="p-3 border text-yellow-600">11,000 درهم</td>
+                            <td className="p-3 border text-green-600">9,500 درهم</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+
+        // مكون مستشار الشراء
+        const SmartRecommender = () => (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">🤖 مستشار الشراء الذكي</h2>
+                <div className="flex flex-col gap-4 max-w-lg">
+                    <label className="font-semibold">شنو هو الاستعمال الرئيسي ديالك؟</label>
+                    <select className="p-3 border rounded-md bg-gray-50">
+                        <option>مونتاج الفيديو (Premiere Pro, DaVinci)</option>
+                        <option>برمجة وتطوير المواقع</option>
+                        <option>ألعاب (Gaming)</option>
+                        <option>استعمال يومي وتصفح</option>
+                    </select>
+                    
+                    <label className="font-semibold">الميزانية ديالك (بالدرهم):</label>
+                    <input type="number" placeholder="مثال: 8000" className="p-3 border rounded-md bg-gray-50" />
+                    
+                    <button className="bg-gray-900 text-white font-bold p-3 rounded-md hover:bg-gray-800 transition">ابحث عن أفضل خيار</button>
+                </div>
+            </div>
+        );
+
+        // مكون كواليس السوق
+        const MarketUnderworld = () => (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">🕵️‍♂️ كواليس السوق المغربي</h2>
+                <div className="space-y-4">
+                    <div className="p-4 border-r-4 border-red-500 bg-red-50 rounded-l-md">
+                        <h3 className="font-bold text-lg text-red-700">كيفاش كتدخل السلعة المجددة (Refurbished)؟</h3>
+                        <p className="text-sm mt-2 text-gray-700">توضيح للخدع اللي كيستعملوها بعض البائعين باش يبيعو تليفونات مصلوحة في الصين على أساس أنها جديدة باقة في الميكة...</p>
+                    </div>
+                    <div className="p-4 border-r-4 border-yellow-500 bg-yellow-50 rounded-l-md">
+                        <h3 className="font-bold text-lg text-yellow-700">طريق الكابا: من أوروبا للأسواق المغربية</h3>
+                        <p className="text-sm mt-2 text-gray-700">مسار الحواسيب المستعملة وكيفاش كتدخل بدون علب وكيفاش تختار المزيان فيها وتتجنب الأجهزة المعطوبة.</p>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // مكون موسوعة العباقرة
+        const TechLore = () => (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">🧠 موسوعة العباقرة والأكواد</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="border p-4 rounded-lg">
+                        <h3 className="font-bold text-blue-700">George Hotz (Geohot)</h3>
+                        <p className="text-sm text-gray-600 mt-2">قصة اختراق أول Baseband للآيفون وكيفاش ركع أنظمة الحماية...</p>
+                    </div>
+                    <div className="border p-4 rounded-lg">
+                        <h3 className="font-bold text-blue-700">أباطرة الـ eMMC و FRP</h3>
+                        <p className="text-sm text-gray-600 mt-2">كيف تعمل فرق Z3X و Chimera Tool في تجاوز حمايات البلوك الدائم (Persistent Block)...</p>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // التطبيق الرئيسي
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('diagnostic');
+
+            const renderContent = () => {
+                switch(activeTab) {
+                    case 'diagnostic': return <DiagnosticDiagnostic />;
+                    case 'compass': return <MarketCompass />;
+                    case 'recommender': return <SmartRecommender />;
+                    case 'underworld': return <MarketUnderworld />;
+                    case 'lore': return <TechLore />;
+                    default: return <DiagnosticDiagnostic />;
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-100 pb-10">
+                    {/* رأس الصفحة (Header) */}
+                    <header className="bg-gray-900 text-white p-6 shadow-lg">
+                        <div className="max-w-6xl mx-auto flex justify-between items-center">
+                            <h1 className="text-3xl font-extrabold tracking-wider">Tech Hub | المرجع الشامل</h1>
+                            <p className="text-gray-300 hidden md:block">دليلك في عالم الهاردوير والسوفتوير والأسواق</p>
+                        </div>
+                    </header>
+
+                    {/* شريط التنقل (Navigation) */}
+                    <nav className="bg-white shadow-md mb-8">
+                        <div className="max-w-6xl mx-auto flex overflow-x-auto">
+                            <button 
+                                onClick={() => setActiveTab('diagnostic')}
+                                className={`p-4 flex-1 text-center whitespace-nowrap transition ${activeTab === 'diagnostic' ? 'tab-active' : 'text-gray-500 hover:text-gray-800'}`}>
+                                🔍 الفحص الميداني
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('compass')}
+                                className={`p-4 flex-1 text-center whitespace-nowrap transition ${activeTab === 'compass' ? 'tab-active' : 'text-gray-500 hover:text-gray-800'}`}>
+                                🧭 بوصلة الأسواق
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('recommender')}
+                                className={`p-4 flex-1 text-center whitespace-nowrap transition ${activeTab === 'recommender' ? 'tab-active' : 'text-gray-500 hover:text-gray-800'}`}>
+                                🤖 مستشار الشراء
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('underworld')}
+                                className={`p-4 flex-1 text-center whitespace-nowrap transition ${activeTab === 'underworld' ? 'tab-active' : 'text-gray-500 hover:text-gray-800'}`}>
+                                🕵️‍♂️ كواليس السوق
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('lore')}
+                                className={`p-4 flex-1 text-center whitespace-nowrap transition ${activeTab === 'lore' ? 'tab-active' : 'text-gray-500 hover:text-gray-800'}`}>
+                                🧠 موسوعة العباقرة
+                            </button>
+                        </div>
+                    </nav>
+
+                    {/* منطقة عرض المحتوى (Content Area) */}
+                    <main className="max-w-6xl mx-auto px-4">
+                        {renderContent()}
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
