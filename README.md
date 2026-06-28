@@ -77,6 +77,9 @@ francais
 
 <div><a href="https://mehdiouatmane.github.io/mehdiouatmane/phone5.html">phone5</a></div>
 
+<div><a href="https://mehdiouatmane.github.io/mehdiouatmane/phone6.html">phone6</a></div>
+
+
 
 ######
 #######
