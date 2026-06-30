@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aura Tech - The Ultimate Tech Hub</title>
+    
+    <!-- الخطوط والأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- React & Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tech: { 900: '#070709', 800: '#121217', 700: '#1d1d24' },
+                        brand: { primary: '#3b82f6', accent: '#00f2fe', danger: '#ff0844', hack: '#00ff87', gold: '#f59e0b' }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out' },
+                    keyframes: { fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #070709; color: white; }
+        .glass-panel { background: rgba(18, 18, 23, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .neon-border { border: 1px solid #00f2fe; box-shadow: 0 0 10px rgba(0, 242, 254, 0.1); }
+        .blurred-content { filter: blur(8px); user-select: none; pointer-events: none; }
+        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+    const { useState } = React;
+
+    // ==========================================
+    // قاعدة البيانات المركزية 
+    // ==========================================
+    const db = {
+        recommendations: [
+            { id: 1, usage: 'heavy', title: "أداء خارق (3D, مونتاج 4K, ألعاب)", device: "Lenovo Legion Pro 5i", specs: "i7-13700HX, RTX 4060, 32GB DDR5, 1TB SSD, 240Hz QHD+", official: "18,000 DH", dubai: "11,000 DH", grey: "14,000 DH" },
+            { id: 2, usage: 'mid', title: "أداء عالي (برمجة، ألعاب متوسطة)", device: "HP Omen 16 / Victus 15", specs: "i5-13400F, RTX 3050/4060, 16GB DDR5, 512GB SSD", official: "12,000 DH", dubai: "8,000 DH", grey: "9,000 DH" }
+        ],
+        stores: [
+            { name: "AzzamPhone Wholesale", location: "الرباط / قيسارية طارق", type: "جملة / سوق موازي", phone: "06-XX-XX-XX-XX", trust: "98%" },
+            { name: "Derb Ghallef Hub", location: "الدار البيضاء", type: "Caba / استيراد مباشر", phone: "06-XX-XX-XX-XX", trust: "92%" }
+        ],
+        inspectionSteps: [
+            { tool: "FurMark & HWiNFO64", target: "كارت الشاشة (GPU)", action: "شغل اختبار الضغط لمدة 10 دقائق على دقة 1080p.", pass: "الحرارة لم تتجاوز 85° ولا توجد خطوط (Artifacts).", fail: "شاشة زرقاء، انطفاء الجهاز، أو حرارة تتجاوز 90°.", cost: "تغيير اللوحة الأم: 3000 درهم+" },
+            { tool: "Cinebench R23", target: "المعالج (CPU)", action: "اختبار Multi-Core ومراقبة Core Thermal Throttling.", pass: "حرارة مستقرة وأداء مستمر دون تقطيع.", fail: "اختناق حراري فوري (Throttling) أو انطفاء.", cost: "إصلاح نظام التبريد / المعجون: 500 درهم" },
+            { tool: "CrystalDiskInfo", target: "القرص الصلب (SSD)", action: "فحص Health Status و Total Host Writes.", pass: "الحالة Good 100% بلون أزرق.", fail: "حالة Caution أو Bad بلون أحمر.", cost: "تغيير قرص 1TB NVMe: 900 درهم" }
+        ],
+        titans: [
+            { name: "Morris Chang (TSMC)", role: "أباطرة السيليكون والرقائق (Apple, Snapdragon)." },
+            { name: "Cristiano Amon (Qualcomm)", role: "ملوك الـ Baseband والاتصالات 5G." },
+            { name: "Sophie Wilson", role: "مخترعة معمارية ARM للمعالجات." }
+        ],
+        hackers: [
+            { name: "Joe Grand (Kingpin)", feat: "الاختراق الفيزيائي للذواكر عبر التلحيم (eMMC/UFS ISP).", tool: "Z3X Easy-JTAG Plus" },
+            { name: "George Hotz (Geohot)", feat: "ترويض الـ Baseband واستخراج مفاتيح النواة.", tool: "Towelroot / AT Commands" },
+            { name: "axi0mX", feat: "استغلال ثغرة الـ BootROM الدائمة (Checkm8).", tool: "checkra1n" }
+        ]
+    };
+
+    const App = () => {
+        const [activeTab, setActiveTab] = useState('booking');
+
+        return (
+            <div className="min-h-screen flex flex-col">
+                {/* شريط التنقل العلوي */}
+                <header className="glass-panel sticky top-0 z-50 p-4 border-b border-gray-800">
+                    <div className="max-w-6xl mx-auto flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            <i className="fa-solid fa-layer-group text-brand-accent text-2xl"></i>
+                            <h1 className="text-2xl font-black tracking-wider">Aura<span className="text-brand-accent">Tech</span></h1>
+                        </div>
+                        <div className="hidden md:flex gap-6">
+                            <button onClick={() => setActiveTab('booking')} className={`font-bold transition ${activeTab === 'booking' ? 'text-brand-accent' : 'text-gray-400 hover:text-white'}`}>مستشار الشراء</button>
+                            <button onClick={() => setActiveTab('clinic')} className={`font-bold transition ${activeTab === 'clinic' ? 'text-brand-accent' : 'text-gray-400 hover:text-white'}`}>عيادة الفحص</button>
+                            <button onClick={() => setActiveTab('vault')} className={`font-bold transition ${activeTab === 'vault' ? 'text-brand-accent' : 'text-gray-400 hover:text-white'}`}>الموسوعة السرية</button>
+                        </div>
+                    </div>
+                </header>
+
+                {/* المحتوى الرئيسي */}
+                <main className="flex-1 max-w-5xl mx-auto w-full p-4 pb-24 md:pb-10 mt-6">
+                    {activeTab === 'booking' && <SmartBooking />}
+                    {activeTab === 'clinic' && <HardwareClinic />}
+                    {activeTab === 'vault' && <HackersVault />}
+                </main>
+
+                {/* شريط التنقل السفلي للهواتف */}
+                <nav className="md:hidden glass-panel fixed bottom-0 w-full flex justify-around border-t border-gray-800 pb-safe z-50">
+                    <button onClick={() => setActiveTab('booking')} className={`p-4 flex flex-col items-center ${activeTab === 'booking' ? 'text-brand-accent' : 'text-gray-500'}`}><i className="fa-solid fa-magnifying-glass text-xl"></i><span className="text-[10px] font-bold mt-1">البحث</span></button>
+                    <button onClick={() => setActiveTab('clinic')} className={`p-4 flex flex-col items-center ${activeTab === 'clinic' ? 'text-yellow-400' : 'text-gray-500'}`}><i className="fa-solid fa-microchip text-xl"></i><span className="text-[10px] font-bold mt-1">الفحص</span></button>
+                    <button onClick={() => setActiveTab('vault')} className={`p-4 flex flex-col items-center ${activeTab === 'vault' ? 'text-brand-hack' : 'text-gray-500'}`}><i className="fa-solid fa-user-ninja text-xl"></i><span className="text-[10px] font-bold mt-1">العباقرة</span></button>
+                </nav>
+            </div>
+        );
+    };
+
+    // 1. قسم البحث الذكي والأسواق (نموذج Booking)
+    const SmartBooking = () => {
+        const [usage, setUsage] = useState(null);
+        const [paywallActive, setPaywallActive] = useState(true);
+
+        return (
+            <div className="animate-fade-in space-y-8">
+                <div className="text-center mb-8">
+                    <span className="bg-brand-accent/20 text-brand-accent px-3 py-1 rounded-full text-xs font-bold border border-brand-accent/50">المحرك اللوجستي الذكي</span>
+                    <h2 className="text-3xl font-black mt-4 mb-2">اصنع جهازك بدون متاهات الأسواق</h2>
+                    <p className="text-gray-400 text-sm max-w-lg mx-auto">الذكاء الاصطناعي يفلتر آلاف المتاجر والمستوردين ليعطيك الجهاز المناسب بأفضل سعر حصري من المصدر.</p>
+                </div>
+
+                {!usage ? (
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <button onClick={() => setUsage('heavy')} className="glass-panel p-8 rounded-2xl hover:border-brand-accent transition text-right group">
+                            <i className="fa-solid fa-rocket text-4xl text-brand-accent mb-4 group-hover:scale-110 transition"></i>
+                            <h3 className="text-xl font-bold mb-2">استعمال مكثف واحترافي</h3>
+                            <p className="text-gray-400 text-sm">برامج 3D، محاكاة افتراضية، مونتاج معقد، وألعاب بجرافيك عالي.</p>
+                        </button>
+                        <button onClick={() => setUsage('mid')} className="glass-panel p-8 rounded-2xl hover:border-brand-accent transition text-right group">
+                            <i className="fa-solid fa-code text-4xl text-brand-accent mb-4 group-hover:scale-110 transition"></i>
+                            <h3 className="text-xl font-bold mb-2">استعمال متوسط وتطوير</h3>
+                            <p className="text-gray-400 text-sm">برمجة المواقع، ألعاب متوسطة، وتصميم الجرافيك المعتاد.</p>
+                        </button>
+                    </div>
+                ) : (
+                    <div className="space-y-6">
+                        <button onClick={() => setUsage(null)} className="text-gray-400 text-sm hover:text-white"><i className="fa-solid fa-arrow-right mr-2"></i> بحث جديد</button>
+                        
+                        {db.recommendations.filter(r => r.usage === usage).map(rec => (
+                            <div key={rec.id} className="glass-panel rounded-3xl overflow-hidden neon-border">
+                                <div className="p-6 border-b border-gray-800">
+                                    <h3 className="text-2xl font-black text-brand-accent mb-2">{rec.device}</h3>
+                                    <p className="text-sm font-bold text-gray-300 bg-tech-800 p-3 rounded-xl border border-gray-700 inline-block"><i className="fa-solid fa-microchip mr-2 text-gray-400"></i>{rec.specs}</p>
+                                </div>
+                                
+                                <div className="p-6 bg-tech-900/50">
+                                    <h4 className="font-bold text-gray-400 mb-4">مسار الأسعار الحقيقية:</h4>
+                                    <div className="flex justify-between items-center text-sm mb-2 p-3 bg-gray-800/30 rounded-lg"><span>المتاجر الرسمية (TVA + ضمان):</span><span className="text-red-400 line-through font-bold">{rec.official}</span></div>
+                                    <div className="flex justify-between items-center text-sm mb-2 p-3 bg-gray-800/30 rounded-lg"><span>سوق درب غلف / الموازي:</span><span className="text-yellow-400 font-bold">{rec.grey}</span></div>
+                                    <div className="flex justify-between items-center text-lg p-3 bg-brand-accent/10 border border-brand-accent/30 rounded-lg">
+                                        <span className="font-bold text-brand-accent">السعر الحصري عبر منصتنا:</span>
+                                        <span className="text-white font-black">{rec.dubai}</span>
+                                    </div>
+                                </div>
+
+                                {/* Paywall & Logistics Section */}
+                                <div className="p-6 relative border-t border-gray-800">
+                                    <h4 className="font-bold mb-4">الموردين والمتاجر المعتمدة:</h4>
+                                    <div className={paywallActive ? "blurred-content space-y-3" : "space-y-3"}>
+                                        {db.stores.map((store, i) => (
+                                            <div key={i} className="bg-tech-800 p-4 rounded-xl border border-gray-700 flex justify-between items-center">
+                                                <div>
+                                                    <h5 className="font-bold text-white">{store.name}</h5>
+                                                    <p className="text-xs text-gray-400 mt-1"><i className="fa-solid fa-location-dot mr-1"></i> {store.location} | {store.type}</p>
+                                                </div>
+                                                <div className="text-left">
+                                                    <p className="text-xs text-brand-accent font-bold mb-1"><i className="fa-solid fa-phone"></i> {store.phone}</p>
+                                                    <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded">ثقة: {store.trust}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {paywallActive && (
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-tech-900/90 z-10 p-6 text-center">
+                                            <i className="fa-solid fa-lock text-3xl text-brand-accent mb-4"></i>
+                                            <h4 className="text-lg font-bold mb-2">اشترك لكشف بيانات الموردين</h4>
+                                            <p className="text-xs text-gray-400 max-w-sm mb-6">نوفر لك "رمز QR" خاص لتقديمه للبائع لضمان هذا السعر المنخفض ولضمان حقوق المنصة (العمولة). نحن نتولى اللوجيستيك المحلي بأمان.</p>
+                                            <button onClick={() => setPaywallActive(false)} className="bg-brand-accent text-black font-black px-8 py-3 rounded-xl hover:bg-white transition shadow-[0_0_15px_rgba(0,242,254,0.4)]">
+                                                فتح المعلومات (49 درهم)
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    // 2. عيادة الفحص الميداني (Diagnostics)
+    const HardwareClinic = () => (
+        <div className="animate-fade-in space-y-8">
+            <div className="text-center mb-8">
+                <span className="bg-yellow-400/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold border border-yellow-400/50">المحقق الميداني</span>
+                <h2 className="text-3xl font-black mt-4 mb-2">افحص القطع قبل الشراء</h2>
+                <p className="text-gray-400 text-sm max-w-lg mx-auto">لا تدفع درهماً واحداً قبل تمرير الجهاز من هذه الاختبارات القاسية للتحقق من سلامة الهاردوير وتجنب النصب.</p>
+            </div>
+
+            <div className="space-y-4">
+                {db.inspectionSteps.map((step, i) => (
+                    <div key={i} className="glass-panel p-6 rounded-2xl border-r-4 border-yellow-400">
+                        <div className="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 className="text-xl font-bold text-white mb-1">{step.target}</h3>
+                                <span className="bg-tech-800 text-xs text-gray-300 px-2 py-1 rounded border border-gray-700">الأداة: {step.tool}</span>
+                            </div>
+                        </div>
+                        <p className="text-sm text-gray-300 mb-4 bg-gray-800/50 p-3 rounded-lg"><i className="fa-solid fa-wrench text-yellow-400 ml-2"></i><strong>طريقة الفحص:</strong> {step.action}</p>
+                        
+                        <div className="grid md:grid-cols-2 gap-3 mt-4">
+                            <div className="bg-green-900/20 border border-green-500/30 p-3 rounded-xl">
+                                <h4 className="text-green-400 text-xs font-bold mb-1"><i className="fa-solid fa-check-circle ml-1"></i> النتيجة السليمة</h4>
+                                <p className="text-sm">{step.pass}</p>
+                            </div>
+                            <div className="bg-red-900/20 border border-red-500/30 p-3 rounded-xl relative">
+                                <h4 className="text-red-400 text-xs font-bold mb-1"><i className="fa-solid fa-triangle-exclamation ml-1"></i> النتيجة المعطوبة</h4>
+                                <p className="text-sm mb-4">{step.fail}</p>
+                                <span className="absolute bottom-2 left-3 text-[10px] bg-red-500/20 text-red-300 px-2 py-1 rounded font-bold">خسارة محتملة: {step.cost}</span>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+
+    // 3. الأكاديمية السرية للهاكرز والصناع
+    const HackersVault = () => (
+        <div className="animate-fade-in space-y-8">
+            <div className="text-center mb-8">
+                <span className="bg-brand-hack/20 text-brand-hack px-3 py-1 rounded-full text-xs font-bold border border-brand-hack/50">أسرار التكنولوجيا العميقة</span>
+                <h2 className="text-3xl font-black mt-4 mb-2">من يصنعها.. ومن يخترقها</h2>
+                <p className="text-gray-400 text-sm max-w-lg mx-auto">تعرف على عمالقة الصناعة وأباطرة الاختراق. من ثغرات المعالجات إلى تجاوز الحمايات الصارمة.</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+                {/* عمالقة الصناعة */}
+                <div className="glass-panel p-6 rounded-2xl border border-gray-700">
+                    <h3 className="text-xl font-bold mb-4 flex items-center"><i className="fa-solid fa-industry text-blue-400 ml-2"></i> آلهة الصناعة (Titans)</h3>
+                    <div className="space-y-4">
+                        {db.titans.map((titan, i) => (
+                            <div key={i} className="border-b border-gray-800 pb-3 last:border-0 last:pb-0">
+                                <h4 className="font-black text-blue-400">{titan.name}</h4>
+                                <p className="text-xs text-gray-400 mt-1">{titan.role}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-6 bg-blue-900/20 p-4 rounded-xl border border-blue-500/30">
+                        <h4 className="font-bold text-sm text-blue-300 mb-2">تريد صناعة جهازك الخاص؟</h4>
+                        <p className="text-xs text-gray-400">تواصل مع مصانع (ODM) الصينية والتايوانية مثل Foxconn و Compal لتجميع قطعك الخاصة بعلامتك التجارية.</p>
+                    </div>
+                </div>
+
+                {/* عباقرة الاختراق */}
+                <div className="glass-panel p-6 rounded-2xl border border-brand-hack/50 shadow-[0_0_20px_rgba(0,255,135,0.1)]">
+                    <h3 className="text-xl font-bold mb-4 flex items-center"><i className="fa-solid fa-user-ninja text-brand-hack ml-2"></i> أساطير الاختراق (Hackers)</h3>
+                    <div className="space-y-4">
+                        {db.hackers.map((hacker, i) => (
+                            <div key={i} className="border-b border-gray-800 pb-3 last:border-0 last:pb-0">
+                                <h4 className="font-black text-brand-hack">{hacker.name}</h4>
+                                <p className="text-xs text-gray-300 mt-1 mb-2">{hacker.feat}</p>
+                                <span className="text-[10px] bg-dark-900 px-2 py-1 rounded text-gray-400 border border-gray-700">الأداة: {hacker.tool}</span>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    {/* محرك بحث الحلول */}
+                    <div className="mt-6 bg-tech-900 p-4 rounded-xl border border-gray-700">
+                        <h4 className="font-bold text-sm text-white mb-3">ابحث عن حلول وثغرات متقدمة:</h4>
+                        <div className="flex">
+                            <input type="text" placeholder="مثال: تجاوز FRP، أو فك بوتلودر..." className="flex-1 bg-tech-800 border border-gray-700 rounded-r-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-hack" />
+                            <button className="bg-brand-hack text-black px-4 rounded-l-lg font-bold"><i className="fa-solid fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+</script>
+</body>
+</html>
