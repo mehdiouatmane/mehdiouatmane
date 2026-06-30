@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aura Tech AI - The Ultimate Tech Hub</title>
+    
+    <!-- الخطوط والأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- React & Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { 900: '#050505', 800: '#111111', 700: '#1a1a1a' },
+                        brand: { primary: '#3b82f6', neon: '#00f2fe', danger: '#ff0844', hack: '#00ff87' }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: white; }
+        .glass { background: rgba(17, 17, 17, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .cyber-border { border: 1px solid #00f2fe; box-shadow: 0 0 10px rgba(0, 242, 254, 0.2); }
+        .hack-border { border: 1px solid #00ff87; box-shadow: 0 0 10px rgba(0, 255, 135, 0.2); }
+        .blurred-data { filter: blur(6px); user-select: none; pointer-events: none; }
+        /* إخفاء شريط التمرير */
+        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: #3b82f6; }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+    const { useState } = React;
+
+    // ==========================================
+    // قاعدة البيانات الضخمة (كما طلبتها بالضبط)
+    // ==========================================
+
+    const database = {
+        products: [
+            { id: 1, name: "Lenovo Legion Pro 7i", specs: "i9-14900HX, RTX 4080, 32GB DDR5 6000MHz, 1TB SSD", officialPrice: "32,000 DH", bestPrice: "24,500 DH", storeRating: "98%", trusted: true },
+            { id: 2, name: "Lenovo LOQ 15IRX9", specs: "i7-13th, RTX 4060 8GB, 16GB DDR5, 1TB SSD", officialPrice: "15,000 DH", bestPrice: "11,500 DH", storeRating: "95%", trusted: true },
+            { id: 3, name: "iPhone 15 Pro Max 256GB", specs: "A17 Pro, Titanium, 5G (VoNR)", officialPrice: "15,500 DH", bestPrice: "11,800 DH", storeRating: "90%", trusted: true }
+        ],
+        moroccanGatekeepers: [
+            { name: "Hakim Belmaachi", company: "Disway", type: "استيراد رسمي", route: "Taiwan -> Casablanca Port -> Bourse" },
+            { name: "Younes El Himdy", company: "Disty", type: "استيراد رسمي", route: "Official Channel -> Marjane/Electroplanet" },
+            { name: "Grey Market Smugglers", company: "Derb Ghallef Hub", type: "سوق موازي / تهريب", route: "Miami -> Jafza (Dubai) -> Mauritania -> Sebta -> Casa" }
+        ],
+        hackersAndTools: [
+            { name: "George Hotz (Geohot)", feat: "Baseband Glitching, PS3 Root Keys", tool: "Towelroot" },
+            { name: "Joe Grand (Kingpin)", feat: "Hardware eMMC ISP", tool: "Z3X Easy-JTAG Plus" },
+            { name: "axi0mX", feat: "Checkm8 BootROM Exploit", tool: "checkra1n" },
+            { name: "John Wu (topjohnwu)", feat: "Systemless Root", tool: "Magisk, SELinux bypass" }
+        ],
+        titans: [
+            { name: "Morris Chang / C.C. Wei", company: "TSMC", role: "أسياد السيليكون وصناعة الرقائق (Apple, AMD, Nvidia)" },
+            { name: "Cristiano Amon", company: "Qualcomm", role: "ملك الـ Baseband ومعالجات Snapdragon" },
+            { name: "Gary Nagle", company: "Glencore", role: "المتحكم في الكوبالت للبطاريات" }
+        ]
+    };
+
+    const App = () => {
+        const [activeTab, setActiveTab] = useState('booking');
+
+        const NavBtn = ({ id, icon, label, color }) => (
+            <button onClick={() => setActiveTab(id)} className={`flex flex-col items-center justify-center p-3 transition ${activeTab === id ? `text-${color} border-b-2 border-${color} bg-dark-800` : 'text-gray-500 hover:text-white'}`}>
+                <i className={`fa-solid ${icon} text-xl mb-1`}></i>
+                <span className="text-[10px] font-bold">{label}</span>
+            </button>
+        );
+
+        return (
+            <div className="min-h-screen flex flex-col">
+                {/* Header */}
+                <header className="glass sticky top-0 z-50 p-4 flex justify-between items-center shadow-lg">
+                    <div className="flex items-center gap-2">
+                        <i className="fa-brands fa-react text-brand-neon text-2xl animate-spin-slow"></i>
+                        <h1 className="text-2xl font-black text-white">Aura<span className="text-brand-neon">Tech</span></h1>
+                    </div>
+                    <div className="text-xs bg-dark-800 border border-dark-700 px-3 py-1 rounded-full text-brand-neon font-bold">
+                        V 3.0 | The Ultimate Hub
+                    </div>
+                </header>
+
+                {/* Main Content */}
+                <main className="flex-1 w-full max-w-6xl mx-auto p-4 pb-24">
+                    {activeTab === 'booking' && <SmartBookingView />}
+                    {activeTab === 'vault' && <HackersVaultView />}
+                    {activeTab === 'oem' && <OemBuildersView />}
+                    {activeTab === 'clinic' && <HardwareClinicView />}
+                </main>
+
+                {/* Bottom Navigation */}
+                <nav className="glass fixed bottom-0 w-full flex justify-around border-t border-dark-800 z-50 pb-safe">
+                    <NavBtn id="booking" icon="fa-plane-departure" label="Booking أجهزة" color="brand-neon" />
+                    <NavBtn id="clinic" icon="fa-stethoscope" label="العيادة والفحص" color="yellow-400" />
+                    <NavBtn id="vault" icon="fa-skull-crossbones" label="الأكاديمية السرية" color="brand-hack" />
+                    <NavBtn id="oem" icon="fa-industry" label="صنع علامتك" color="purple-500" />
+                </nav>
+            </div>
+        );
+    };
+
+    // ==========================================
+    // 1. نظام Booking & Paywall للأجهزة
+    // ==========================================
+    const SmartBookingView = () => {
+        const [paywallActive, setPaywallActive] = useState(true);
+
+        return (
+            <div className="animate-fade-in space-y-6">
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-black text-white mb-2">محرك البحث الشامل <i className="fa-solid fa-robot text-brand-neon"></i></h2>
+                    <p className="text-gray-400 text-sm">يقوم الذكاء الاصطناعي الآن بمسح جميع المتاجر (الرسمية، درب غلف، الموازي) لفلترة أفضل سعر لك.</p>
+                </div>
+
+                <div className="space-y-4">
+                    {database.products.map(prod => (
+                        <div key={prod.id} className="glass p-5 rounded-2xl cyber-border relative overflow-hidden">
+                            {/* شريط الثقة */}
+                            <div className="absolute top-0 right-0 bg-green-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">
+                                <i className="fa-solid fa-shield-check mr-1"></i> بائع موثوق {prod.storeRating}
+                            </div>
+                            
+                            <h3 className="text-xl font-bold text-white mt-2">{prod.name}</h3>
+                            <p className="text-xs text-brand-neon font-bold mb-4">{prod.specs}</p>
+                            
+                            <div className="flex justify-between items-end border-t border-dark-700 pt-4 mt-4">
+                                <div>
+                                    <p className="text-xs text-gray-500">الثمن الرسمي:</p>
+                                    <p className="text-sm text-red-500 line-through">{prod.officialPrice}</p>
+                                </div>
+                                <div className="text-left">
+                                    <p className="text-xs text-green-400 font-bold">أفضل ثمن (سوق الجملة):</p>
+                                    <p className="text-2xl font-black text-white">{prod.bestPrice}</p>
+                                </div>
+                            </div>
+
+                            {/* نظام التعتيم (Paywall & Anti-Fraud) */}
+                            <div className="mt-4 p-4 bg-dark-900 border border-dark-700 rounded-xl relative">
+                                <h4 className="text-sm font-bold text-gray-300 mb-2">معلومات المتجر والمورد:</h4>
+                                
+                                <div className={paywallActive ? "blurred-data space-y-1" : "space-y-1"}>
+                                    <p className="text-sm text-white"><i className="fa-solid fa-store text-gray-500 w-5"></i> المتجر: AzzamPhone / Derb Ghallef</p>
+                                    <p className="text-sm text-white"><i className="fa-solid fa-phone text-gray-500 w-5"></i> الهاتف: 06-XX-XX-XX-XX</p>
+                                    <p className="text-sm text-white"><i className="fa-solid fa-location-dot text-gray-500 w-5"></i> الموقع: كراج علال، الدار البيضاء</p>
+                                </div>
+
+                                {paywallActive && (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-xl">
+                                        <i className="fa-solid fa-lock text-brand-neon text-2xl mb-2"></i>
+                                        <p className="text-xs text-center px-4 mb-2">اشترك الآن للحصول على عناوين المتاجر وأرقامهم. نوفر لك (كود QR) يعطيك هذا الثمن ويضمن عمولتنا.</p>
+                                        <button onClick={() => setPaywallActive(false)} className="bg-brand-neon text-black font-bold text-sm px-6 py-2 rounded-full hover:scale-105 transition">
+                                            افتح معلومات المتاجر (49 درهم/شهر)
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    // ==========================================
+    // 2. الأكاديمية السرية للهاكرز
+    // ==========================================
+    const HackersVaultView = () => (
+        <div className="animate-fade-in space-y-6">
+            <h2 className="text-3xl font-black text-white mb-2"><i className="fa-solid fa-skull-crossbones text-brand-hack"></i> الأكاديمية السرية والأدوات</h2>
+            <p className="text-sm text-gray-400 mb-6">هنا تتعلم تقنيات (Soft/Hard) وكيف يتلاعب العباقرة بالأنظمة.</p>
+
+            {/* أدوات الهاردوير */}
+            <div className="glass p-5 rounded-2xl hack-border">
+                <h3 className="font-bold text-white mb-3 text-lg">أدوات الهاردوير المتقدمة (Hardware Boxes)</h3>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-dark-800 p-2 rounded border border-dark-700"><strong className="text-brand-hack">Z3X Easy-JTAG Plus:</strong> لقراءة eMMC/UFS وتصفير الـ FRP.</div>
+                    <div className="bg-dark-800 p-2 rounded border border-dark-700"><strong className="text-brand-hack">Chimera Tool:</strong> لاختراق المعالجات عبر وضع EDL.</div>
+                    <div className="bg-dark-800 p-2 rounded border border-dark-700"><strong className="text-brand-hack">Octoplus / Medusa Pro:</strong> إصلاح البوت الميت (Dead Boot).</div>
+                    <div className="bg-dark-800 p-2 rounded border border-dark-700"><strong className="text-brand-hack">JCID Programmer:</strong> لبرمجة شاشات وبطاريات الآيفون.</div>
+                </div>
+            </div>
+
+            {/* شخصيات الهاكرز */}
+            <div className="glass p-5 rounded-2xl border border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                <h3 className="font-bold text-white mb-3 text-lg">آلهة الاختراق (The Legends)</h3>
+                <div className="space-y-3">
+                    {database.hackersAndTools.map((hacker, i) => (
+                        <div key={i} className="flex justify-between items-center bg-dark-900 p-3 rounded-lg border border-dark-700">
+                            <div>
+                                <h4 className="font-bold text-purple-400">{hacker.name}</h4>
+                                <p className="text-xs text-gray-400">{hacker.feat}</p>
+                            </div>
+                            <span className="text-[10px] bg-dark-800 px-2 py-1 rounded text-gray-300">{hacker.tool}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* الذكاء الاصطناعي للحلول */}
+            <div className="bg-gradient-to-r from-dark-800 to-dark-900 p-5 rounded-2xl border border-dark-700 relative">
+                <h3 className="font-bold text-white mb-2">اسأل الذكاء الاصطناعي (Tech AI)</h3>
+                <div className="flex gap-2">
+                    <input type="text" placeholder="مثال: كيف أتجاوز iCloud Bypass باستخدام Checkm8؟" className="flex-1 bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-hack" />
+                    <button className="bg-brand-hack text-black px-4 rounded-lg font-bold"><i className="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    );
+
+    // ==========================================
+    // 3. قسم بناء شركتك (OEM) وكواليس السوق المغربي
+    // ==========================================
+    const OemBuildersView = () => (
+        <div className="animate-fade-in space-y-6">
+            <h2 className="text-3xl font-black text-white mb-2"><i className="fa-solid fa-industry text-purple-500"></i> اصنع علامتك (OEM/ODM)</h2>
+            <p className="text-sm text-gray-400 mb-6">تريد أن تصنع حاسوبك أو هاتفك الخاص؟ تعرف على المصانع وأباطرة التحكم في السوق.</p>
+
+            <div className="grid md:grid-cols-2 gap-4">
+                {/* كواليس المغرب */}
+                <div className="glass p-5 rounded-2xl border-r-4 border-red-500">
+                    <h3 className="font-bold text-white mb-4 text-lg">أباطرة السوق المغربي (Gatekeepers)</h3>
+                    <div className="space-y-3">
+                        {database.moroccanGatekeepers.map((gk, i) => (
+                            <div key={i} className="bg-dark-900 p-3 rounded-lg border border-dark-700">
+                                <h4 className="font-bold text-red-400 text-sm">{gk.name} <span className="text-gray-500 text-xs">({gk.company})</span></h4>
+                                <p className="text-[11px] text-gray-400 mt-1"><i className="fa-solid fa-route mr-1"></i> {gk.route}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* صناع القطع العالميين */}
+                <div className="glass p-5 rounded-2xl border-l-4 border-blue-500">
+                    <h3 className="font-bold text-white mb-4 text-lg">عمالقة الهاردوير (The Titans)</h3>
+                    <div className="space-y-3">
+                        {database.titans.map((titan, i) => (
+                            <div key={i} className="bg-dark-900 p-3 rounded-lg border border-dark-700">
+                                <h4 className="font-bold text-blue-400 text-sm">{titan.name} <span className="text-gray-500 text-xs">({titan.company})</span></h4>
+                                <p className="text-[11px] text-gray-400 mt-1">{titan.role}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            
+            <div className="bg-dark-800 p-5 rounded-2xl border border-dark-700 text-center">
+                <i className="fa-solid fa-microchip text-4xl text-gray-600 mb-3"></i>
+                <h3 className="text-white font-bold">مصانع التجميع (Shenzhen & Taiwan)</h3>
+                <p className="text-xs text-gray-400 mt-2 max-w-sm mx-auto">لصناعة جهازك الخاص، تواصل مع مصانع ODM مثل (Foxconn, Compal, Quanta, Wistron). هم من يصنعون أجهزة آبل، ديل، ولينوفو.</p>
+                <button className="mt-4 bg-purple-600 text-white text-sm font-bold px-6 py-2 rounded-lg hover:bg-purple-700 transition">اطلب دليل المصانع</button>
+            </div>
+        </div>
+    );
+
+    // ==========================================
+    // 4. العيادة والفحص الميداني (Diagnostic)
+    // ==========================================
+    const HardwareClinicView = () => (
+        <div className="animate-fade-in space-y-6">
+            <h2 className="text-3xl font-black text-white mb-2"><i className="fa-solid fa-stethoscope text-yellow-400"></i> الفحص الميداني للقطع</h2>
+            <p className="text-sm text-gray-400 mb-6">قبل أن تشتري من صاحب المحل، استخدم هذه الأكواد والبرامج للتأكد من الهاردوير.</p>
+
+            <div className="space-y-4">
+                <div className="glass p-4 rounded-xl border-l-2 border-yellow-400">
+                    <h4 className="font-bold text-white"><i className="fa-solid fa-mobile-screen text-yellow-400 w-6"></i> فحص شاشة سامسونج</h4>
+                    <p className="text-xs text-gray-400 mt-1">ركب الكود <strong className="text-white bg-dark-800 px-1 rounded">*#0*#</strong> واضغط على (Touch) و (Sensor). للآيفون، تحقق من الـ True Tone في الإعدادات.</p>
+                </div>
+                
+                <div className="glass p-4 rounded-xl border-l-2 border-yellow-400">
+                    <h4 className="font-bold text-white"><i className="fa-solid fa-microchip text-yellow-400 w-6"></i> فحص كارت الشاشة (GPU)</h4>
+                    <p className="text-xs text-gray-400 mt-1">شغل برنامج <strong className="text-brand-neon">FurMark</strong> لمدة 10 دقائق. إذا تجاوزت الحرارة 85° أو ظهرت خطوط (Artifacts)، فالكارت تالف (Throttling).</p>
+                </div>
+
+                <div className="glass p-4 rounded-xl border-l-2 border-yellow-400">
+                    <h4 className="font-bold text-white"><i className="fa-solid fa-server text-yellow-400 w-6"></i> فحص المعالج (CPU)</h4>
+                    <p className="text-xs text-gray-400 mt-1">شغل <strong className="text-brand-neon">Cinebench R23</strong> وراقب الحرارة ببرنامج <strong className="text-brand-neon">HWiNFO64</strong>. ابحث عن (Core Thermal Throttling: Yes).</p>
+                </div>
+
+                <div className="glass p-4 rounded-xl border-l-2 border-yellow-400">
+                    <h4 className="font-bold text-white"><i className="fa-solid fa-hard-drive text-yellow-400 w-6"></i> فحص القرص (SSD / eMMC)</h4>
+                    <p className="text-xs text-gray-400 mt-1">شغل <strong className="text-brand-neon">CrystalDiskInfo</strong>. إذا كان مكتوب Caution أو Bad باللون الأحمر، لا تشتري الجهاز.</p>
+                </div>
+            </div>
+        </div>
+    );
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+</script>
+</body>
+</html>
