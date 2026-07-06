@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Tech | شري ونتا مرتاح</title>
+    <!-- استدعاء Tailwind CSS للتصميم -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- استدعاء React -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- استدعاء Babel لقراءة أكواد JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { background-color: #050505; color: #ffffff; }
+        .feature-card:hover { border-color: #06b6d4; transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const FeatureCard = ({ step, title, description, icon }) => (
+            <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl transition-all duration-300 feature-card relative overflow-hidden group">
+                <div className="absolute top-0 right-0 bg-cyan-900/30 text-cyan-500 font-black text-4xl opacity-20 p-4 rounded-bl-3xl">
+                    0{step}
+                </div>
+                <div className="text-cyan-500 text-3xl mb-4">{icon}</div>
+                <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
+            </div>
+        );
+
+        const App = () => {
+            const features = [
+                { step: 1, icon: "🤖", title: "المستشار الذكي", description: "أخبرنا عن عملك واستخدامك، وسنحدد لك الجهاز المناسب من أقوى الماركات بأفضل ثمن في السوق." },
+                { step: 2, icon: "🔧", title: "التفكيك الشامل", description: "نقوم بتفكيك الجهاز بالكامل أمامك لتشاهد القطع الداخلية وتفهم لماذا اخترناه لك." },
+                { step: 3, icon: "🏭", title: "أقوى المصنعين", description: "نكشف لك عن الشركات الحقيقية التي تصنع الهاردوير والسوفتوير وتقنياتها الجبارة." },
+                { step: 4, icon: "💻", title: "الهاكرز والعباقرة", description: "أقوى العباقرة الذين يتجاوزون حماية المخترعين الأصليين للتحكم الكامل بالأجهزة." },
+                { step: 5, icon: "🛡️", title: "فضح المزورين", description: "نكشف المزورين والمقلدين الذين يستعملون قطعاً رديئة للنصب، والتقنيات التي يستخدمونها." },
+                { step: 6, icon: "🛠️", title: "عباقرة الإصلاح", description: "أقوى المصلحين لمشاكل الهاردوير والسوفتوير المعقدة بجميع تقنياتهم وأدواتهم المتطورة." },
+                { step: 7, icon: "🔬", title: "مختبر الفحص", description: "عباقرة الفحص يتأكدون هل القطع أصلية، مقلدة، معطوبة، مستبدلة أو مهكرة باحترافية تامة." },
+                { step: 8, icon: "🗺️", title: "مافيات الأسواق", description: "مسار السلعة من المصنع إلى الأسواق وكيف يتجاوزون الجمارك والأثمنة الحقيقية للبيع." }
+            ];
+
+            return (
+                <div className="min-h-screen font-sans">
+                    {/* القائمة العلوية */}
+                    <nav className="p-6 flex justify-between items-center border-b border-gray-800 max-w-7xl mx-auto">
+                        <h1 className="text-3xl font-black text-cyan-500 tracking-wider">AURA<span className="text-white">TECH</span></h1>
+                        <button className="bg-cyan-600 hover:bg-cyan-500 px-6 py-2 rounded-lg font-bold transition-colors">
+                            تسجيل الدخول
+                        </button>
+                    </nav>
+
+                    {/* القسم الرئيسي */}
+                    <header className="py-24 text-center px-4 relative">
+                        <div className="absolute inset-0 bg-gradient-to-b from-cyan-900/20 to-black z-0"></div>
+                        <div className="relative z-10 max-w-4xl mx-auto">
+                            <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
+                                شري ونتا مرتاح <span className="text-cyan-500">10000%</span>
+                            </h2>
+                            <p className="text-xl text-gray-300 mb-10 leading-relaxed">
+                                نقدم لك هذه الخدمات لتحصل على جهازك الذي يناسبك بدون نصب، مع شرح تقني مفصل يجعلك تشتري كالمحترفين وتفهم كل خبايا السوق.
+                            </p>
+                            <button className="bg-white text-black font-black px-10 py-4 rounded-full text-lg hover:bg-cyan-500 hover:text-white transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                                ابدأ رحلة البحث الآن
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* شبكة الخدمات 8 */}
+                    <section className="max-w-7xl mx-auto px-4 py-16">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {features.map((f, i) => <FeatureCard key={i} {...f} />)}
+                        </div>
+                    </section>
+
+                    {/* الفوتر */}
+                    <footer className="text-center py-10 border-t border-gray-800 text-gray-500 text-sm">
+                        <p>© 2026 Aura Tech. جميع الحقوق محفوظة.</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
