@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>فحص الحاسوب - PC Check</title>
+
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- مكتبات Tailwind و React و Babel عبر الـ CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- إعدادات Tailwind لتخصيص الألوان -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pc: { dark: '#0f172a', primary: '#3b82f6', surface: '#1e293b' },
+                        status: { good: '#10B981', bad: '#EF4444', warn: '#F59E0B' }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out', 'slide-up': 'slideUp 0.4s ease-out' },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: white; }</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    // ================== 1. بيانات فحص الحاسوب (المنطق التقني) ==================
+    const inspectionLogic = [
+        {
+            id: 1, title: 'السيريال والضمان (Serial & Warranty)', icon: 'fa-barcode',
+            instruction: 'افتح CMD واكتب "wmic bios get serialnumber". قارن السيريال مع الكرتونة. وادخل لموقع الدعم (مثلا Lenovo).',
+            options: [
+                { text: 'السيريال متطابق، وضمان 12 شهر بدأ اليوم.', status: 'good', result: 'حاسوب جديد كلياً (Brand New).', advice: 'الضمان ساري المفعول والأمور تمام.' },
+                { text: 'السيريال متطابق، لكن الضمان بدأ منذ أشهر.', status: 'warn', result: 'حاسوب Open Box أو Vitrine.', advice: 'مستعمل كعرض أو معاد تغليفه (رد البال للثمن).' },
+                { text: 'السيريال لا يطابق المطبوع في ظهر الحاسوب.', status: 'bad', result: 'تم تغيير اللوحة الأم (Motherboard).', advice: 'احذر! القطع مبدلة ومزورة (Refurbished غير رسمي).' }
+            ]
+        },
+        {
+            id: 2, title: 'البطارية والشاحن (Battery)', icon: 'fa-battery-full',
+            instruction: 'افتح CMD كمسؤول واكتب "powercfg /batteryreport" للتأكد من Cycle count. وتأكد من وزن الشاحن واش فيه الشعار محفور.',
+            options: [
+                { text: 'Cycle count بين 1 و 3 والقدرة مطابقة للتصميم.', status: 'good', result: 'البطارية جديدة كلياً وأصلية.', advice: 'الشحن ممتاز.' },
+                { text: 'دورات قليلة لكن الحاسوب ينطفئ فجأة.', status: 'bad', result: 'بطارية مزورة أو دوائر الطاقة تالفة.', advice: 'احتمال تصفير العداد لخدعك.' },
+                { text: 'الشاحن خفيف أو بدون شعار محفور.', status: 'bad', result: 'شاحن مزور (Copy).', advice: 'لن يعطي 300W، وسينطفئ الحاسوب تحت الضغط.' }
+            ]
+        },
+        {
+            id: 3, title: 'كارت الشاشة (GPU Stress Test)', icon: 'fa-desktop',
+            instruction: 'شغل HWinfo64، ثم افتح FurMark لمدة 10 دقائق (2K). راقب الحرارة واستهلاك الطاقة (100W+).',
+            options: [
+                { text: 'الحرارة تحت 85°، والطاقة مستقرة (100W+).', status: 'good', result: 'كارت الشاشة سليم وأصلي.', advice: 'نظام التبريد يعمل بكفاءة.' },
+                { text: 'شاشة زرقاء، انطفاء، أو خطوط غريبة فالشاشة.', status: 'bad', result: 'كارت شاشة تالف.', advice: 'غالباً مستعمل فالتعدين (Crypto Mining).' },
+                { text: 'استهلاك الطاقة طالع هابط، مع تقطيع فـ FPS.', status: 'warn', result: 'مشكل تزويد طاقة (Throttling).', advice: 'المعجون الحراري جاف أو الشاحن ضعيف.' }
+            ]
+        },
+        {
+            id: 4, title: 'المعالج والتبريد (CPU & Cooling)', icon: 'fa-microchip',
+            instruction: 'شغل HWinfo64، ثم افتح Cinebench لـ 10 دقائق. راقب Core Thermal Throttling.',
+            options: [
+                { text: 'الحرارة تحت 95° و Throttling يختفي مع الفرفارة.', status: 'good', result: 'المعالج سليم وقوي.', advice: 'التبريد السائل (Liquid Metal) ممتاز.' },
+                { text: 'حرارة 100° والـ Throttling أحمر (Yes) طول الوقت.', status: 'bad', result: 'التبريد منتهي الصلاحية.', advice: 'تم فتح الحاسوب وتغييره بمعجون رخيص.' },
+                { text: 'صوت طقطقة في المراوح (Coldfront).', status: 'warn', result: 'مراوح مستهلكة.', advice: 'الفرفارة دارت بزاف وقريبة تخسر.' }
+            ]
+        },
+        {
+            id: 5, title: 'التخزين (SSD NVMe)', icon: 'fa-hard-drive',
+            instruction: 'شغل CrystalDiskInfo وشاهد ساعات التشغيل (Power-on). ثم جرب السرعة بـ CrystalDiskMark.',
+            options: [
+                { text: 'أقل من 20 ساعة عمل، وسرعة 7000MB/s.', status: 'good', result: 'قرص NVMe أصلي وجديد.', advice: 'سرعة القراءة (Gen 4x4) ممتازة.' },
+                { text: 'ساعات قليلة لكن القراءة/الكتابة بالـ TB.', status: 'bad', result: 'تم تصفير العداد (Wiped).', advice: 'الديسك تستهلك فالتعدين (Chia Coin).' },
+                { text: 'سرعة ضعيفة والماركة مجهولة فـ HWinfo.', status: 'warn', result: 'قرص مبدل (أرخص).', advice: 'تم استبدال القرص الأصلي بماركة صينية عيانة.' }
+            ]
+        },
+        {
+            id: 6, title: 'الرام (RAM)', icon: 'fa-memory',
+            instruction: 'في HWinfo64 (خانة SPD) تأكد من الماركة (Hynix, Samsung) والسرعة (5600MHz).',
+            options: [
+                { text: 'ماركة أصلية والسرعة مطابقة لمواصفات الشركة.', status: 'good', result: 'الرام سليمة وأصلية.', advice: 'متوافقة وتعمل بسلاسة.' },
+                { text: 'ماركة مجهولة أو ظهور شاشة زرقاء فالفحص.', status: 'bad', result: 'الرام رديئة أو مبدلة.', advice: 'تم استبدال الرام الأصلية، أو مسارات اللوحة الأم مضروبة.' }
+            ]
+        },
+        {
+            id: 7, title: 'الشبكة والشاشة (Network & Display)', icon: 'fa-wifi',
+            instruction: 'تأكد أن الواي فاي Intel/Killer. ابحث عن (Dead Pixel Test) في يوتيوب وجربه.',
+            options: [
+                { text: 'شاشة نقية ومنافذ USB/WiFi شغالة مزيان.', status: 'good', result: 'شاشة واتصال سليم 100%.', advice: 'كل القطع الخارجية خدامة.' },
+                { text: 'واي فاي Mediatek/Realtek في بيسي غالي.', status: 'warn', result: 'بطاقة واي فاي مبدلة.', advice: 'تم وضع قطعة أرخص من الشركة الأم.' },
+                { text: 'نقط سوداء أو بيضاء لا تتغير في الشاشة.', status: 'bad', result: 'شاشة متضررة (Dead Pixels).', advice: 'الشاشة فيها بيكسلات ميتة.' }
+            ]
+        }
+    ];
+
+    // ================== 2. البرامج والأدوات المطلوبة ==================
+    const toolsGuide = [
+        { name: 'HWiNFO64', type: 'لمعرفة القطع بدقة', desc: 'يفضح القطع المزورة (CPU, GPU, RAM) ويراقب الحرارة والترددات.' },
+        { name: 'FurMark', type: 'اختبار كارت الشاشة', desc: 'أهم برنامج لكشف الكروت المستعملة فالتعدين (Mining) أو مشاكل التبريد.' },
+        { name: 'Cinebench R23', type: 'اختبار المعالج', desc: 'يضغط على المعالج لكشف قدرة المراوح والمعجون الحراري.' },
+        { name: 'CrystalDiskInfo', type: 'فحص الـ SSD', desc: 'كيعطيك شحال من ساعة البيسي شاعل وكمية الداتا لي تكتبات عليه.' },
+        { name: 'BatteryInfoView', type: 'فحص البطارية', desc: 'لكشف نسبة الاستهلاك الحقيقية للبطارية (Cycle Count).' }
+    ];
+
+    // ================== 3. المكونات (App Components) ==================
+    function App() {
+        const [view, setView] = React.useState('home');
+        const [currentStepIndex, setCurrentStepIndex] = React.useState(0);
+        const [stepResult, setStepResult] = React.useState(null);
+        const [totalDefects, setTotalDefects] = React.useState([]);
+
+        const handleAnswer = (option) => {
+            setStepResult(option);
+            // تسجيل الأخطاء لإظهارها في التقرير
+            if (option.status === 'bad' || option.status === 'warn') {
+                const exists = totalDefects.find(d => d.stepId === inspectionLogic[currentStepIndex].id);
+                if (!exists) setTotalDefects([...totalDefects, { stepId: inspectionLogic[currentStepIndex].id, ...option }]);
+            }
+        };
+
+        const nextStep = () => {
+            setStepResult(null);
+            if (currentStepIndex < inspectionLogic.length - 1) setCurrentStepIndex(currentStepIndex + 1);
+            else setView('report');
+        };
+
+        const resetInspection = () => {
+            setCurrentStepIndex(0);
+            setStepResult(null);
+            setTotalDefects([]);
+            setView('inspection');
+        };
+
+        return (
+            <div className="min-h-screen flex flex-col font-cairo pb-20">
+                {/* الشريط العلوي */}
+                <nav className="bg-pc-surface border-b border-gray-700 p-4 sticky top-0 z-50 flex justify-between items-center shadow-xl">
+                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('home')}>
+                        <div className="bg-pc-primary p-2 rounded-lg text-white shadow-lg"><i className="fa-solid fa-microchip"></i></div>
+                        <h1 className="text-xl font-black text-white tracking-wide">PC<span className="text-pc-primary">CHECK</span></h1>
+                    </div>
+                    {view !== 'home' && <button onClick={() => setView('home')} className="text-gray-400 hover:text-white transition"><i className="fa-solid fa-house"></i></button>}
+                </nav>
+
+                <main className="flex-1 container mx-auto p-4 max-w-md">
+                    
+                    {/* --------- الصفحة الرئيسية (Home) --------- */}
+                    {view === 'home' && (
+                        <div className="flex flex-col items-center justify-center mt-8 animate-fade-in space-y-6">
+                            <div className="text-center">
+                                <h2 className="text-2xl font-black text-white mb-2">غتشري بيسي مستعمل؟</h2>
+                                <p className="text-gray-400 text-sm">افحص اللابتوب (Open Box/Occasion) خطوة بخطوة وتأكد بلي البياس ماروسيكليش.</p>
+                            </div>
+                            
+                            {/* الزر الرئيسي */}
+                            <div className="relative group cursor-pointer" onClick={resetInspection}>
+                                <div className="absolute inset-0 bg-pc-primary rounded-full blur-md opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                                <div className="w-40 h-40 bg-pc-surface rounded-full flex items-center justify-center border-4 border-pc-primary relative z-10 shadow-2xl transform group-hover:scale-105 transition-transform">
+                                    <i className="fa-solid fa-laptop-medical text-6xl text-white"></i>
+                                </div>
+                            </div>
+                            <p className="font-bold text-pc-primary animate-pulse text-lg">إبدأ الفحص الآن</p>
+
+                            <div className="w-full grid gap-3 mt-6">
+                                <button onClick={() => setView('tools')} className="bg-pc-surface border border-gray-700 p-4 rounded-2xl flex items-center gap-4 hover:border-pc-primary transition shadow-md">
+                                    <div className="bg-gray-800 p-3 rounded-xl text-blue-400"><i className="fa-solid fa-toolbox text-xl"></i></div>
+                                    <div className="text-right flex-1">
+                                        <span className="font-bold block text-white text-lg">البرامج الضرورية للفحص</span>
+                                        <span className="text-sm text-gray-400">شنو دير معاك فـ USB قبل تمشي</span>
+                                    </div>
+                                    <i className="fa-solid fa-chevron-left text-gray-500"></i>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --------- صفحة الفحص (Inspection) --------- */}
+                    {view === 'inspection' && (
+                        <div className="h-full flex flex-col animate-fade-in">
+                            <div className="w-full bg-gray-800 h-2 rounded-full mb-6">
+                                <div className="bg-pc-primary h-2 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" style={{ width: `${((currentStepIndex + 1) / inspectionLogic.length) * 100}%` }}></div>
+                            </div>
+                            <div className="flex-1 flex flex-col justify-center">
+                                <div className="bg-pc-surface border border-gray-700 rounded-3xl p-6 shadow-2xl relative">
+                                    <div className="flex flex-col items-center mb-6">
+                                        <div className="w-16 h-16 bg-gray-800 border border-gray-600 rounded-full flex items-center justify-center text-2xl text-pc-primary mb-3 shadow-inner">
+                                            <i className={`fa-solid ${inspectionLogic[currentStepIndex].icon}`}></i>
+                                        </div>
+                                        <h2 className="text-xl font-bold text-white text-center">{inspectionLogic[currentStepIndex].title}</h2>
+                                    </div>
+
+                                    {!stepResult && (
+                                        <div className="bg-blue-900/20 border border-blue-800 p-4 rounded-xl mb-6 animate-slide-up">
+                                            <p className="text-blue-100 text-center font-bold text-sm leading-relaxed">{inspectionLogic[currentStepIndex].instruction}</p>
+                                        </div>
+                                    )}
+
+                                    {!stepResult ? (
+                                        <div className="grid gap-3 animate-slide-up">
+                                            {inspectionLogic[currentStepIndex].options.map((opt, i) => (
+                                                <button key={i} onClick={() => handleAnswer(opt)} 
+                                                    className="w-full bg-gray-800 hover:bg-gray-700 text-white p-4 rounded-xl border border-gray-600 font-bold text-right flex justify-between items-center transition-all group text-sm">
+                                                    <span className="flex-1 ml-2 leading-relaxed">{opt.text}</span>
+                                                    <i className="fa-solid fa-chevron-left text-gray-500 group-hover:text-pc-primary"></i>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="animate-fade-in text-center space-y-4">
+                                            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl mb-2 ${stepResult.status === 'good' ? 'bg-green-900/50 text-green-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : (stepResult.status === 'warn' ? 'bg-yellow-900/50 text-yellow-500 shadow-[0_0_15px_rgba(245,158,11,0.3)]' : 'bg-red-900/50 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]')}`}>
+                                                <i className={`fa-solid ${stepResult.status === 'good' ? 'fa-check' : 'fa-triangle-exclamation'}`}></i>
+                                            </div>
+                                            <h3 className={`text-xl font-black ${stepResult.status === 'good' ? 'text-green-400' : (stepResult.status === 'warn' ? 'text-yellow-400' : 'text-red-400')}`}>{stepResult.result}</h3>
+                                            <p className="text-gray-300 text-sm">{stepResult.advice}</p>
+
+                                            <button onClick={nextStep} className="w-full bg-pc-primary text-white font-black py-3 rounded-xl shadow-[0_4px_14px_0_rgba(59,130,246,0.39)] hover:bg-blue-600 transition mt-4 flex items-center justify-center gap-2">
+                                                {currentStepIndex < inspectionLogic.length - 1 ? 'انتقل للفحص الموالي' : 'إنهاء وعرض التقرير'} <i className="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --------- صفحة أدوات الفحص (Tools) --------- */}
+                    {view === 'tools' && (
+                        <div className="animate-slide-up space-y-6">
+                            <h2 className="text-xl font-bold text-white border-r-4 border-pc-primary pr-3">برامج الفحص (في USB)</h2>
+                            <p className="text-gray-400 text-sm">حمل هاد البرامج فكلي USB و ديهم معاك باش تيستي البيسي. كولها مجانية وخفيفة.</p>
+                            
+                            <div className="space-y-4">
+                                {toolsGuide.map((tool, i) => (
+                                    <div key={i} className="bg-pc-surface p-4 rounded-xl border border-gray-700 flex flex-col gap-2">
+                                        <div className="flex justify-between items-center">
+                                            <h4 className="font-black text-white text-lg">{tool.name}</h4>
+                                            <span className="text-xs bg-gray-800 text-pc-primary px-2 py-1 rounded font-bold border border-gray-600">{tool.type}</span>
+                                        </div>
+                                        <p className="text-sm text-gray-300">{tool.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <button onClick={() => setView('home')} className="w-full bg-gray-800 border border-gray-700 py-3 rounded-xl font-bold text-gray-300 hover:text-white transition">رجوع للرئيسية</button>
+                        </div>
+                    )}
+
+                    {/* --------- التقرير النهائي (Report) --------- */}
+                    {view === 'report' && (
+                        <div className="animate-fade-in space-y-6">
+                            <div className="text-center mb-8">
+                                <h2 className="text-3xl font-black text-white mb-1">التقرير النهائي 📋</h2>
+                                <p className="text-gray-400">نتيجة التحليل التقني للحاسوب</p>
+                            </div>
+
+                            {totalDefects.length === 0 ? (
+                                <div className="bg-green-900/20 border-2 border-green-600 p-8 rounded-3xl text-center shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+                                    <i className="fa-solid fa-shield-check text-7xl text-green-500 mb-4 drop-shadow-lg"></i>
+                                    <h3 className="text-2xl font-bold text-white mb-2">حاسوب ممتاز وأصلي!</h3>
+                                    <p className="text-green-200">البيسي ناضي، القطع ديالو كاملة أصلية وسليمة ومامبدلش. توكل على الله.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className={`p-5 rounded-2xl text-center font-bold text-lg ${totalDefects.some(d => d.status === 'bad') ? 'bg-red-900/30 text-red-400 border-2 border-red-800 shadow-[0_0_20px_rgba(239,68,68,0.2)]' : 'bg-yellow-900/30 text-yellow-400 border-2 border-yellow-800 shadow-[0_0_20px_rgba(245,158,11,0.2)]'}`}>
+                                        {totalDefects.some(d => d.status === 'bad') ? (
+                                            <span><i className="fa-solid fa-skull-crossbones mb-2 block text-3xl"></i> تحذير: الحاسوب يحتوي على قطع تالفة أو مزورة! خطيه عليك.</span>
+                                        ) : (
+                                            <span><i className="fa-solid fa-triangle-exclamation mb-2 block text-3xl"></i> تنبيه: الحاسوب خدام ولكن فيه بعض الملاحظات. التفاوض ضروري.</span>
+                                        )}
+                                    </div>
+
+                                    <h4 className="font-bold text-gray-400 mt-6 mb-2">تفاصيل العيوب:</h4>
+                                    {totalDefects.map((def, i) => (
+                                        <div key={i} className={`bg-pc-surface p-4 rounded-xl border-r-4 shadow-md ${def.status === 'bad' ? 'border-red-500' : 'border-yellow-500'}`}>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <i className={`fa-solid ${def.status === 'bad' ? 'fa-xmark text-red-500' : 'fa-exclamation text-yellow-500'}`}></i>
+                                                <h4 className="font-bold text-white text-sm">{inspectionLogic.find(t => t.id === def.stepId).title}</h4>
+                                            </div>
+                                            <p className="text-sm text-gray-300 mr-6 font-semibold">{def.result}</p>
+                                            <p className="text-xs text-gray-400 mr-6 mt-1">{def.advice}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            
+                            <button onClick={resetInspection} className="w-full bg-pc-primary text-white font-bold py-4 mt-6 rounded-xl shadow-[0_4px_14px_0_rgba(59,130,246,0.39)] hover:bg-blue-600 transition flex justify-center items-center gap-2">
+                                <i className="fa-solid fa-rotate-right"></i> فحص حاسوب آخر
+                            </button>
+                        </div>
+                    )}
+
+                </main>
+            </div>
+        );
+    }
+
+    // تفعيل React داخل عنصر الجدر
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+</body>
+</html>
