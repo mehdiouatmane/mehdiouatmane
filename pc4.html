@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate PC Checker | فحص الحاسوب الشامل</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',
+                            light: '#1e293b',
+                            accent: '#3b82f6',
+                            success: '#10b981',
+                            warning: '#ef4444'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Tajawal', sans-serif; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-12">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const checklistData = [
+            {
+                id: 'warranty',
+                title: 'الهوية والضمان (Identity & System)',
+                icon: 'fa-solid fa-id-card',
+                items: [
+                    'قارن الرقم التسلسلي (Serial Number) بين BIOS و CMD (أمر: wmic bios get serialnumber) وظهر الحاسوب.',
+                    'تأكد من تطابق الموديل (MTM) في BIOS مع الويندوز (أوامر: dxdiag, msinfo32).',
+                    'ابحث عن السيريال في pcsupport.lenovo.com للتأكد من تاريخ الضمان وبلد التوجيه (تجنب تزوير تاريخ الشراء).',
+                    'في شاشة BIOS، تأكد من وجود ترخيص الويندوز الأصلي (Preinstalled OS License: WIN).',
+                    'إذا كان الجهاز يُباع كجديد وضمانه منتهي أو قليل، فهو (Open Box, Display Model أو Refurbished).'
+                ]
+            },
+            {
+                id: 'battery',
+                title: 'البطارية والشاحن (Battery & Charger)',
+                icon: 'fa-solid fa-battery-full',
+                items: [
+                    'في CMD اكتب (powercfg /batteryreport) وقارن بين Design Capacity و Full Charge Capacity (يجب ألا يكون الفرق كبيراً).',
+                    'في Lenovo Vantage: تأكد أن عدد دورات الشحن (Cycle Count) لا يتجاوز 3 دورات للجديد.',
+                    'تأكد من الشاحن: يجب أن يكون ثقيلاً، محفور عليه شعار الشركة، وبقدرة كافية (مثلاً 300W أو 330W للأجهزة القوية).',
+                    'جرب فصل الشاحن أثناء العمل: الجهاز يجب ألا ينطفئ، ولا يصدر أصوات طقطقة أو أزيز من دوائر الطاقة (Coil Whine).'
+                ]
+            },
+            {
+                id: 'storage',
+                title: 'وحدة التخزين (SSD Storage)',
+                icon: 'fa-solid fa-hard-drive',
+                items: [
+                    'استخدم CrystalDiskInfo: تأكد أن ساعات العمل (Power-on hours) أقل من 20 ساعة للجديد.',
+                    'في CrystalDiskInfo: تأكد أن حجم القراءة/الكتابة (Total Host Reads/Writes) ليس بالتيرابايت (TB).',
+                    'استخدم CrystalDiskMark: تأكد أن السرعة تصل إلى 6000-7000 MB/s إذا كان القرص PCIe Gen 4x4.',
+                    'تأكد من ماركة القرص (OEM): يجب أن تكون معروفة مثل WDC, SK Hynix, Samsung (تجنب الماركات التجارية الرخيصة).'
+                ]
+            },
+            {
+                id: 'cpu',
+                title: 'المعالج واللوحة الأم (CPU & Motherboard)',
+                icon: 'fa-solid fa-microchip',
+                items: [
+                    'شغل HWiNFO64 لمراقبة الحساسات (Sensors)، ثم أطلق اختبار Cinebench R23 أو HeavyLoad لمدة 10 دقائق.',
+                    'راقب الحرارة (CPU Package Temp): يجب ألا تتجاوز 85-95 درجة مئوية مع معالجات الأداء العالي (i9/i7 HX أو Ryzen 9).',
+                    'راقب الاختناق الحراري (Thermal Throttling): يجب أن يتحول من Yes (أحمر) إلى No بمجرد دوران المراوح (Coldfront/Liquid Metal).',
+                    'تأكد أن سرعة المعالج (Core Clocks) مستقرة ولا تنخفض عن التردد الأساسي (مثلاً 4.5GHz تحت الضغط).',
+                    'تأكد أن الجهاز لم يقم بإعادة التشغيل (Restart) أو عرض شاشة زرقاء أثناء الضغط.'
+                ]
+            },
+            {
+                id: 'gpu',
+                title: 'كرت الشاشة (GPU)',
+                icon: 'fa-solid fa-desktop',
+                items: [
+                    'شغل اختبار FurMark لمدة 10 دقائق على دقة 2K (2560x1600).',
+                    'في HWiNFO64: حرارة الـ GPU يجب أن تبقى بين 70 و 85 درجة كحد أقصى.',
+                    'استهلاك الطاقة (GPU Power): يجب أن يبقى ثابتاً فوق 100W إلى 140W للبطاقات القوية (RTX 4070/5070)، التذبذب الحاد يعني مشكلة طاقة.',
+                    'معدل الإطارات (FPS): يجب أن يكون مرتفعاً ومستقراً. سقوط الـ FPS لـ 15 أو ظهور شاشة زرقاء يعني كرت شاشة معطوب.'
+                ]
+            },
+            {
+                id: 'ram',
+                title: 'الرامات (Memory - RAM)',
+                icon: 'fa-solid fa-memory',
+                items: [
+                    'استخدم أداة mdsched.exe المدمجة أو Testmem5 لفحص أخطاء الرام (تجنب الشاشة الزرقاء).',
+                    'في تبويب SPD داخل CPU-Z أو HWiNFO64: تأكد من السعة والتردد (مثال: 32GB DDR5 5600MHz).',
+                    'تأكد من الشركة المصنعة لشرائح الرام: يجب أن تكون (Crucial, Micron, Samsung, SK Hynix, Kingston FURY, Corsair).'
+                ]
+            },
+            {
+                id: 'display',
+                title: 'الشاشة (Display & Panel)',
+                icon: 'fa-solid fa-tv',
+                items: [
+                    'افتح موقع deadpixeltest.org وجرب الشاشة بالألوان (أحمر، أخضر، أزرق، أبيض، أسود).',
+                    'ابحث عن البيكسلات الميتة (Dead Pixels)، البقع البيضاء، أو تسرب الإضاءة (Backlight Bleed) في حواف الشاشة.',
+                    'تأكد من المواصفات في إعدادات العرض (مثال: QHD+ 2560x1600، معدل تحديث 240Hz، HDR 400).',
+                    'افحص الشاشة مادياً: تأكد من عدم وجود خدوش، شقوق، أو أضرار في الإطار البلاستيكي.'
+                ]
+            },
+            {
+                id: 'ports',
+                title: 'المنافذ والاتصال (Ports & Connectivity)',
+                icon: 'fa-solid fa-wifi',
+                items: [
+                    'في Device Manager: تأكد أن بطاقة الـ Wi-Fi من نوع ممتاز (Intel Wi-Fi 6E/7 أو Killer) وليس Mediatek/Realtek ضعيف.',
+                    'جرب جميع المنافذ: USB, HDMI, SD Card, Type-C, Ethernet.',
+                    'اختبر الكاميرا (و Face ID إن وجد)، الميكروفون، ومكبرات الصوت (تأكد من عدم وجود خشخشة في الـ Stereo).',
+                    'اختبر لوحة المفاتيح (كل زر على حدة) و Touchpad والـ Bluetooth.',
+                    'اقلب الجهاز وتأكد من حالة البراغي (Vis): هل هي مفتوحة مسبقاً؟ وتأكد من سلامة الهيكل (Chassis) من الكسور.'
+                ]
+            },
+            {
+                id: 'software',
+                title: 'أدوات الصيانة المتقدمة (Advanced Tools)',
+                icon: 'fa-solid fa-toolbox',
+                items: [
+                    'أنظمة الإقلاع للطوارئ: Hiren\'s BootCD PE, Sergei Strelec\'s WinPE.',
+                    'مخططات البوردة (Schematics): Badcaps.net, Vinafix, OpenBoardView, FlexBV.',
+                    'برامج النسخ الاحتياطي (Cloning): Macrium Reflect, Acronis True Image.',
+                    'برامج استرجاع الداتا (Recovery): Recuva, EaseUS Data Recovery.'
+                ]
+            }
+        ];
+
+        function App() {
+            const [checkedItems, setCheckedItems] = useState({});
+            const [expandedCategories, setExpandedCategories] = useState({'warranty': true});
+
+            // Calculate progress
+            const totalItems = checklistData.reduce((acc, cat) => acc + cat.items.length, 0);
+            const checkedCount = Object.keys(checkedItems).length;
+            const progressPercentage = totalItems === 0 ? 0 : Math.round((checkedCount / totalItems) * 100);
+
+            const toggleItem = (catId, index) => {
+                const key = `${catId}-${index}`;
+                setCheckedItems(prev => {
+                    const newState = { ...prev };
+                    if (newState[key]) {
+                        delete newState[key];
+                    } else {
+                        newState[key] = true;
+                    }
+                    return newState;
+                });
+            };
+
+            const toggleCategory = (catId) => {
+                setExpandedCategories(prev => ({
+                    ...prev,
+                    [catId]: !prev[catId]
+                }));
+            };
+
+            const resetProgress = () => {
+                if(window.confirm('هل أنت متأكد أنك تريد مسح جميع البيانات والبدء من جديد؟')) {
+                    setCheckedItems({});
+                }
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto p-4 md:p-6">
+                    {/* Header */}
+                    <header className="mb-8 text-center pt-8">
+                        <h1 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-l from-blue-400 to-emerald-400 mb-4">
+                            دليل الفحص الشامل للحاسوب
+                        </h1>
+                        <p className="text-gray-400 text-lg">أدوات وخطوات المحترفين لفحص أجهزة اللابتوب (جديد / مستعمل)</p>
+                    </header>
+
+                    {/* Progress Bar */}
+                    <div className="glass-panel rounded-2xl p-6 mb-8 sticky top-4 z-50 shadow-2xl">
+                        <div className="flex justify-between items-end mb-2">
+                            <div>
+                                <span className="text-2xl font-bold text-white">{progressPercentage}%</span>
+                                <span className="text-gray-400 text-sm mr-2">مكتمل ({checkedCount} من {totalItems})</span>
+                            </div>
+                            <button 
+                                onClick={resetProgress}
+                                className="text-sm text-red-400 hover:text-red-300 transition-colors flex items-center gap-2"
+                            >
+                                <i className="fa-solid fa-rotate-right"></i> إعادة تعيين
+                            </button>
+                        </div>
+                        <div className="w-full bg-gray-700 rounded-full h-3">
+                            <div 
+                                className="bg-gradient-to-l from-blue-500 to-emerald-400 h-3 rounded-full transition-all duration-500 ease-out" 
+                                style={{ width: `${progressPercentage}%` }}
+                            ></div>
+                        </div>
+                    </div>
+
+                    {/* Checklist Categories */}
+                    <div className="space-y-4">
+                        {checklistData.map((category) => {
+                            const categoryItemsTotal = category.items.length;
+                            const categoryItemsChecked = category.items.filter((_, idx) => checkedItems[`${category.id}-${idx}`]).length;
+                            const isAllChecked = categoryItemsTotal === categoryItemsChecked;
+
+                            return (
+                                <div key={category.id} className={`glass-panel rounded-xl overflow-hidden transition-all duration-300 ${isAllChecked ? 'border-emerald-500/50' : ''}`}>
+                                    {/* Category Header */}
+                                    <button 
+                                        onClick={() => toggleCategory(category.id)}
+                                        className="w-full px-6 py-4 flex items-center justify-between bg-white/5 hover:bg-white/10 transition-colors"
+                                    >
+                                        <div className="flex items-center gap-4 text-lg font-semibold">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isAllChecked ? 'bg-emerald-500/20 text-emerald-400' : 'bg-blue-500/20 text-blue-400'}`}>
+                                                <i className={category.icon}></i>
+                                            </div>
+                                            <span className={isAllChecked ? 'text-emerald-300' : 'text-white'}>
+                                                {category.title}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <span className="text-sm text-gray-400 bg-gray-800 px-3 py-1 rounded-full">
+                                                {categoryItemsChecked} / {categoryItemsTotal}
+                                            </span>
+                                            <i className={`fa-solid fa-chevron-down transition-transform duration-300 ${expandedCategories[category.id] ? 'rotate-180' : ''}`}></i>
+                                        </div>
+                                    </button>
+
+                                    {/* Category Items */}
+                                    <div className={`transition-all duration-300 overflow-hidden ${expandedCategories[category.id] ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                        <div className="p-6 pt-2 space-y-3">
+                                            {category.items.map((item, index) => {
+                                                const isChecked = checkedItems[`${category.id}-${index}`];
+                                                return (
+                                                    <label 
+                                                        key={index} 
+                                                        className={`flex items-start gap-4 p-4 rounded-lg cursor-pointer transition-colors border ${isChecked ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-gray-800/50 border-gray-700 hover:bg-gray-700/50'}`}
+                                                    >
+                                                        <div className="pt-1">
+                                                            <div className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${isChecked ? 'bg-emerald-500 border-emerald-500' : 'border-gray-500'}`}>
+                                                                {isChecked && <i className="fa-solid fa-check text-white text-sm"></i>}
+                                                            </div>
+                                                        </div>
+                                                        <span className={`text-base leading-relaxed ${isChecked ? 'text-gray-300 line-through decoration-emerald-500/50' : 'text-gray-100'}`}>
+                                                            {item}
+                                                        </span>
+                                                    </label>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    <footer className="mt-12 text-center text-gray-500 text-sm">
+                        تم تصميمه خصيصاً لتسهيل فحص الأجهزة بكفاءة واحترافية. &copy; 2026
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
