@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Check - فحص الحواسيب المستعملة</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .step-card {
+            transition: all 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const testCategories = [
+            {
+                id: 'physical',
+                title: '1. المعاينة الخارجية والمنافذ (العين المجردة)',
+                icon: 'fas fa-search',
+                tests: [
+                    { id: 'screws', question: 'واش الفيسات (Screws) لي لتحت نقيين وماشي مجروحين؟', instructions: 'يلا كانو مجروحين بزاف، يعني البيسي تحل وتعاود تسد شحال من مرة (إما تبريكولا فيه أو تصلح).', cost: 0, dealbreaker: false },
+                    { id: 'ports', question: 'واش كاع منافذ USB, HDMI, والكيت (Écouteurs) خدامين؟', instructions: 'جرب كلي USB فكاع التقابي، وركب الكيت شوف واش الصوت كيخرج مزيان.', cost: 300, dealbreaker: false }
+                ]
+            },
+            {
+                id: 'display',
+                title: '2. الشاشة والصوت (Dead Pixels)',
+                icon: 'fas fa-desktop',
+                tests: [
+                    { id: 'pixels', question: 'واش الشاشة نقية ومافيهاش نقط كحلين أو بويض (Dead Pixels)؟', instructions: 'دخل لليوتوب كتب "Dead Pixel Test" وديرو Full Screen. ركز مزيان واش كاين شي نقطة مابغاتش تبدل اللون، أو شي ضو خارج من الجناب.', cost: 1200, dealbreaker: false },
+                    { id: 'sound', question: 'واش الصوت كيخرج نقي ومافيهش الخشخشة؟', instructions: 'طلق شي فيديو وطلع الصوت للماكسيموم (100%).', cost: 250, dealbreaker: false }
+                ]
+            },
+            {
+                id: 'fakes',
+                title: '3. التأكد من القطع واش أصلية (Anti-Fake)',
+                icon: 'fas fa-microchip',
+                tests: [
+                    { id: 'cpuz', question: 'واش المعالج (CPU) والرام مطابقين لداكشي لي قاليك البائع؟', instructions: 'خدم برنامج CPU-Z. تأكد من سمية المعالج، الجيل ديالو، والرام واش بصح بحال (مثلا 16GB و 5600MHz).', cost: 0, dealbreaker: true, failMessage: 'البيسي مزور أو مبدلين ليه البياس.' },
+                    { id: 'gpuz', question: 'واش كارت الشاشة أصلية فبرنامج GPU-Z؟', instructions: 'خدم برنامج GPU-Z. يلا طلعات ليك كلمة [FAKE] أو علامة تعجب ⚠️، راه الكارت مزورة وتصيدتي.', cost: 0, dealbreaker: true, failMessage: 'كارت الشاشة مزورة (Fake GPU).' }
+                ]
+            },
+            {
+                id: 'storage',
+                title: '4. حالة التخزين (SSD/HDD) والبطارية',
+                icon: 'fas fa-hdd',
+                tests: [
+                    { id: 'diskhealth', question: 'واش حالة الديسك دير بالزرق (Good) فبرنامج CrystalDiskInfo؟', instructions: 'يلا كانت بالصفر (Caution) أو الأحمر (Bad)، راه الديسك دير قرب يموت. وشوف "Power On Hours" واش منطقية مع عمر البيسي.', cost: 500, dealbreaker: false },
+                    { id: 'battery', question: 'واش البطارية باقا كتشد مزيان؟ (Battery Report)', instructions: 'حل CMD كمسؤول واكتب: powercfg /batteryreport. قارن Design Capacity مع Full Charge Capacity. يلا كان الفرق كبير راه الباتري ميت.', cost: 600, dealbreaker: false },
+                    { id: 'charger', question: 'واش الشارجور أصلي وثقيل (مثلا 300W أو 330W للجيمنج)؟', instructions: 'الشارجور المزور كيكون خفيف وكيخرج على البيسي والبطارية.', cost: 400, dealbreaker: false }
+                ]
+            },
+            {
+                id: 'stress',
+                title: '5. اختبار الضغط والحرارة (Stress Test)',
+                icon: 'fas fa-fire',
+                tests: [
+                    { id: 'gpu_stress', question: 'واش كارت الشاشة دازت من اختبار FurMark بلا مشاكل؟', instructions: 'طلق برنامج FurMark (Donut) لمدة 10 دقايق. يلا بانت خطوط غريبة فالشاشة (Artifacts) أو طفا البيسي، هرب! الحرارة خاصها ماتفوتش 85 درجة.', cost: 0, dealbreaker: true, failMessage: 'كارت الشاشة مضروبة وقربات تحرق.' },
+                    { id: 'cpu_stress', question: 'واش المعالج داز من اختبار Cinebench R23 بلا مايطفى البيسي؟', instructions: 'طلق Cinebench لمدة 10 دقايق وحل HWMonitor أو HWinfo64. الحرارة خاصها ماتفوتش 95 درجة، والفرفارة خاصها تخدم مجهدة بحال الشيشوار.', cost: 0, dealbreaker: true, failMessage: 'مشكل خطير في تبريد المعالج أو اللوحة الأم (Motherboard).' },
+                    { id: 'fans', question: 'واش صوت الفرفارة (Fans) نقي ومافيهش التقرقيب؟', instructions: 'ملي يكون البيسي مضغوط، تصنت للفرفارة واش كدور مزيان أو كتضرب فشي حاجة لداخل.', cost: 200, dealbreaker: false }
+                ]
+            }
+        ];
+
+        function App() {
+            const [responses, setResponses] = React.useState({});
+            const [showResults, setShowResults] = React.useState(false);
+
+            const handleResponse = (testId, result) => {
+                setResponses(prev => ({ ...prev, [testId]: result }));
+            };
+
+            const calculateResults = () => {
+                let totalCost = 0;
+                let dealbreakers = [];
+                let fixableIssues = [];
+                let answeredCount = Object.keys(responses).length;
+                let totalTests = testCategories.reduce((acc, cat) => acc + cat.tests.length, 0);
+
+                if (answeredCount < totalTests) {
+                    alert('عافاك جاوب على كاع الأسئلة باش نعطيك النتيجة المضبوطة!');
+                    return;
+                }
+
+                testCategories.forEach(category => {
+                    category.tests.forEach(test => {
+                        if (responses[test.id] === 'fail') {
+                            if (test.dealbreaker) {
+                                dealbreakers.push(test.failMessage || test.question);
+                            } else {
+                                fixableIssues.push({ name: test.question, cost: test.cost });
+                                totalCost += test.cost;
+                            }
+                        }
+                    });
+                });
+
+                return { dealbreakers, fixableIssues, totalCost };
+            };
+
+            const handleFinish = () => {
+                const results = calculateResults();
+                if (results) {
+                    setShowResults(true);
+                }
+            };
+
+            const resetApp = () => {
+                setResponses({});
+                setShowResults(false);
+                window.scrollTo(0, 0);
+            };
+
+            if (showResults) {
+                const { dealbreakers, fixableIssues, totalCost } = calculateResults();
+                
+                let resultUI;
+                if (dealbreakers.length > 0) {
+                    resultUI = (
+                        <div className="bg-red-100 border-t-4 border-red-500 rounded-b px-4 py-6 shadow-md mb-6">
+                            <div className="flex items-center mb-4">
+                                <i className="fas fa-skull-crossbones text-red-500 text-4xl ml-4"></i>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-red-700">هرب! لا أنصحك تشريه</h2>
+                                    <p className="text-red-600">هاد البيسي فيه مشاكل خطيرة مافيهاش الدوا، غتخسر فلوسك على والو.</p>
+                                </div>
+                            </div>
+                            <h3 className="font-bold text-red-800 mb-2">المشاكل القاتلة لي لقا الفحص:</h3>
+                            <ul className="list-disc list-inside text-red-700 space-y-1">
+                                {dealbreakers.map((issue, idx) => <li key={idx}>{issue}</li>)}
+                            </ul>
+                        </div>
+                    );
+                } else if (fixableIssues.length > 0) {
+                    resultUI = (
+                        <div className="bg-yellow-50 border-t-4 border-yellow-500 rounded-b px-4 py-6 shadow-md mb-6">
+                            <div className="flex items-center mb-4">
+                                <i className="fas fa-handshake text-yellow-500 text-4xl ml-4"></i>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-yellow-700">تقدر تشريه.. ولكن خاصك تنقص الثمن!</h2>
+                                    <p className="text-yellow-600">القطع الأساسية خدامة مزيان، ولكن كاين مشاكل ثانوية خاصها تصلح.</p>
+                                </div>
+                            </div>
+                            <div className="bg-white p-4 rounded border border-yellow-200 mb-4">
+                                <h3 className="font-bold text-gray-800 mb-2">قائمة المشاكل وتكلفة الإصلاح التقريبية:</h3>
+                                <ul className="space-y-2 mb-4">
+                                    {fixableIssues.map((issue, idx) => (
+                                        <li key={idx} className="flex justify-between items-center border-b pb-1">
+                                            <span className="text-gray-700 text-sm w-3/4">{issue.name}</span>
+                                            <span className="font-bold text-red-500">{issue.cost} درهم</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="flex justify-between items-center bg-yellow-100 p-2 rounded font-bold text-lg">
+                                    <span>المجموع التقديري للإصلاح:</span>
+                                    <span>{totalCost} درهم</span>
+                                </div>
+                            </div>
+                            <p className="text-sm text-yellow-800 font-bold bg-yellow-200 p-2 rounded text-center">
+                                نصيحة: قول لمولاه ينقص ليك هاد {totalCost} درهم من الثمن الأصلي أو قلب على بيسي آخر.
+                            </p>
+                        </div>
+                    );
+                } else {
+                    resultUI = (
+                        <div className="bg-green-100 border-t-4 border-green-500 rounded-b px-4 py-6 shadow-md mb-6 text-center">
+                            <i className="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+                            <h2 className="text-3xl font-bold text-green-700 mb-2">بيسي ناضي! توكل على الله</h2>
+                            <p className="text-green-600 text-lg">كاع الاختبارات دازو بسلام. البيسي سليم، القطع أصلية، والحرارة مستقرة. مبروك عليك!</p>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div className="min-h-screen p-4 md:p-8 max-w-3xl mx-auto">
+                        <h1 className="text-3xl font-black text-center text-gray-800 mb-8"><i className="fas fa-clipboard-check text-blue-600 ml-2"></i>نتيجة الفحص الشامل</h1>
+                        {resultUI}
+                        <button onClick={resetApp} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded shadow-lg transition duration-200 flex items-center justify-center text-lg">
+                            <i className="fas fa-redo ml-2"></i> فحص حاسوب آخر
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 max-w-3xl mx-auto">
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-black text-gray-800 mb-2"><i className="fas fa-laptop-medical text-blue-600 ml-2"></i>PC Check - المغرب</h1>
+                        <p className="text-gray-600 font-medium">جاوب على هاد الأسئلة خطوة بخطوة باش تعرف واش البيسي لي غتشري ناضي ولا غيقولبوك فيه.</p>
+                    </div>
+
+                    <div className="space-y-8">
+                        {testCategories.map((category) => (
+                            <div key={category.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                                <div className="bg-slate-800 text-white p-4 flex items-center">
+                                    <i className={`${category.icon} text-xl ml-3 text-blue-400`}></i>
+                                    <h2 className="text-xl font-bold">{category.title}</h2>
+                                </div>
+                                
+                                <div className="p-4 space-y-6">
+                                    {category.tests.map((test) => (
+                                        <div key={test.id} className="step-card bg-gray-50 p-4 rounded-lg border border-gray-200 relative">
+                                            <div className="mb-4">
+                                                <h3 className="font-bold text-gray-800 text-lg mb-2">{test.question}</h3>
+                                                <p className="text-gray-600 text-sm bg-blue-50 p-3 rounded border-r-4 border-blue-400">
+                                                    <i className="fas fa-info-circle text-blue-500 ml-1"></i> {test.instructions}
+                                                </p>
+                                            </div>
+                                            
+                                            <div className="flex gap-4">
+                                                <button 
+                                                    onClick={() => handleResponse(test.id, 'pass')}
+                                                    className={`flex-1 py-3 px-4 rounded font-bold border-2 transition-all flex items-center justify-center ${
+                                                        responses[test.id] === 'pass' 
+                                                        ? 'bg-green-100 border-green-500 text-green-700 shadow-inner' 
+                                                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-100'
+                                                    }`}
+                                                >
+                                                    <i className="fas fa-check ml-2"></i> آه (مزيان)
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleResponse(test.id, 'fail')}
+                                                    className={`flex-1 py-3 px-4 rounded font-bold border-2 transition-all flex items-center justify-center ${
+                                                        responses[test.id] === 'fail' 
+                                                        ? 'bg-red-100 border-red-500 text-red-700 shadow-inner' 
+                                                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-100'
+                                                    }`}
+                                                >
+                                                    <i className="fas fa-times ml-2"></i> لا (فيها مشكل)
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-10 mb-20">
+                        <button 
+                            onClick={handleFinish}
+                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-4 px-4 rounded-xl shadow-xl transition duration-300 flex items-center justify-center text-xl"
+                        >
+                            <i className="fas fa-poll-h ml-2"></i> عطيني النتيجة النهائية
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
