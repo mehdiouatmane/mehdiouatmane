@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تكنولوجيا الحضارات القديمة - أسرار وألغاز التاريخ</title>
+    
+    <!-- React & ReactDOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel CDN لترجمة JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Cairo & Amiri) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google AdSense Main Script (Auto Ads & Interstitial / Vignette) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+        }
+        .font-serif-custom {
+            font-family: 'Amiri', serif;
+        }
+    </style>
+</head>
+<body class="selection:bg-amber-500 selection:text-black">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // قائمة المقالات الحصرية
+        const articlesData = [
+            {
+                id: 1,
+                title: "بطارية بغداد: هل عرف القدماء الكهرباء قبل آلاف السنين؟",
+                category: "بلاد الرافدين",
+                date: "12 أكتوبر 2026",
+                readTime: "5 دقائق",
+                image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=1000&auto=format&fit=crop",
+                excerpt: "في ثلاثينيات القرن الماضي، تم اكتشاف جرة فخارية بالقرب من بغداد تحتوي على أسطوانة نحاسية وقضيب حديدي. هل كانت خلية جلفانية مبكرة لتوليد الكهرباء؟",
+                content: `في عام 1936، أثناء أعمال تنقيب أثرية بالقرب من خوجوت رابوا بالقرب من بغداد، تم العثور على جرة فخارية صفراء يبلغ طولها حوالي 13 سنتيمترًا. داخل هذه الجرة، وجد المنقبون أسطوانة مصنوعة من صفائح النحاس الملحومة بالرصاص، وداخل الأسطوانة قضيب حديدي منفصل عن النحاس بواسطة طبقة من القار.
+
+اختبارات وعينات:
+عند صب حمض متوفر في ذلك العصر (مثل الخل أو عصير الليمون) داخل الجرة، تبين أنها تنتج جهاً كهربائياً تتراوح قوته بين 1.1 إلى 2 فولت!
+
+تطبيقات محتملة:
+1. طلاء المعادن: استخدام الكهرباء البسيطة لطلاء الحلي النحاسية بطبقة رقيقة من الذهب أو الفضة.
+2. العلاج الطبي: تخفيف الآلام بواسطة الصدمات الكهربائية الخفيفة.
+3. الشعائر السحرية: إبهام التماثيل داخل المعابد لمنحها طاقة غامضة!
+
+ورغم وجود آراء تشكك في استخدامها كبطارية، إلا أن الهندسة الدقيقة المتبعة في تصنيعها تجعل من "بطارية بغداد" إحدى أكبر الألغاز التكنولوجية للحضارات القديمة.`
+            },
+            {
+                id: 2,
+                title: "آلية أنتيكيثيرا: أول حاسوب تناظري في التاريخ الإغريقي",
+                category: "اليونان القديمة",
+                date: "28 سبتمبر 2026",
+                readTime: "7 دقائق",
+                image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop",
+                excerpt: "جهاز ميكانيكي معقد مع أكثر من 30 ترساً برونزياً تم انتشاله من حطام سفينة قديمة. استُخدم للتنبؤ بالمواقع الفلكية والكسوف بدقة متناهية.",
+                content: `في عام 1901، عثر صائدو الإسفنج على حطام سفينة تجارية رومانية قبالة جزيرة أنتيكيثيرا اليونانية. بين المكتشفات كانت هناك كتلة متآكلة من البرونز اتضح لاحقاً أنها أعقد آلية ميكانيكية استُردت من العالم القديم.
+
+الدقة الهندسية:
+تحتوي الآلية على ما لا يقل عن 30 ترساً برونزياً معشقة بدقة متناهية، وكانت تعمل بواسطة مقبض يدوي. استخدام التصوير بالأشعة السينية ثلاثية الأبعاد كشف عن وجود كتابات إرشادات دقيقة محفورة على وجه الجهاز.
+
+الوظائف التقنية:
+- تتبع حركة الشمس والقمر عبر البروج.
+- حساب أطوار القمر ودورة الخسوف والكسوف.
+- تحديد مواعيد الألعاب الأولمبية القديمة بدقة كل 4 سنوات.
+
+تؤكد هذه الآلية أن الإغريق امتلكوا معرفة تكنولوجية بالمسننات الميكانيكية لم تظهر في أوروبا مجدداً إلا مع اختراع الساعة الميكانيكية في القرن الرابع عشر الميلادي.`
+            },
+            {
+                id: 3,
+                title: "تقنيات القطع بالليزر في البيرو: لغز صخور بومابونكو",
+                category: "حضارات الأنديز",
+                date: "05 أغسطس 2026",
+                readTime: "6 دقائق",
+                image: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1000&auto=format&fit=crop",
+                excerpt: "كتل ضخمة من صخور الديوريت والجرانيت الصلبة مقطوعة بزوايا قائمة ومثقوبة بدقة متناهية تجعل أدوات النحاس القديمة عاجزة تماماً عن تفسيرها.",
+                content: `على ارتفاع يتجاوز 3800 متر فوق سطح البحر في بوليفيا، تقع أطلال "بومابونكو" (Puma Punku). تمتاز هذه المنطقة بوجود كتل صخرية عملاقة من الجرانيت والديوريت، يزن بعضها أكثر من 100 طن.
+
+اللغز التكنولوجي:
+الصخور المستخدمة هنا هي من أصلد الصخور على وجه الأرض (درجة صلادتها تصل إلى 8 على مقياس موهس)، ولا يمكن قطعها بأدوات النحاس أو البرونز التي كانت متوفرة لدى الشعوب القديمة وفق التأريخ التقليدي.
+
+خصائص البناء:
+- زوايا قائمة بنسبة 90 درجة بدقة تفوق المليمتر.
+- شقوق وثقوب منتظمة يبدو وكأنها حُفرت باستخدام آلات CNC حديثة أو رؤوس ماسية.
+- نظام تعشيق هندسي مسبق الصنع يسمح بربط الكتل الصخرية كقطع "الليغو" لمقاومة الزلازل.
+
+كيف تمكن سكان الأنديز القدماء من نقل ونحت وتقطيع هذه الصخور القاسية بهذه الدقة المذهلة؟ لا يزال السؤال مفتوحاً للبحث العلمي.`
+            }
+        ];
+
+        // مكون إعلان AdSense البانر
+        const AdBanner = ({ slotId }) => {
+            useEffect(() => {
+                try {
+                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) {
+                    console.error("AdSense Error: ", e);
+                }
+            }, []);
+
+            return (
+                <div className="my-6 text-center overflow-hidden bg-amber-950/20 border border-amber-900/30 p-3 rounded-xl">
+                    <span className="text-[10px] text-amber-500/60 block mb-2 font-mono tracking-widest uppercase">إعلان - Advertisement</span>
+                    {/* استبدل ca-pub-XXXXXXXXXXXXXXXX بالرقم الخاص بك */}
+                    <ins className="adsbygoogle"
+                         style={{ display: 'block' }}
+                         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                         data-ad-slot={slotId}
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                </div>
+            );
+        };
+
+        // المكون الرئيسي للموقع
+        function App() {
+            const [selectedArticle, setSelectedArticle] = useState(null);
+
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [selectedArticle]);
+
+            return (
+                <div className="min-h-screen flex flex-col justify-between">
+                    {/* الهيدر */}
+                    <header className="border-b border-amber-900/40 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+                        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                            <div className="flex items-center space-x-3 space-x-reverse">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-yellow-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                                    <i data-lucide="compass" className="w-6 h-6 text-black"></i>
+                                </div>
+                                <div>
+                                    <h1 className="text-xl font-bold bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent">
+                                        أسرار التكنولوجيا القديمة
+                                    </h1>
+                                    <p className="text-xs text-slate-400">موسوعة التطور التقني للحضارات البائدة</p>
+                                </div>
+                            </div>
+                            <span className="text-xs text-amber-500/80 bg-amber-950/50 border border-amber-800/40 px-3 py-1.5 rounded-full hidden sm:inline-block">
+                                مقالات حصرية 🏛️
+                            </span>
+                        </div>
+                    </header>
+
+                    {/* البانر العلوي الترحيبي */}
+                    <section className="relative py-16 px-4 text-center overflow-hidden border-b border-slate-800/60 bg-gradient-to-b from-slate-950 to-slate-900">
+                        <div className="max-w-3xl mx-auto relative z-10">
+                            <span className="text-xs font-semibold uppercase tracking-widest text-amber-400 mb-2 block">حقيقة أم خيال؟</span>
+                            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-4 leading-tight font-serif-custom">
+                                كيف امتلك الأقدمون تكنولوجيا تسبق زمانهم؟
+                            </h2>
+                            <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+                                نغوص في أعماق التاريخ لنكشف عن الاكتشافات والآلات العجيبة التي صنعتها الحضارات القديمة بأساليب هندسية لا تزال تحيّر العلم الحديث.
+                            </p>
+                        </div>
+                    </section>
+
+                    {/* المحتوى الرئيسي */}
+                    <main className="max-w-6xl mx-auto px-4 py-12 flex-1 w-full">
+                        <div className="flex items-center justify-between mb-8">
+                            <h3 className="text-2xl font-bold text-amber-100 flex items-center gap-2">
+                                <i data-lucide="book-open" className="text-amber-500 w-6 h-6"></i>
+                                أحدث المقالات الحصرية
+                            </h3>
+                        </div>
+
+                        {/* شبكة المقالات */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {articlesData.map((article) => (
+                                <article 
+                                    key={article.id} 
+                                    className="bg-slate-900/60 border border-slate-800 hover:border-amber-500/40 rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group"
+                                >
+                                    <div>
+                                        <div className="relative h-48 overflow-hidden">
+                                            <img 
+                                                src={article.image} 
+                                                alt={article.title}
+                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            />
+                                            <span className="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-md text-amber-400 text-xs px-3 py-1 rounded-full border border-amber-500/30">
+                                                {article.category}
+                                            </span>
+                                        </div>
+                                        <div className="p-6">
+                                            <div className="flex items-center text-xs text-slate-400 gap-4 mb-3">
+                                                <span className="flex items-center gap-1"><i data-lucide="calendar" className="w-3.5 h-3.5"></i>{article.date}</span>
+                                                <span className="flex items-center gap-1"><i data-lucide="clock" className="w-3.5 h-3.5"></i>{article.readTime}</span>
+                                            </div>
+                                            <h4 className="text-lg font-bold text-slate-100 group-hover:text-amber-400 transition-colors mb-3 leading-snug">
+                                                {article.title}
+                                            </h4>
+                                            <p className="text-slate-400 text-sm line-clamp-3 leading-relaxed">
+                                                {article.excerpt}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="p-6 pt-0">
+                                        <button 
+                                            onClick={() => setSelectedArticle(article)}
+                                            className="w-full py-2.5 px-4 bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-black rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 border border-amber-500/30"
+                                        >
+                                            قراءة المقال الكامـل
+                                            <i data-lucide="arrow-left" className="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </main>
+
+                    {/* النافذة المنبثقة للـ Modal المقال الكامـل */}
+                    {selectedArticle && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+                            <div className="bg-slate-900 border border-amber-900/50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+                                
+                                {/* زر الإغلاق */}
+                                <button 
+                                    onClick={() => setSelectedArticle(null)}
+                                    className="sticky top-4 left-4 mr-auto bg-slate-950/80 hover:bg-amber-500 text-slate-300 hover:text-black p-2 rounded-full transition-colors z-10 border border-slate-700 block"
+                                >
+                                    <i data-lucide="x" className="w-5 h-5"></i>
+                                </button>
+
+                                <div className="p-6 sm:p-8 pt-2">
+                                    <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider block mb-1">
+                                        {selectedArticle.category}
+                                    </span>
+                                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight font-serif-custom">
+                                        {selectedArticle.title}
+                                    </h2>
+
+                                    <div className="rounded-xl overflow-hidden mb-6 h-60 sm:h-72">
+                                        <img src={selectedArticle.image} alt={selectedArticle.title} className="w-full h-full object-cover" />
+                                    </div>
+
+                                    {/* 1️⃣ إعلان أعلى المقال (Top In-Article Banner) - أعلى CPM وCTR */}
+                                    <AdBanner slotId="1234567890" />
+
+                                    {/* نص المقال */}
+                                    <div className="text-slate-300 leading-relaxed whitespace-pre-line space-y-4 text-sm sm:text-base border-t border-slate-800 pt-4">
+                                        {selectedArticle.content}
+                                    </div>
+
+                                    {/* 2️⃣ إعلان أسفل المقال (Bottom In-Article Banner) */}
+                                    <AdBanner slotId="0987654321" />
+
+                                    <div className="mt-8 border-t border-slate-800 pt-4 flex justify-end">
+                                        <button 
+                                            onClick={() => setSelectedArticle(null)}
+                                            className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-semibold transition-colors"
+                                        >
+                                            إغلاق المقال
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* الفوتر */}
+                    <footer className="border-t border-slate-800/80 bg-slate-950 py-8 px-4 text-center text-xs text-slate-500">
+                        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <p>© 2026 موقع أسرار التكنولوجيا القديمة - جميع الحقوق محفوظة.</p>
+                            <p className="text-amber-500/60">مبني بـ React & Tailwind (جاهز لـ GitHub Pages)</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
