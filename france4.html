@@ -22,28 +22,28 @@
         // قائمة الكلمات مع صور عالية الدقة وواضحة جداً (مستوحاة من Pinterest و Google Images)
         const gameData = [
           // --- أفعال (Verbes) ---
-          { id: 1, type: 'verbe', word: 'Aller', translation: 'ذهب / تحرك', img: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80' },
-          { id: 2, type: 'verbe', word: 'Venir', translation: 'أتى / جاء', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80' },
+          { id: 1, type: 'verbe', word: 'Aller', translation: 'مشا', img: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80' },
+          { id: 2, type: 'verbe', word: 'Venir', translation: 'جا', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80' },
           { id: 3, type: 'verbe', word: 'Sortir', translation: 'خرج', img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80' },
           { id: 4, type: 'verbe', word: 'Entrer', translation: 'دخل', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80' },
           { id: 5, type: 'verbe', word: 'Ecrire', translation: 'كتب', img: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=600&q=80' },
-          { id: 6, type: 'verbe', word: 'Lire', translation: 'قرأ', img: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80' },
-          { id: 7, type: 'verbe', word: 'Acheter', translation: 'اشترى', img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80' },
-          { id: 8, type: 'verbe', word: 'Payer', translation: 'دفع المال', img: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80' },
-          { id: 9, type: 'verbe', word: 'Travailler', translation: 'عمل / خدام', img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80' },
-          { id: 10, type: 'verbe', word: 'Tomber en panne', translation: 'عطب / طاح أونبان', img: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=600&q=80' },
-          { id: 11, type: 'verbe', word: 'Annoncer', translation: 'أعلن / صرح', img: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80' },
-          { id: 12, type: 'verbe', word: 'Signer', translation: 'وقع عقد', img: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80' },
-          { id: 13, type: 'verbe', word: 'Faire grève', translation: 'قام بإضراب', img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80' },
+          { id: 6, type: 'verbe', word: 'Lire', translation: 'قرا', img: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80' },
+          { id: 7, type: 'verbe', word: 'Acheter', translation: 'شرا', img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80' },
+          { id: 8, type: 'verbe', word: 'Payer', translation: 'خلص', img: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80' },
+          { id: 9, type: 'verbe', word: 'Travailler', translation: ' خدام', img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80' },
+          { id: 10, type: 'verbe', word: 'en panne', translation: 'عطل', img: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=600&q=80' },
+          { id: 11, type: 'verbe', word: 'Annoncer', translation: 'أعلن ', img: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80' },
+          { id: 12, type: 'verbe', word: 'Signer', translation: 'سينا', img: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80' },
+          { id: 13, type: 'verbe', word: 'grève', translation: 'إضراب', img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80' },
 
           // --- أسماء (Noms) ---
-          { id: 14, type: 'nom', word: 'Le gouvernement', translation: 'الحكومة', img: 'https://images.unsplash.com/photo-1575320181282-9afab399332f?auto=format&fit=crop&w=600&q=80' },
-          { id: 15, type: 'nom', word: 'La police', translation: 'الشرطة', img: 'https://images.unsplash.com/photo-1588610546194-71cb7f6bc680?auto=format&fit=crop&w=600&q=80' },
-          { id: 16, type: 'nom', word: 'L\'entreprise', translation: 'الشركة / البزنس', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80' },
-          { id: 17, type: 'nom', word: 'Le contrat', translation: 'العقد', img: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80' },
-          { id: 18, type: 'nom', word: 'La livraison', translation: 'التوصيل واللوجيستيك', img: 'https://images.unsplash.com/photo-1617854818583-09e7f077a156?auto=format&fit=crop&w=600&q=80' },
-          { id: 19, type: 'nom', word: 'Le colis', translation: 'الطرد / السلعة', img: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=600&q=80' },
-          { id: 20, type: 'nom', word: 'La grève', translation: 'الإضراب', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=600&q=80' }
+          { id: 14, type: 'nom', word: 'gouvernement', translation: 'الحكومة', img: 'https://images.unsplash.com/photo-1575320181282-9afab399332f?auto=format&fit=crop&w=600&q=80' },
+          { id: 15, type: 'nom', word: 'police', translation: 'الشرطة', img: 'https://images.unsplash.com/photo-1588610546194-71cb7f6bc680?auto=format&fit=crop&w=600&q=80' },
+          { id: 16, type: 'nom', word: 'entreprise', translation: 'الشركة', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80' },
+          { id: 17, type: 'nom', word: 'contrat', translation: 'العقد', img: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80' },
+          { id: 18, type: 'nom', word: 'livraison', translation: 'التوصيل', img: 'https://images.unsplash.com/photo-1617854818583-09e7f077a156?auto=format&fit=crop&w=600&q=80' },
+          { id: 19, type: 'nom', word: 'colis', translation: 'الطرد ', img: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=600&q=80' },
+          { id: 20, type: 'nom', word: 'grève', translation: 'الإضراب', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=600&q=80' }
         ];
 
         function App() {
