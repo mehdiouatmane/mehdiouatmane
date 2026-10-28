@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Flow - PNG & HD Visuals 🚀</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel CDN -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen font-sans flex flex-col items-center justify-center p-4">
+
+    <div id="root" class="w-full max-w-md"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // قائمة الكلمات مع صور عالية الدقة وواضحة جداً (مستوحاة من Pinterest و Google Images)
+        const gameData = [
+          // --- أفعال (Verbes) ---
+          { id: 1, type: 'verbe', word: 'Aller', translation: 'ذهب / تحرك', img: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80' },
+          { id: 2, type: 'verbe', word: 'Venir', translation: 'أتى / جاء', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80' },
+          { id: 3, type: 'verbe', word: 'Sortir', translation: 'خرج', img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80' },
+          { id: 4, type: 'verbe', word: 'Entrer', translation: 'دخل', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80' },
+          { id: 5, type: 'verbe', word: 'Ecrire', translation: 'كتب', img: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=600&q=80' },
+          { id: 6, type: 'verbe', word: 'Lire', translation: 'قرأ', img: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80' },
+          { id: 7, type: 'verbe', word: 'Acheter', translation: 'اشترى', img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80' },
+          { id: 8, type: 'verbe', word: 'Payer', translation: 'دفع المال', img: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80' },
+          { id: 9, type: 'verbe', word: 'Travailler', translation: 'عمل / خدام', img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80' },
+          { id: 10, type: 'verbe', word: 'Tomber en panne', translation: 'عطب / طاح أونبان', img: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=600&q=80' },
+          { id: 11, type: 'verbe', word: 'Annoncer', translation: 'أعلن / صرح', img: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80' },
+          { id: 12, type: 'verbe', word: 'Signer', translation: 'وقع عقد', img: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80' },
+          { id: 13, type: 'verbe', word: 'Faire grève', translation: 'قام بإضراب', img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80' },
+
+          // --- أسماء (Noms) ---
+          { id: 14, type: 'nom', word: 'Le gouvernement', translation: 'الحكومة', img: 'https://images.unsplash.com/photo-1575320181282-9afab399332f?auto=format&fit=crop&w=600&q=80' },
+          { id: 15, type: 'nom', word: 'La police', translation: 'الشرطة', img: 'https://images.unsplash.com/photo-1588610546194-71cb7f6bc680?auto=format&fit=crop&w=600&q=80' },
+          { id: 16, type: 'nom', word: 'L\'entreprise', translation: 'الشركة / البزنس', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80' },
+          { id: 17, type: 'nom', word: 'Le contrat', translation: 'العقد', img: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80' },
+          { id: 18, type: 'nom', word: 'La livraison', translation: 'التوصيل واللوجيستيك', img: 'https://images.unsplash.com/photo-1617854818583-09e7f077a156?auto=format&fit=crop&w=600&q=80' },
+          { id: 19, type: 'nom', word: 'Le colis', translation: 'الطرد / السلعة', img: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=600&q=80' },
+          { id: 20, type: 'nom', word: 'La grève', translation: 'الإضراب', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=600&q=80' }
+        ];
+
+        function App() {
+          const [filter, setFilter] = useState('all');
+          const [questions, setQuestions] = useState([]);
+          const [currentIndex, setCurrentIndex] = useState(0);
+          const [score, setScore] = useState(0);
+          const [inputVal, setInputVal] = useState('');
+          const [feedback, setFeedback] = useState(null);
+          const [gameOver, setGameOver] = useState(false);
+          
+          const inputRef = useRef(null);
+
+          useEffect(() => {
+            resetGame();
+          }, [filter]);
+
+          useEffect(() => {
+            if (inputRef.current) inputRef.current.focus();
+          }, [currentIndex, questions]);
+
+          const resetGame = () => {
+            let filtered = gameData;
+            if (filter !== 'all') {
+              filtered = gameData.filter(item => item.type === filter);
+            }
+            const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+            setQuestions(shuffled);
+            setCurrentIndex(0);
+            setScore(0);
+            setInputVal('');
+            setFeedback(null);
+            setGameOver(false);
+          };
+
+          const handleCheck = (e) => {
+            e.preventDefault();
+            if (feedback !== null || !inputVal.trim()) return;
+
+            const currentQ = questions[currentIndex];
+            const userClean = inputVal.trim().toLowerCase();
+            const targetClean = currentQ.word.toLowerCase();
+
+            if (userClean === targetClean) {
+              setFeedback('correct');
+              setScore(prev => prev + 1);
+            } else {
+              setFeedback('wrong');
+            }
+
+            setTimeout(() => {
+              setFeedback(null);
+              setInputVal('');
+              if (currentIndex + 1 < questions.length) {
+                setCurrentIndex(prev => prev + 1);
+              } else {
+                setGameOver(true);
+              }
+            }, 1800);
+          };
+
+          if (questions.length === 0) return null;
+          const currentQ = questions[currentIndex];
+
+          return (
+            <div className="flex flex-col items-center justify-center w-full">
+              <header className="mb-4 text-center">
+                <h1 className="text-2xl font-extrabold text-indigo-400 mb-1">🎯 French Flow - HD Mode</h1>
+                <p className="text-slate-400 text-xs">شاهد الصورة الاحترافية واكتب الكلمة الفرنسية بيدك!</p>
+              </header>
+
+              <div className="flex gap-2 mb-4 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+                <button 
+                  onClick={() => setFilter('all')} 
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${filter === 'all' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+                  الكل (Tout)
+                </button>
+                <button 
+                  onClick={() => setFilter('verbe')} 
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${filter === 'verbe' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+                  الأفعال (Verbes)
+                </button>
+                <button 
+                  onClick={() => setFilter('nom')} 
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${filter === 'nom' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+                  الأسماء (Noms)
+                </button>
+              </div>
+
+              {!gameOver ? (
+                <div className="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-2xl relative">
+                  <div className="flex justify-between items-center mb-3 text-xs font-bold text-slate-400">
+                    <span>Question {currentIndex + 1} / {questions.length}</span>
+                    <span className="text-indigo-400">Score: {score}</span>
+                  </div>
+
+                  {/* Image Container عالية الدقة */}
+                  <div className="w-full h-48 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden mb-4 flex items-center justify-center shadow-inner relative">
+                    <img 
+                      src={currentQ.img} 
+                      alt="HD Meaning" 
+                      className="w-full h-full object-cover opacity-95 hover:scale-105 transition duration-500"
+                    />
+                    <span className="absolute bottom-2 right-2 bg-slate-900/90 px-2.5 py-1 rounded-md text-[10px] text-indigo-300 uppercase tracking-widest border border-slate-700 shadow-md">
+                      {currentQ.type} - ({currentQ.translation})
+                    </span>
+                  </div>
+
+                  {/* Form الكتابة */}
+                  <form onSubmit={handleCheck} className="flex flex-col gap-3">
+                    <input 
+                      ref={inputRef}
+                      type="text" 
+                      value={inputVal}
+                      onChange={(e) => setInputVal(e.target.value)}
+                      disabled={feedback !== null}
+                      placeholder="اكتب الكلمة بالفرنسية هنا..." 
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-center text-sm text-white focus:outline-none focus:border-indigo-500 transition shadow-inner"
+                      autoComplete="off"
+                    />
+                    <button 
+                      type="submit"
+                      disabled={feedback !== null || !inputVal.trim()}
+                      className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 font-bold rounded-xl text-xs text-white transition shadow-lg"
+                    >
+                      تأكيد الجواب ➔
+                    </button>
+                  </form>
+
+                  {/* Feedback */}
+                  {feedback && (
+                    <div className={`mt-3 text-center py-2 rounded-lg text-xs font-bold animate-pulse ${feedback === 'correct' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}`}>
+                      {feedback === 'correct' ? `✨ صحيح! برافو عليك` : `❌ خطأ! الكلمة الصحيحة هي: ${currentQ.word}`}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center shadow-2xl">
+                  <span className="text-5xl block mb-3">🏆</span>
+                  <h2 className="text-xl font-bold text-white mb-2">إنجاز رائع يا سي مهدي!</h2>
+                  <p className="text-slate-300 text-xs mb-5">
+                    جبتي <span className="text-indigo-400 font-bold text-base">{score}</span> من أصل <span className="font-bold">{questions.length}</span> صحيحة بالصور الاحترافية.
+                  </p>
+                  <button
+                    onClick={resetGame}
+                    className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs text-white transition shadow-lg"
+                  >
+                    عاود التحدي 🔄
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
