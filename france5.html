@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Flow - Glovo Clean Roots 🚀</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://tailwindcss.com"></script>
+    <!-- React & ReactDOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel CDN -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen font-sans flex flex-col items-center justify-center p-4">
+
+    <div id="root" class="w-full max-w-md"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+
+
+
+
+
+      
+  // قاعدة البيانات مرتبة بالكلمات الصافية (الجذور بدون أدوات تعريف وبدون تكرار)    
+  const gameData = [
+  // --- 1. الأفعال (Verbes) ---
+  { id: 1, type: 'verbe', word: 'Ouvrir', translation: 'فتح', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80' },
+  { id: 2, type: 'verbe', word: 'Savoir', translation: 'عرف / علم', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80' },
+  { id: 3, type: 'verbe', word: 'Contenir', translation: 'احتوى على', img: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80' },
+  { id: 4, type: 'verbe', word: 'Livrer', translation: 'وصل / سلم', img: 'https://images.unsplash.com/photo-1617854818583-09e7f077a156?auto=format&fit=crop&w=600&q=80' },
+  { id: 5, type: 'verbe', word: 'Devoir', translation: 'وجب / خاصو', img: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80' },
+  { id: 6, type: 'verbe', word: 'Contacter', translation: 'تواصل مع', img: 'https://images.unsplash.com/photo-1534531173927-aeb928d54385?auto=format&fit=crop&w=600&q=80' },
+  { id: 7, type: 'verbe', word: 'Préparer', translation: 'هيّأ / صاوب', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80' },
+  { id: 8, type: 'verbe', word: 'Être', translation: 'كان', img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80' },
+  { id: 9, type: 'verbe', word: 'Garantir', translation: 'ضمن', img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80' },
+  { id: 10, type: 'verbe', word: 'Résoudre', translation: 'حلّ', img: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80' },
+  { id: 11, type: 'verbe', word: 'Faire', translation: 'فعل / دار', img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80' },
+  { id: 12, type: 'verbe', word: 'Nuire', translation: 'أضرّ', img: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=600&q=80' },
+  { id: 13, type: 'verbe', word: 'Atteindre', translation: 'مسّ / أصاب', img: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=600&q=80' },
+  { id: 14, type: 'verbe', word: 'Avoir', translation: 'ملك / عندو', img: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80' },
+  { id: 15, type: 'verbe', word: 'Descendre', translation: 'هبط', img: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80' },
+  { id: 16, type: 'verbe', word: 'Récupérer', translation: 'استرجع / خدا', img: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=600&q=80' },
+  { id: 17, type: 'verbe', word: 'Annuler', translation: 'ألغى', img: 'https://images.unsplash.com/photo-1556742049-0a67d55d2c49?auto=format&fit=crop&w=600&q=80' },
+  { id: 18, type: 'verbe', word: 'S\'excuser', translation: 'اعتذر', img: 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=600&q=80' },
+  { id: 19, type: 'verbe', word: 'Appeler', translation: 'عيّط', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80' },
+  { id: 20, type: 'verbe', word: 'Répondre', translation: 'جاوب', img: 'https://images.unsplash.com/photo-1588610546194-71cb7f6bc680?auto=format&fit=crop&w=600&q=80' },
+  { id: 21, type: 'verbe', word: 'Pouvoir', translation: 'استطاع / قدر', img: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80' },
+  { id: 22, type: 'verbe', word: 'Entrer', translation: 'دخل', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80' },
+  { id: 23, type: 'verbe', word: 'S\'afficher', translation: 'ظهر / بان', img: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80' },
+  { id: 24, type: 'verbe', word: 'Arriver', translation: 'وصل', img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80' },
+  { id: 25, type: 'verbe', word: 'Donner', translation: 'عطى', img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80' },
+  { id: 26, type: 'verbe', word: 'Débloquer', translation: 'فكّ / طلق', img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80' },
+  { id: 27, type: 'verbe', word: 'Chercher', translation: 'قلّب / بحث', img: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=600&q=80' },
+  { id: 28, type: 'verbe', word: 'Trouver', translation: 'لقى', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=600&q=80' },
+  { id: 29, type: 'verbe', word: 'Indiquer', translation: 'نعت / أرشد', img: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80' },
+  { id: 30, type: 'verbe', word: 'Envoyer', translation: 'أرسل', img: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=600&q=80' },
+
+  // --- 2. الأسماء (Noms) ---
+  { id: 31, type: 'nom', word: 'Droit', translation: 'حق', img: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80' },
+  { id: 32, type: 'nom', word: 'Commande', translation: 'طلبية', img: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=600&q=80' },
+  { id: 33, type: 'nom', word: 'Travail', translation: 'عمل / خدمة', img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80' },
+  { id: 34, type: 'nom', word: 'Problème', translation: 'مشكل', img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80' },
+  { id: 35, type: 'nom', word: 'Support', translation: 'دعم / سيبور', img: 'https://images.unsplash.com/photo-1534531173927-aeb928d54385?auto=format&fit=crop&w=600&q=80' },
+  { id: 36, type: 'nom', word: 'Restaurant', translation: 'مطعم', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80' },
+  { id: 37, type: 'nom', word: 'Rôle', translation: 'دور', img: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80' },
+  { id: 38, type: 'nom', word: 'Livraison', translation: 'توصيل', img: 'https://images.unsplash.com/photo-1617854818583-09e7f077a156?auto=format&fit=crop&w=600&q=80' },
+  { id: 39, type: 'nom', word: 'Intermédiaire', translation: 'وسيط', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=600&q=80' },
+  { id: 40, type: 'nom', word: 'Protocole', translation: 'بروتوكول', img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80' },
+  { id: 41, type: 'nom', word: 'Porte', translation: 'باب', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80' },
+  { id: 42, type: 'nom', word: 'Vie', translation: 'حياة', img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80' },
+  { id: 43, type: 'nom', word: 'Personne', translation: 'شخص / نفس', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80' },
+  { id: 44, type: 'nom', word: 'Cas', translation: 'حالة', img: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80' },
+  { id: 45, type: 'nom', word: 'Choix', translation: 'اختيار', img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80' },
+  { id: 46, type: 'nom', word: 'Position', translation: 'موقع', img: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=600&q=80' },
+  { id: 47, type: 'nom', word: 'Endroit', translation: 'مكان / بلاصة', img: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80' },
+  { id: 48, type: 'nom', word: 'Carte', translation: 'خريطة', img: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80' },
+  { id: 49, type: 'nom', word: 'Résidence', translation: 'إقامة', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80' },
+  { id: 50, type: 'nom', word: 'Code', translation: 'رمز / كود', img: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80' },
+  { id: 51, type: 'nom', word: 'Ascenseur', translation: 'مصعد / سانسور', img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80' },
+  { id: 52, type: 'nom', word: 'Bâtiment', translation: 'عمارة / بناية', img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80' },
+  { id: 53, type: 'nom', word: 'Application', translation: 'تطبيق', img: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=600&q=80' },
+
+  // --- 3. الصفات، الظروف وأدوات الربط (Adjectifs & Mots outils) ---
+  { id: 54, type: 'autre', word: 'Désolé', translation: 'آسف', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80' },
+  { id: 55, type: 'autre', word: 'Uniquement', translation: 'فقط', img: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=600&q=80' },
+  { id: 56, type: 'autre', word: 'Privé', translation: 'خاص', img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80' },
+  { id: 57, type: 'autre', word: 'Tout', translation: 'كل', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80' },
+  { id: 58, type: 'autre', word: 'Infiniment', translation: 'بزاف / بلا حدود', img: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=600&q=80' },
+  { id: 59, type: 'autre', word: 'Où', translation: 'أين', img: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=600&q=80' },
+  { id: 60, type: 'autre', word: 'Correct', translation: 'صحيح', img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80' },
+  { id: 61, type: 'autre', word: 'Incorrect', translation: 'غير صحيح', img: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=600&q=80' },
+  { id: 62, type: 'autre', word: 'Interdit', translation: 'ممنوع', img: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=600&q=80' },
+  { id: 63, type: 'autre', word: 'Ici', translation: 'هنا', img: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80' },
+  { id: 64, type: 'autre', word: 'Devant', translation: 'أمام', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80' },
+  { id: 65, type: 'autre', word: 'Fermé', translation: 'مغلق', img: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80' },
+  { id: 66, type: 'autre', word: 'Aussi', translation: 'أيضاً', img: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=600&q=80' },
+  { id: 67, type: 'autre', word: 'Depuis', translation: 'منذ', img: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=80' },
+  { id: 68, type: 'autre', word: 'Exactement', translation: 'بالضبط', img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80' },
+  { id: 69, type: 'autre', word: 'Bon', translation: 'جيد / صحيح', img: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=600&q=80' },
+  { id: 70, type: 'autre', word: 'Jusqu\'à', translation: 'حتى / إلى غاية', img: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80' },
+  { id: 71, type: 'autre', word: 'Bonjour', translation: 'صباح الخير', img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80' },
+  { id: 72, type: 'autre', word: 'Seizième', translation: 'السادس عشر', img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80' },
+  { id: 73, type: 'nom', word: 'Cas', translation: 'حالة', img: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80' },
+  { id: 74, type: 'nom', word: 'Application', translation: 'تطبيق', img: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=600&q=80' },
+  { id: 75, type: 'autre', word: 'Seizième', translation: 'السادس عشر', img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80' }
+];
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+        function App() {
+          const [filter, setFilter] = useState('all');
+          const [questions, setQuestions] = useState([]);
+          const [currentIndex, setCurrentIndex] = useState(0);
+          const [score, setScore] = useState(0);
+          const [inputVal, setInputVal] = useState('');
+          const [feedback, setFeedback] = useState(null);
+          const [gameOver, setGameOver] = useState(false);
+          
+          const inputRef = useRef(null);
+
+          useEffect(() => {
+            resetGame();
+          }, [filter]);
+
+          useEffect(() => {
+            if (inputRef.current) inputRef.current.focus();
+          }, [currentIndex, questions]);
+
+          const resetGame = () => {
+            let filtered = gameData;
+            if (filter !== 'all') {
+              filtered = gameData.filter(item => item.type === filter);
+            }
+            const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+            setQuestions(shuffled);
+            setCurrentIndex(0);
+            setScore(0);
+            setInputVal('');
+            setFeedback(null);
+            setGameOver(false);
+          };
+
+          const handleCheck = (e) => {
+            e.preventDefault();
+            if (feedback !== null || !inputVal.trim()) return;
+
+            const currentQ = questions[currentIndex];
+            const userClean = inputVal.trim().toLowerCase();
+            const targetClean = currentQ.word.toLowerCase();
+
+            if (userClean === targetClean) {
+              setFeedback('correct');
+              setScore(prev => prev + 1);
+            } else {
+              setFeedback('wrong');
+            }
+
+            setTimeout(() => {
+              setFeedback(null);
+              setInputVal('');
+              if (currentIndex + 1 < questions.length) {
+                setCurrentIndex(prev => prev + 1);
+              } else {
+                setGameOver(true);
+              }
+            }, 1800);
+          };
+
+          if (questions.length === 0) return null;
+          const currentQ = questions[currentIndex];
+
+          return (
+            <div className="flex flex-col items-center justify-center w-full">
+              <header className="mb-4 text-center">
+                <h1 className="text-2xl font-extrabold text-indigo-400 mb-1">🚀 French Flow - Clean Roots</h1>
+                <p className="text-slate-400 text-xs">اكتب الكلمة المفردة الصافية بيدك بناءً على الصورة!</p>
+              </header>
+
+              {/* Filters */}
+              <div className="flex flex-wrap justify-center gap-1.5 mb-4 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+                <button 
+                  onClick={() => setFilter('all')} 
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${filter === 'all' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+                  الكل ({gameData.length})
+                </button>
+                <button 
+                  onClick={() => setFilter('verbe')} 
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${filter === 'verbe' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+                  الأفعال
+                </button>
+                <button 
+                  onClick={() => setFilter('nom')} 
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${filter === 'nom' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+                  الأسماء
+                </button>
+                <button 
+                  onClick={() => setFilter('autre')} 
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${filter === 'autre' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+                  أدوات وصفات
+                </button>
+              </div>
+
+              {!gameOver ? (
+                <div className="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-2xl relative">
+                  <div className="flex justify-between items-center mb-3 text-xs font-bold text-slate-400">
+                    <span>Question {currentIndex + 1} / {questions.length}</span>
+                    <span className="text-indigo-400">Score: {score}</span>
+                  </div>
+
+                  {/* Image Container */}
+                  <div className="w-full h-48 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden mb-4 flex items-center justify-center shadow-inner relative">
+                    <img 
+                      src={currentQ.img} 
+                      alt="Visual Meaning" 
+                      className="w-full h-full object-cover opacity-95 hover:scale-105 transition duration-500"
+                    />
+                    <span className="absolute bottom-2 right-2 bg-slate-900/90 px-2.5 py-1 rounded-md text-[10px] text-indigo-300 uppercase tracking-widest border border-slate-700 shadow-md">
+                      {currentQ.type} - ({currentQ.translation})
+                    </span>
+                  </div>
+
+                  {/* Form الكتابة */}
+                  <form onSubmit={handleCheck} className="flex flex-col gap-3">
+                    <input 
+                      ref={inputRef}
+                      type="text" 
+                      value={inputVal}
+                      onChange={(e) => setInputVal(e.target.value)}
+                      disabled={feedback !== null}
+                      placeholder="اكتب الجذر الصافي هنا (بدون لو/لا)..." 
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-center text-sm text-white focus:outline-none focus:border-indigo-500 transition shadow-inner"
+                      autoComplete="off"
+                    />
+                    <button 
+                      type="submit"
+                      disabled={feedback !== null || !inputVal.trim()}
+                      className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 font-bold rounded-xl text-xs text-white transition shadow-lg"
+                    >
+                      تأكيد الجواب ➔
+                    </button>
+                  </form>
+
+                  {/* Feedback */}
+                  {feedback && (
+                    <div className={`mt-3 text-center py-2 rounded-lg text-xs font-bold animate-pulse ${feedback === 'correct' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}`}>
+                      {feedback === 'correct' ? `✨ صحيح! برافو عليك` : `❌ خطأ! الجواب الصحيح هو: ${currentQ.word}`}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center shadow-2xl">
+                  <span className="text-5xl block mb-3">🏆</span>
+                  <h2 className="text-xl font-bold text-white mb-2">ممتاز يا سي مهدي!</h2>
+                  <p className="text-slate-300 text-xs mb-5">
+                    كملتي التحدي بنتيجة <span className="text-indigo-400 font-bold text-base">{score}</span> من أصل <span className="font-bold">{questions.length}</span> كلمة.
+                  </p>
+                  <button
+                    onClick={resetGame}
+                    className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs text-white transition shadow-lg"
+                  >
+                    عاود التحدي 🔄
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
