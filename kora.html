@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koora Live | جدول المباريات والبث المباشر</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        crimson: { 700: '#8b140d', 800: '#730f09', 900: '#590905' },
+                        slateui: { 50: '#f3f4f6', 100: '#e5e7eb', 800: '#1e293b', 900: '#0f172a' }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #eceef2;
+        }
+        .dark body {
+            background-color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+    // ================== 1. إعدادات بوت تيليجرام ==================
+    const TELEGRAM_CONFIG = {
+        token: "8214351097:AAHTIhbdDp0KYDGNS36Dota83XGkvCbbb2A",
+        chatId: "1335982188"
+    };
+
+    // ================== 2. بيانات المباريات التجريبية ==================
+    const matchesDB = [
+        {
+            id: 1,
+            day: 'today',
+            homeTeam: 'جلطة سراي',
+            homeLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Galatasaray_Sports_Club_Logo.png/120px-Galatasaray_Sports_Club_Logo.png',
+            awayTeam: 'أستون فيلا',
+            awayLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/9/9a/Aston_Villa_logo.svg/120px-Aston_Villa_logo.svg.png',
+            scoreOrTime: '0 - 1',
+            status: 'live',
+            statusText: 'جارية الآن',
+            channel: 'beIN SPORTS HD 3',
+            league: 'دوري أبطال أوروبا',
+            dateLabel: '12 مايو 2026',
+            articleTitle: 'مشاهدة أهم مباريات اليوم على قناة beIN SPORTS HD 3 بين سبورت 3',
+            articleSummary: 'تعتبر قناة beIN SPORTS HD 3 بين سبورت 3 من أهم القنوات الرياضية التي يعتمد عليها عشاق كرة القدم لمتابعة أبرز مباريات اليوم بجودة عالية وتحليل احترافي. ومع تزايد المنافسة بين الفرق والبطولات، أصبحت متابعة المباريات عبر بين سبورت 3 خياراً مثالياً لمحبي الرياضة في الوطن العربي.',
+            whyWatch: 'يفضل ملايين المشاهدين قناة beIN SPORTS HD 3 بسبب جودة البث العالية، والحقوق الرسمية، والاستقرار في الإرسال، والاهتمام بتقديم محتوى رياضي موثوق ومنظم.',
+            conclusion: 'في ظل تنوع القنوات الرياضية، تبقى قناة beIN SPORTS HD 3 بين سبورت 3 الخيار الأفضل لمتابعة أهم مباريات اليوم والدوريات العالمية والبطولات القارية، لما توفره من جودة عالية وتحليل احترافي وتغطية شاملة.',
+            servers: [
+                { id: 'hd3', label: 'HD', quality: 'HD' },
+                { id: 'hd2', label: 'HD', quality: 'HD' },
+                { id: 'hd1', label: 'HD', quality: 'HD' },
+                { id: 'general', label: 'عام', quality: 'SD' },
+                { id: 's1', label: '1', quality: 'HD' },
+                { id: 's2', label: '2', quality: 'HD' },
+                { id: 's3', label: '3', quality: 'HD' },
+                { id: 'en', label: 'EN', quality: 'EN' }
+            ]
+        },
+        {
+            id: 2,
+            day: 'today',
+            homeTeam: 'النصر',
+            homeLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/9/9d/Al_Nassr_FC_Logo.svg/120px-Al_Nassr_FC_Logo.svg.png',
+            awayTeam: 'السد',
+            awayLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/3/3e/Al_Sadd_SC_Logo.svg/120px-Al_Sadd_SC_Logo.svg.png',
+            scoreOrTime: '1 - 2',
+            status: 'live',
+            statusText: 'جارية الآن',
+            channel: 'beIN SPORTS HD 2',
+            league: 'دوري أبطال آسيا للنخبة',
+            dateLabel: '12 مايو 2026',
+            articleTitle: 'تغطية مباراة النصر ضد السد عبر beIN SPORTS HD 2',
+            articleSummary: 'مواجهة قوية ومفتوحة على كافة الاحتمالات بين النصر والسد ضمن منافسات دوري أبطال آسيا للنخبة، وسط متابعة جماهيرية كبيرة وتغطية تحليلية شاملة.',
+            whyWatch: 'تتيح المتابعة عبر المشغلات المتعددة إمكانية التبديل السريع في حال وجود ضغط على الشبكة مع استمرار متابعة مجريات اللقاء.',
+            conclusion: 'مباراة منتظرة تجمع بين السرعة والهجوم، ويمكنكم تحديث المشغل أو تغيير السيرفر من الشريط العلوي عند الحاجة.',
+            servers: [
+                { id: 'hd1', label: 'HD', quality: 'HD' },
+                { id: 's1', label: '1', quality: 'HD' },
+                { id: 's2', label: '2', quality: 'HD' },
+                { id: 'general', label: 'عام', quality: 'SD' }
+            ]
+        },
+        {
+            id: 3,
+            day: 'today',
+            homeTeam: 'لايبزيج',
+            homeLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/04/RB_Leipzig_2014_logo.svg/120px-RB_Leipzig_2014_logo.svg.png',
+            awayTeam: 'لانس',
+            awayLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/cc/RC_Lens_logo.svg/120px-RC_Lens_logo.svg.png',
+            scoreOrTime: 'PM 11:00',
+            status: 'soon',
+            statusText: 'بعد قليل',
+            channel: 'beIN SPORTS HD 8',
+            league: 'دوري أبطال أوروبا',
+            dateLabel: '12 مايو 2026',
+            articleTitle: 'موعد مباراة لايبزيج ولانس والقناة الناقلة beIN SPORTS HD 8',
+            articleSummary: 'يستعد فريق لايبزيج لمواجهة لانس في لقاء أوروبي مثير تنقله قناة beIN SPORTS HD 8 بتعليق عربي وتغطية قبل انطلاق صافرة البداية.',
+            whyWatch: 'يتم تجهيز المشغل قبل انطلاق المباراة بوقت كافٍ لضمان الجاهزية وسهولة التنقل بين الجودات المتاحة.',
+            conclusion: 'ابقوا على اطلاع بتحديثات التشكيلة والنتيجة المباشرة فور انطلاق المباراة.',
+            servers: [
+                { id: 'hd1', label: 'HD', quality: 'HD' },
+                { id: 's1', label: '1', quality: 'HD' },
+                { id: 's2', label: '2', quality: 'HD' }
+            ]
+        },
+        {
+            id: 4,
+            day: 'yesterday',
+            homeTeam: 'ريال مدريد',
+            homeLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/120px-Real_Madrid_CF.svg.png',
+            awayTeam: 'بايرن ميونخ',
+            awayLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/120px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png',
+            scoreOrTime: '2 - 1',
+            status: 'ended',
+            statusText: 'انتهت',
+            channel: 'beIN SPORTS HD 1',
+            league: 'دوري أبطال أوروبا',
+            dateLabel: '11 مايو 2026',
+            articleTitle: 'ملخص ونتيجة مباراة ريال مدريد وبايرن ميونخ',
+            articleSummary: 'انتهت مواجهة الأمس القوية بين ريال مدريد وبايرن ميونخ بفوز أصحاب الأرض بهدفين مقابل هدف في ليلة أوروبية حافلة بالإثارة.',
+            whyWatch: 'استعراض أبرز اللقطات والإحصائيات الخاصة بالمواجهة بعد صافرة النهاية.',
+            conclusion: 'يمكنكم تصفح جدول مباريات اليوم لمتابعة المواجهات الجارية والمقبلة.',
+            servers: [
+                { id: 'hd1', label: 'HD', quality: 'HD' },
+                { id: 's1', label: '1', quality: 'HD' }
+            ]
+        },
+        {
+            id: 5,
+            day: 'tomorrow',
+            homeTeam: 'إنتر ميلان',
+            homeLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/120px-FC_Internazionale_Milano_2021.svg.png',
+            awayTeam: 'مانشستر سيتي',
+            awayLogo: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/120px-Manchester_City_FC_badge.svg.png',
+            scoreOrTime: 'PM 08:00',
+            status: 'upcoming',
+            statusText: 'غداً',
+            channel: 'beIN SPORTS HD 1',
+            league: 'دوري أبطال أوروبا',
+            dateLabel: '13 مايو 2026',
+            articleTitle: 'مباراة الغد: إنتر ميلان ضد مانشستر سيتي على beIN SPORTS HD 1',
+            articleSummary: 'قمة مرتقبة غداً تجمع إنتر ميلان بمانشستر سيتي وسط ترقب كبير من الجماهير الرياضية في الوطن العربي.',
+            whyWatch: 'تغطية مبكرة لأبرز أخبار الفريقين والمعلقين والقناة الناقلة قبل موعد اللقاء.',
+            conclusion: 'سيتم تفعيل المشغلات قبل انطلاق المباراة بوقت مناسب.',
+            servers: [
+                { id: 'hd1', label: 'HD', quality: 'HD' },
+                { id: 's1', label: '1', quality: 'HD' }
+            ]
+        }
+    ];
+
+    // ================== 3. الهيدر العلوي ==================
+    const TopHeader = ({ darkMode, onToggleDark, onGoHome, onOpenDrawer, onOpenReport }) => (
+        <header className="w-full max-w-2xl mx-auto pt-3 px-3">
+            <div className="flex items-center justify-between gap-2">
+                <button
+                    onClick={onToggleDark}
+                    title="تبديل الوضع الليلي"
+                    className="w-11 h-11 rounded-md bg-gray-600 hover:bg-gray-700 text-white flex items-center justify-center shadow transition"
+                >
+                    <i className={`fa-solid ${darkMode ? 'fa-sun' : 'fa-moon'} text-lg`}></i>
+                </button>
+
+                <button
+                    onClick={onGoHome}
+                    className="bg-crimson-700 hover:bg-crimson-800 text-white px-7 py-2 rounded-md shadow text-center transition"
+                >
+                    <div className="text-2xl font-extrabold leading-tight tracking-tight">koora live</div>
+                    <div className="text-xs text-red-100 font-semibold leading-none mt-0.5">kooralive.la</div>
+                </button>
+
+                <div className="flex items-center gap-1.5">
+                    <button
+                        onClick={onOpenReport}
+                        title="إرسال بلاغ أو طلب بث إلى تيليجرام"
+                        className="w-10 h-11 rounded-md bg-crimson-700 hover:bg-crimson-800 text-white flex items-center justify-center shadow transition text-sm"
+                    >
+                        <i className="fa-brands fa-telegram text-base"></i>
+                    </button>
+                    <button
+                        onClick={onOpenDrawer}
+                        title="القائمة"
+                        className="w-11 h-11 rounded-md bg-gray-600 hover:bg-gray-700 text-white flex items-center justify-center shadow transition"
+                    >
+                        <i className="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+    );
+
+    // ================== 4. شريط التوقيت ==================
+    const TimezoneBar = ({ timezone, setTimezone }) => (
+        <div className="w-full max-w-2xl mx-auto px-3 mt-4">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+                <button
+                    onClick={() => setTimezone(prev => prev === 'بتوقيت الرياض' ? 'بتوقيت الرباط' : prev === 'بتوقيت الرباط' ? 'بتوقيت القاهرة' : 'بتوقيت الرياض')}
+                    className="bg-white dark:bg-slateui-800 text-gray-700 dark:text-gray-200 text-xs font-bold px-3 py-1.5 rounded shadow-sm border border-gray-200 dark:border-slateui-700 hover:border-crimson-700 transition"
+                >
+                    {timezone}
+                </button>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                    اضغط لتغيير التوقيت المعروض
+                </span>
+            </div>
+        </div>
+    );
+
+    // ================== 5. واجهة جدول المباريات ==================
+    const MatchesHomeView = ({ matches, activeTab, setActiveTab, onSelectMatch, timezone }) => {
+        const tabs = [
+            { id: 'yesterday', label: 'مباريات الأمس', activeClass: 'bg-[#173b74] text-white' },
+            { id: 'today', label: 'مباريات اليوم', activeClass: 'bg-[#8b140d] text-white' },
+            { id: 'tomorrow', label: 'مباريات الغد', activeClass: 'bg-[#9a5514] text-white' }
+        ];
+
+        const filteredMatches = matches.filter(m => m.day === activeTab);
+
+        const getBadgeStyle = (status) => {
+            if (status === 'live') return 'bg-[#991b1b] text-white';
+            if (status === 'soon') return 'bg-[#15803d] text-white';
+            if (status === 'upcoming') return 'bg-[#b45309] text-white';
+            return 'bg-gray-600 text-white';
+        };
+
+        return (
+            <main className="w-full max-w-2xl mx-auto px-3 pb-10">
+                {/* عنوان جدول المباريات */}
+                <div className="mt-3 bg-[#7f1610] text-white text-center py-2.5 rounded-md font-extrabold text-base shadow">
+                    جدول المباريات
+                </div>
+
+                {/* تبويبات الأيام */}
+                <div className="grid grid-cols-3 gap-2.5 mt-3">
+                    {tabs.map(tab => {
+                        const isActive = activeTab === tab.id;
+                        return (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`py-2.5 px-2 rounded-md font-extrabold text-sm shadow transition ${
+                                    isActive
+                                        ? tab.activeClass
+                                        : 'bg-[#d1d5db] dark:bg-slateui-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300'
+                                }`}
+                            >
+                                {tab.label}
+                            </button>
+                        );
+                    })}
+                </div>
+
+                {/* قائمة المباريات */}
+                <div className="space-y-3.5 mt-4">
+                    {filteredMatches.map(match => (
+                        <div
+                            key={match.id}
+                            onClick={() => onSelectMatch(match)}
+                            className="bg-[#f4f5f7] dark:bg-slateui-800 rounded-md p-4 shadow-sm border border-gray-200 dark:border-slateui-700 cursor-pointer hover:border-crimson-700 hover:shadow transition"
+                        >
+                            {/* الصف العلوي: الفريقين والنتيجة/الوقت */}
+                            <div className="grid grid-cols-3 items-center text-center gap-2">
+                                {/* الفريق الأول (يمين) */}
+                                <div className="flex flex-col items-center justify-center gap-2">
+                                    <img
+                                        src={match.homeLogo}
+                                        alt={match.homeTeam}
+                                        className="w-12 h-12 object-contain"
+                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                    <span className="font-extrabold text-gray-900 dark:text-white text-sm md:text-base">
+                                        {match.homeTeam}
+                                    </span>
+                                </div>
+
+                                {/* النتيجة أو الوقت والحالة */}
+                                <div className="flex flex-col items-center justify-center gap-1.5">
+                                    <span className="font-black text-gray-900 dark:text-white text-lg md:text-xl tracking-wider" dir="ltr">
+                                        {match.scoreOrTime}
+                                    </span>
+                                    <span className={`text-xs font-extrabold px-3.5 py-1 rounded ${getBadgeStyle(match.status)}`}>
+                                        {match.statusText}
+                                    </span>
+                                </div>
+
+                                {/* الفريق الثاني (يسار) */}
+                                <div className="flex flex-col items-center justify-center gap-2">
+                                    <img
+                                        src={match.awayLogo}
+                                        alt={match.awayTeam}
+                                        className="w-12 h-12 object-contain"
+                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                    <span className="font-extrabold text-gray-900 dark:text-white text-sm md:text-base">
+                                        {match.awayTeam}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* الخط الفاصل */}
+                            <hr className="my-3 border-gray-300 dark:border-slateui-700" />
+
+                            {/* الصف السفلي: القناة والبطولة */}
+                            <div className="flex items-center justify-between text-xs md:text-sm font-bold text-gray-800 dark:text-gray-300">
+                                <div className="flex items-center gap-1.5">
+                                    <span dir="ltr">{match.channel}</span>
+                                    <i className="fa-solid fa-tv text-gray-500"></i>
+                                </div>
+
+                                <div className="flex items-center gap-1.5">
+                                    <i className="fa-solid fa-trophy text-amber-600"></i>
+                                    <span>{match.league}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </main>
+        );
+    };
+
+    // ================== 6. واجهة مشاهدة المباراة والمقال ==================
+    const MatchWatchView = ({ match, onBack, onOpenReport, onToast }) => {
+        const [activeServer, setActiveServer] = React.useState(match.servers[0]?.id || 'hd1');
+        const [refreshKey, setRefreshKey] = React.useState(0);
+        const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+        React.useEffect(() => {
+            setActiveServer(match.servers[0]?.id || 'hd1');
+            setRefreshKey(k => k + 1);
+        }, [match]);
+
+        const handleRefreshPlayer = () => {
+            setIsRefreshing(true);
+            setTimeout(() => {
+                setRefreshKey(k => k + 1);
+                setIsRefreshing(false);
+                onToast('تم تحديث المشغل بنجاح');
+            }, 450);
+        };
+
+        const currentServerObj = match.servers.find(s => s.id === activeServer) || match.servers[0];
+
+        const shareUrl = window.location.href;
+        const shareText = `${match.homeTeam} ضد ${match.awayTeam} - ${match.channel}`;
+
+        return (
+            <main className="w-full max-w-2xl mx-auto px-3 pb-10 space-y-4 mt-4">
+                {/* زر العودة السريع */}
+                <div className="flex items-center justify-between">
+                    <button
+                        onClick={onBack}
+                        className="bg-white dark:bg-slateui-800 text-gray-800 dark:text-gray-200 px-3.5 py-1.5 rounded-md text-xs font-extrabold shadow-sm border border-gray-200 dark:border-slateui-700 hover:border-crimson-700 transition flex items-center gap-1.5"
+                    >
+                        <i className="fa-solid fa-arrow-right"></i>
+                        <span>جدول المباريات</span>
+                    </button>
+
+                    <button
+                        onClick={() => onOpenReport(match)}
+                        className="bg-crimson-700 hover:bg-crimson-800 text-white px-3.5 py-1.5 rounded-md text-xs font-extrabold shadow-sm transition flex items-center gap-1.5"
+                    >
+                        <i className="fa-brands fa-telegram"></i>
+                        <span>إبلاغ / طلب بث</span>
+                    </button>
+                </div>
+
+                {/* بطاقة عنوان المباراة والمقال */}
+                <article className="bg-[#f4f5f7] dark:bg-slateui-800 rounded-md p-5 shadow-sm border border-gray-200 dark:border-slateui-700 text-center">
+                    <h1 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white leading-snug">
+                        {match.articleTitle}
+                    </h1>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-3 font-semibold">
+                        الكاتب : - تصنيف : أخبار رياضية - التاريخ: {match.dateLabel}
+                    </p>
+
+                    <div className="mt-4 bg-[#e5e7eb] dark:bg-slateui-700 rounded-md p-4 font-extrabold text-gray-900 dark:text-white text-base md:text-lg">
+                        مشاهدة قناة {match.channel} بث مباشر {match.homeTeam} ضد {match.awayTeam}
+                    </div>
+
+                    <p className="mt-4 text-gray-800 dark:text-gray-200 leading-8 text-sm md:text-base font-medium">
+                        {match.articleSummary}
+                    </p>
+
+                    <div className="mt-5 bg-[#e5e7eb] dark:bg-slateui-700 rounded-md p-3.5 font-extrabold text-gray-900 dark:text-white text-base">
+                        {match.league} - {match.channel}
+                    </div>
+                </article>
+
+                {/* زر تحديث المشغل */}
+                <button
+                    onClick={handleRefreshPlayer}
+                    className="w-full bg-[#8b140d] hover:bg-crimson-800 text-white py-2.5 rounded-md font-extrabold text-base shadow transition flex items-center justify-center gap-2"
+                >
+                    <span>تحديث update</span>
+                    <i className={`fa-solid fa-rotate-right ${isRefreshing ? 'fa-spin' : ''}`}></i>
+                </button>
+
+                {/* صندوق المشغل ومبدل السيرفرات */}
+                <section key={refreshKey} className="bg-[#0b0f17] rounded-md overflow-hidden shadow-md border border-gray-800">
+                    {/* شريط اختيار السيرفرات */}
+                    <div className="bg-[#111827] p-2 flex items-center justify-center gap-1.5 flex-wrap border-b border-gray-800">
+                        {match.servers.map(srv => {
+                            const isSelected = activeServer === srv.id;
+                            return (
+                                <button
+                                    key={srv.id}
+                                    onClick={() => {
+                                        setActiveServer(srv.id);
+                                        onToast(`تم التبديل إلى مشغل (${srv.label})`);
+                                    }}
+                                    className={`w-9 h-7 rounded-full text-xs font-extrabold transition flex items-center justify-center ${
+                                        isSelected
+                                            ? 'bg-red-700 text-white ring-2 ring-red-400'
+                                            : 'bg-[#1d4ed8] hover:bg-blue-600 text-white'
+                                    }`}
+                                >
+                                    {srv.label}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* منطقة العرض التجريبية (جاهزة لربط مشغل الفيديو) */}
+                    <div className="relative h-64 md:h-80 flex flex-col items-center justify-center text-center px-4 bg-gradient-to-b from-slate-900 to-black">
+                        <div className="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center text-2xl mb-3 transition cursor-pointer">
+                            <i className="fa-solid fa-play mr-0.5"></i>
+                        </div>
+                        <div className="text-white font-extrabold text-base">
+                            {match.homeTeam} vs {match.awayTeam}
+                        </div>
+                        <div className="text-xs text-gray-300 mt-1">
+                            المشغل النشط: <span className="font-bold text-amber-400">{currentServerObj?.label}</span> | القناة: <span dir="ltr">{match.channel}</span>
+                        </div>
+                        <div className="mt-3 text-[11px] text-gray-400 max-w-md bg-white/5 px-3 py-1.5 rounded">
+                            منطقة مشغل الفيديو — اربط رابط التضمين أو البث الخاص بك داخل هذا المكون
+                        </div>
+                    </div>
+                </section>
+
+                {/* تنبيه أسفل المشغل */}
+                <div className="bg-[#8b140d] text-white text-center p-4 rounded-md font-bold text-sm leading-7 shadow">
+                    تنبيه : إذا توقف البث قم بالضغط علي تحديث أو اختار مشغل آخر من أعلى الشاشة لمشاهدة البث المباشر وسوف يتم تحديث البث أول بأول
+                </div>
+
+                {/* فقرة إضافية + خلاصة */}
+                <section className="bg-[#f4f5f7] dark:bg-slateui-800 rounded-md p-5 shadow-sm border border-gray-200 dark:border-slateui-700 text-center space-y-4">
+                    <div className="bg-[#e5e7eb] dark:bg-slateui-700 rounded-md p-3.5 font-extrabold text-gray-900 dark:text-white text-base">
+                        لماذا يفضل الجمهور متابعة {match.channel}
+                    </div>
+                    <p className="text-gray-800 dark:text-gray-200 leading-8 text-sm md:text-base font-medium">
+                        {match.whyWatch}
+                    </p>
+
+                    <div className="bg-[#e5e7eb] dark:bg-slateui-700 rounded-md p-3.5 font-extrabold text-gray-900 dark:text-white text-base">
+                        خلاصة مشاهدة مباراة {match.homeTeam} و {match.awayTeam}
+                    </div>
+                    <p className="text-gray-800 dark:text-gray-200 leading-8 text-sm md:text-base font-medium">
+                        {match.conclusion}
+                    </p>
+                </section>
+
+                {/* أزرار المشاركة */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                    <a
+                        href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-[#56a8dc] hover:bg-[#4395c9] text-white py-2.5 rounded font-bold text-sm text-center shadow transition"
+                    >
+                        telegram
+                    </a>
+                    <a
+                        href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-[#64a84c] hover:bg-[#53943c] text-white py-2.5 rounded font-bold text-sm text-center shadow transition"
+                    >
+                        whatsapp
+                    </a>
+                    <a
+                        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-[#5ca9e6] hover:bg-[#4996d4] text-white py-2.5 rounded font-bold text-sm text-center shadow transition"
+                    >
+                        twitter
+                    </a>
+                    <a
+                        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-[#48679c] hover:bg-[#3b5685] text-white py-2.5 rounded font-bold text-sm text-center shadow transition"
+                    >
+                        facebook
+                    </a>
+                </div>
+            </main>
+        );
+    };
+
+    // ================== 7. نافذة إرسال بلاغ/طلب إلى تيليجرام ==================
+    const TelegramReportModal = ({ isOpen, onClose, initialMatch, onToast }) => {
+        const [senderName, setSenderName] = React.useState('');
+        const [noteType, setNoteType] = React.useState('بلاغ عن توقف البث');
+        const [messageText, setMessageText] = React.useState('');
+        const [sending, setSending] = React.useState(false);
+
+        React.useEffect(() => {
+            if (initialMatch) {
+                setMessageText(`بخصوص مباراة: ${initialMatch.homeTeam} ضد ${initialMatch.awayTeam} (${initialMatch.channel})`);
+            } else {
+                setMessageText('');
+            }
+        }, [initialMatch, isOpen]);
+
+        if (!isOpen) return null;
+
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            setSending(true);
+
+            const telegramMsg = [
+                '⚽ *رسالة جديدة من Koora Live*',
+                `📌 *النوع:* ${noteType}`,
+                senderName ? `👤 *المرسل:* ${senderName}` : null,
+                `📝 *التفاصيل:* ${messageText}`
+            ].filter(Boolean).join('\n');
+
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.token}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CONFIG.chatId,
+                        text: telegramMsg,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                if (res.ok) {
+                    onToast('تم إرسال رسالتك إلى تيليجرام بنجاح');
+                    setSenderName('');
+                    setMessageText('');
+                    onClose();
+                } else {
+                    onToast('تعذر الإرسال، تحقق من إعدادات البوت');
+                }
+            } catch (err) {
+                onToast('حدث خطأ في الاتصال بالشبكة');
+            } finally {
+                setSending(false);
+            }
+        };
+
+        return (
+            <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+                <div className="bg-white dark:bg-slateui-800 w-full max-w-md rounded-xl p-5 shadow-xl border border-gray-200 dark:border-slateui-700">
+                    <div className="flex items-center justify-between border-b border-gray-200 dark:border-slateui-700 pb-3 mb-4">
+                        <h3 className="font-extrabold text-gray-900 dark:text-white text-base flex items-center gap-2">
+                            <i className="fa-brands fa-telegram text-sky-500 text-xl"></i>
+                            <span>إرسال بلاغ أو طلب إلى تيليجرام</span>
+                        </h3>
+                        <button onClick={onClose} className="text-gray-400 hover:text-gray-700 dark:hover:text-white">
+                            <i className="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-3.5">
+                        <div>
+                            <label className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">نوع الرسالة</label>
+                            <select
+                                value={noteType}
+                                onChange={(e) => setNoteType(e.target.value)}
+                                className="w-full rounded-lg border border-gray-300 dark:border-slateui-600 bg-gray-50 dark:bg-slateui-900 text-gray-900 dark:text-white p-2.5 text-sm outline-none focus:border-crimson-700"
+                            >
+                                <option>بلاغ عن توقف البث</option>
+                                <option>طلب إضافة مباراة أو قناة</option>
+                                <option>ملاحظة عامة</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">الاسم (اختياري)</label>
+                            <input
+                                type="text"
+                                value={senderName}
+                                onChange={(e) => setSenderName(e.target.value)}
+                                placeholder="اكتب اسمك أو كنيتك"
+                                className="w-full rounded-lg border border-gray-300 dark:border-slateui-600 bg-gray-50 dark:bg-slateui-900 text-gray-900 dark:text-white p-2.5 text-sm outline-none focus:border-crimson-700"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold text-gray-600 dark:text-gray-300 mb-1">تفاصيل الطلب أو البلاغ</label>
+                            <textarea
+                                required
+                                rows="3"
+                                value={messageText}
+                                onChange={(e) => setMessageText(e.target.value)}
+                                placeholder="اكتب اسم المباراة أو القناة أو المشكلة..."
+                                className="w-full rounded-lg border border-gray-300 dark:border-slateui-600 bg-gray-50 dark:bg-slateui-900 text-gray-900 dark:text-white p-2.5 text-sm outline-none focus:border-crimson-700"
+                            ></textarea>
+                        </div>
+
+                        <div className="flex gap-2 pt-2">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="flex-1 py-2.5 rounded-lg bg-gray-200 dark:bg-slateui-700 text-gray-800 dark:text-gray-200 font-bold text-sm"
+                            >
+                                إلغاء
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={sending}
+                                className="flex-[2] py-2.5 rounded-lg bg-crimson-700 hover:bg-crimson-800 text-white font-extrabold text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+                            >
+                                {sending ? <i className="fa-solid fa-spinner fa-spin"></i> : <i className="fa-solid fa-paper-plane"></i>}
+                                <span>{sending ? 'جاري الإرسال...' : 'إرسال الآن'}</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        );
+    };
+
+    // ================== 8. الفوتر السفلي ==================
+    const FooterBar = ({ onGoHome, onOpenReport }) => (
+        <footer className="w-full bg-white dark:bg-slateui-900 border-t border-gray-200 dark:border-slateui-800 py-4 px-4 mt-8">
+            <div className="max-w-2xl mx-auto flex items-center justify-between text-xs md:text-sm font-bold text-gray-800 dark:text-gray-300">
+                <button onClick={onGoHome} className="hover:text-crimson-700 transition">
+                    koora live
+                </button>
+                <button onClick={() => onOpenReport(null)} className="hover:text-crimson-700 transition">
+                    تواصل عبر تيليجرام
+                </button>
+            </div>
+        </footer>
+    );
+
+    // ================== 9. التطبيق الرئيسي ==================
+    function App() {
+        const [view, setView] = React.useState('home'); // 'home' | 'watch'
+        const [activeTab, setActiveTab] = React.useState('today');
+        const [selectedMatch, setSelectedMatch] = React.useState(null);
+        const [darkMode, setDarkMode] = React.useState(false);
+        const [timezone, setTimezone] = React.useState('بتوقيت الرياض');
+        const [drawerOpen, setDrawerOpen] = React.useState(false);
+        const [reportModal, setReportModal] = React.useState({ open: false, match: null });
+        const [toast, setToast] = React.useState(null);
+
+        React.useEffect(() => {
+            const root = document.documentElement;
+            if (darkMode) root.classList.add('dark');
+            else root.classList.remove('dark');
+        }, [darkMode]);
+
+        const showToast = (msg) => {
+            setToast(msg);
+            setTimeout(() => setToast(null), 2500);
+        };
+
+        const handleSelectMatch = (match) => {
+            setSelectedMatch(match);
+            setView('watch');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        const handleGoHome = () => {
+            setView('home');
+            setDrawerOpen(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        return (
+            <div className="min-h-screen flex flex-col justify-between text-right" dir="rtl">
+                <div>
+                    <TopHeader
+                        darkMode={darkMode}
+                        onToggleDark={() => setDarkMode(d => !d)}
+                        onGoHome={handleGoHome}
+                        onOpenDrawer={() => setDrawerOpen(true)}
+                        onOpenReport={() => setReportModal({ open: true, match: selectedMatch })}
+                    />
+
+                    {view === 'home' && (
+                        <TimezoneBar timezone={timezone} setTimezone={setTimezone} />
+                    )}
+
+                    {view === 'home' ? (
+                        <MatchesHomeView
+                            matches={matchesDB}
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                            onSelectMatch={handleSelectMatch}
+                            timezone={timezone}
+                        />
+                    ) : (
+                        selectedMatch && (
+                            <MatchWatchView
+                                match={selectedMatch}
+                                onBack={handleGoHome}
+                                onOpenReport={(m) => setReportModal({ open: true, match: m })}
+                                onToast={showToast}
+                            />
+                        )
+                    )}
+                </div>
+
+                <FooterBar
+                    onGoHome={handleGoHome}
+                    onOpenReport={(m) => setReportModal({ open: true, match: m })}
+                />
+
+                {/* القائمة الجانبية البسيطة */}
+                {drawerOpen && (
+                    <div className="fixed inset-0 z-50 bg-black/50 flex justify-end" onClick={() => setDrawerOpen(false)}>
+                        <div
+                            className="w-64 bg-white dark:bg-slateui-900 h-full p-5 shadow-xl space-y-3"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between border-b border-gray-200 dark:border-slateui-800 pb-3">
+                                <span className="font-black text-crimson-700 dark:text-red-400 text-lg">القائمة</span>
+                                <button onClick={() => setDrawerOpen(false)} className="text-gray-500">
+                                    <i className="fa-solid fa-xmark text-xl"></i>
+                                </button>
+                            </div>
+                            <button
+                                onClick={() => { setActiveTab('today'); handleGoHome(); }}
+                                className="w-full text-right py-2.5 px-3 rounded-lg font-bold text-sm hover:bg-gray-100 dark:hover:bg-slateui-800 text-gray-800 dark:text-gray-200"
+                            >
+                                مباريات اليوم
+                            </button>
+                            <button
+                                onClick={() => { setActiveTab('tomorrow'); handleGoHome(); }}
+                                className="w-full text-right py-2.5 px-3 rounded-lg font-bold text-sm hover:bg-gray-100 dark:hover:bg-slateui-800 text-gray-800 dark:text-gray-200"
+                            >
+                                مباريات الغد
+                            </button>
+                            <button
+                                onClick={() => { setActiveTab('yesterday'); handleGoHome(); }}
+                                className="w-full text-right py-2.5 px-3 rounded-lg font-bold text-sm hover:bg-gray-100 dark:hover:bg-slateui-800 text-gray-800 dark:text-gray-200"
+                            >
+                                مباريات الأمس
+                            </button>
+                            <button
+                                onClick={() => { setDrawerOpen(false); setReportModal({ open: true, match: selectedMatch }); }}
+                                className="w-full text-right py-2.5 px-3 rounded-lg font-bold text-sm bg-crimson-700 text-white"
+                            >
+                                إرسال بلاغ / طلب لتيليجرام
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* نافذة إرسال البلاغات والطلبات عبر Telegram Bot API */}
+                <TelegramReportModal
+                    isOpen={reportModal.open}
+                    onClose={() => setReportModal({ open: false, match: null })}
+                    initialMatch={reportModal.match}
+                    onToast={showToast}
+                />
+
+                {/* إشعار سريع */}
+                {toast && (
+                    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg">
+                        {toast}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+</script>
+
+</body>
+</html>
