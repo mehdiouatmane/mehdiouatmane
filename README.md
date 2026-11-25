@@ -132,6 +132,7 @@ Browse these sites:
 <div><a href="https://mehdiouatmane.github.io/mehdiouatmane/torist3.html">torist3</a></div>
 <div><a href="https://mehdiouatmane.github.io/mehdiouatmane/torist4.html">torist4</a></div>
 <div><a href="https://mehdiouatmane.github.io/mehdiouatmane/torist5.html">torist5</a></div>
+<div><a href="https://mehdiouatmane.github.io/mehdiouatmane/torist6.html">torist5</a></div>
 
 
 
