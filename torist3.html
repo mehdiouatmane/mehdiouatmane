@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morocco Travel Guide | AR - FR - EN</title>
+  <meta name="description" content="Comprehensive travel guides for Morocco: Rabat, Salé, Temara surf coast, and Marrakech itineraries in Arabic, French, and English." />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+          colors: {
+            paper: '#faf8f4',
+            ink: '#132a35',
+            ochre: '#b8502c',
+            ochreDark: '#8c3a1d',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #faf8f4;
+      color: #132a35;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    const UI_TEXT = {
+      ar: {
+        brandName: 'Morocco Travel Guide',
+        brandSub: 'دليل السفر والوجهات في المغرب • عربي / فرنسي / إنجليزي',
+        navHome: 'الرئيسية والمقالات',
+        navAbout: 'من نحن',
+        navContact: 'اتصل بنا',
+        navPrivacy: 'سياسة الخصوصية',
+        navTerms: 'شروط الاستخدام',
+        badge: 'دليل المسافر المستقل • محتوى متعدد اللغات',
+        heroTitle: 'أدلة سفر عملية ومقالات مفصلة لاكتشاف المدن والشواطئ والثقافة المغربية',
+        heroDesc: 'نشارك هنا شروحات ميدانية تساعد الزوار على تخطيط رحلاتهم في الرباط، سلا، تمارة، ومراكش بوضوح، مع نصائح حول التنقل، المواسم، والتجارب المحلية.',
+        searchPlaceholder: 'ابحث داخل الأدلة (مثال: Rabat, Surf, Marrakech)...',
+        allCats: 'الكل',
+        catHeritage: 'مدن وتراث',
+        catSurf: 'سيرف وطبيعة',
+        catItinerary: 'تخطيط الرحلات',
+        catTransport: 'تنقل ومطارات',
+        readMore: 'قراءة الدليل الكامل',
+        backToList: 'العودة إلى جميع المقالات',
+        publishedOn: 'تاريخ النشر',
+        langNote: 'ملاحظة: المقالات التحليلية المفصلة متوفرة بالإنجليزية الكاملة لدعم القراء الدوليين ومحركات البحث، مع واجهة متعددة اللغات (AR / FR / EN).',
+        aboutTitle: 'من نحن (About Us)',
+        aboutP1: 'Morocco Travel Guide منصة تحريرية مستقلة متخصصة في نشر أدلة السفر العملية، المعلومات الثقافية، وبرامج الزيارة الميدانية في المغرب، خاصة في الرباط، سلا، تمارة، ومراكش.',
+        aboutP2: 'هدفنا هو تزويد المسافرين والمهتمين بمحتوى واضح ومفيد مبني على معرفة محلية عملية لمساعدتهم على التخطيط المنظم واكتشاف التجارب الأصيلة.',
+        contactTitle: 'اتصل بنا (Contact Us)',
+        contactDesc: 'للاستفسارات التحريرية، الاقتراحات، أو الشراكات، يمكنك التواصل معنا عبر البريد الإلكتروني:',
+        contactSent: 'تم استلام رسالتك بنجاح، سنرد عليك في أقرب وقت ممكن.',
+        formName: 'الاسم الكامل',
+        formEmail: 'البريد الإلكتروني',
+        formMsg: 'نص الرسالة...',
+        formBtn: 'إرسال الرسالة',
+        privacyTitle: 'سياسة الخصوصية (Privacy Policy)',
+        privacyP1: 'نحن نحترم خصوصية زوار موقعنا ونلتزم بحماية بياناتهم الشخصية. يوضح هذا المستند كيفية جمع المعلومات واستخدامها.',
+        privacyH2: 'ملفات تعريف الارتباط (Cookies) وإعلانات الطرف الثالث',
+        privacyP2: 'قد يستخدم هذا الموقع ملفات تعريف الارتباط لتحسين تجربة التصفح وتحليل الزيارات، كما قد تعرض شبكات إعلانية خارجية مثل Google AdSense إعلانات وتستخدم ملفات تعريف الارتباط المرتبطة بها لعرض إعلانات ملائمة.',
+        privacyP3: 'يمكن للمستخدمين إدارة تفضيلات ملفات تعريف الارتباط والإعلانات من إعدادات المتصفح أو إعدادات إعلانات جوجل.',
+        termsTitle: 'شروط الاستخدام (Terms & Conditions)',
+        termsP1: 'باستخدامك لهذا الموقع، فإنك توافق على الالتزام بشروط الاستخدام الموضحة هنا. جميع الأدلة والمقالات مقدمة لأغراض إعلامية وتثقيفية عامة.',
+        termsP2: 'يُمنع نسخ أو إعادة نشر المحتوى التحريري بالكامل دون إذن مسبق، ويحق لنا تحديث المحتوى والشروط في أي وقت.',
+        footerRights: '© 2026 Morocco Travel Guide • جميع الحقوق محفوظة',
+      },
+      fr: {
+        brandName: 'Morocco Travel Guide',
+        brandSub: 'Guides de voyage et destinations au Maroc • AR / FR / EN',
+        navHome: 'Accueil & Articles',
+        navAbout: 'À propos',
+        navContact: 'Contact',
+        navPrivacy: 'Confidentialité',
+        navTerms: 'Conditions',
+        badge: 'Guide voyageur indépendant • Multilingue AR / FR / EN',
+        heroTitle: 'Guides pratiques et articles détaillés pour explorer les villes, côtes et cultures du Maroc',
+        heroDesc: 'Des analyses terrain pour préparer vos séjours à Rabat, Salé, Témara et Marrakech avec des repères clairs sur les déplacements, saisons et expériences locales.',
+        searchPlaceholder: 'Rechercher un guide (ex: Rabat, Surf, Marrakech)...',
+        allCats: 'Tout',
+        catHeritage: 'Villes & Patrimoine',
+        catSurf: 'Surf & Nature',
+        catItinerary: 'Itinéraires',
+        catTransport: 'Transport & Aéroports',
+        readMore: 'Lire le guide complet',
+        backToList: 'Retour aux articles',
+        publishedOn: 'Publié le',
+        langNote: 'Note : les guides détaillés sont rédigés en anglais complet pour les voyageurs internationaux et le SEO, avec une interface disponible en AR, FR et EN.',
+        aboutTitle: 'À propos de nous (About Us)',
+        aboutP1: 'Morocco Travel Guide est une plateforme éditoriale dédiée aux guides de voyage pratiques, repères culturels et itinéraires au Maroc, notamment à Rabat, Salé, Témara et Marrakech.',
+        aboutP2: 'Notre objectif est d’offrir un contenu clair et structuré basé sur une connaissance locale concrète.',
+        contactTitle: 'Contactez-nous (Contact Us)',
+        contactDesc: 'Pour toute question éditoriale, suggestion ou partenariat, écrivez-nous à :',
+        contactSent: 'Votre message a bien été envoyé. Nous vous répondrons rapidement.',
+        formName: 'Nom complet',
+        formEmail: 'Adresse e-mail',
+        formMsg: 'Votre message...',
+        formBtn: 'Envoyer le message',
+        privacyTitle: 'Politique de confidentialité (Privacy Policy)',
+        privacyP1: 'Nous respectons la vie privée de nos visiteurs et expliquons ici comment les informations sont traitées.',
+        privacyH2: 'Cookies et publicités tierces',
+        privacyP2: 'Ce site peut utiliser des cookies pour mesurer l’audience et améliorer la navigation, et des partenaires publicitaires comme Google AdSense peuvent diffuser des annonces selon leurs règles.',
+        privacyP3: 'Vous pouvez gérer vos préférences de cookies directement dans votre navigateur ou via les paramètres d’annonces Google.',
+        termsTitle: 'Conditions d’utilisation (Terms & Conditions)',
+        termsP1: 'En accédant à ce site, vous acceptez ces conditions. Les contenus publiés ont un objectif informatif général.',
+        termsP2: 'La reproduction intégrale des articles sans autorisation est interdite, et le contenu peut être mis à jour à tout moment.',
+        footerRights: '© 2026 Morocco Travel Guide • Tous droits réservés',
+      },
+      en: {
+        brandName: 'Morocco Travel Guide',
+        brandSub: 'Travel Guides & Destinations in Morocco • AR / FR / EN',
+        navHome: 'Home & Guides',
+        navAbout: 'About Us',
+        navContact: 'Contact Us',
+        navPrivacy: 'Privacy Policy',
+        navTerms: 'Terms & Conditions',
+        badge: 'Independent Travel Resource • AR / FR / EN Interface',
+        heroTitle: 'Practical Travel Guides & In-Depth Articles for Exploring Morocco',
+        heroDesc: 'Clear, structured guides covering Rabat, Salé, Temara’s surf coast, and Marrakech—helping travelers plan routes, timing, and authentic local experiences.',
+        searchPlaceholder: 'Search guides (e.g., Rabat, Surf, Marrakech)...',
+        allCats: 'All',
+        catHeritage: 'Cities & Heritage',
+        catSurf: 'Surf & Coast',
+        catItinerary: 'Itineraries',
+        catTransport: 'Transport & Airports',
+        readMore: 'Read Full Guide',
+        backToList: 'Back to All Guides',
+        publishedOn: 'Published on',
+        langNote: 'Note: In-depth travel guides are provided in full English with a switchable AR / FR / EN interface. More articles from the 20-guide list will follow in upcoming batches.',
+        aboutTitle: 'About Us',
+        aboutP1: 'Morocco Travel Guide is an independent travel publication focused on practical itineraries, cultural context, and coastal/city guides across Rabat, Salé, Temara, and Marrakech.',
+        aboutP2: 'Our goal is to help travelers make informed, calm, and well-timed decisions when exploring Morocco.',
+        contactTitle: 'Contact Us',
+        contactDesc: 'For editorial inquiries, feedback, or collaborations, reach out via email:',
+        contactSent: 'Your message has been received. We will get back to you soon.',
+        formName: 'Full Name',
+        formEmail: 'Email Address',
+        formMsg: 'Your message...',
+        formBtn: 'Send Message',
+        privacyTitle: 'Privacy Policy',
+        privacyP1: 'We respect visitor privacy and explain how basic browsing data and cookies may be used on this site.',
+        privacyH2: 'Cookies & Third-Party Advertising',
+        privacyP2: 'This site may use cookies for analytics and user experience, and third-party ad networks such as Google AdSense may serve ads and use cookies in accordance with their policies.',
+        privacyP3: 'Visitors can manage cookie preferences through their browser settings or Google ad settings.',
+        termsTitle: 'Terms & Conditions',
+        termsP1: 'By using this website, you agree to these terms. All articles are provided for general informational and travel planning purposes.',
+        termsP2: 'Unauthorized republication of full articles is not permitted, and content or terms may be updated periodically.',
+        footerRights: '© 2026 Morocco Travel Guide • All rights reserved',
+      },
+    };
+
+    const ARTICLES = [
+      {
+        id: 'rabat-sale-hidden-gems',
+        categoryKey: 'heritage',
+        readTime: '8 min read',
+        date: '2026-11-20',
+        image: 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1000&q=80',
+        title: '12 Hidden Gems in Rabat and Salé Most Tourists Miss (2026 Local Guide)',
+        excerpt: 'A practical guide to exploring calm corners, historic lanes, river views, and local neighborhoods across Rabat and Salé without rushing.',
+        sections: [
+          {
+            heading: 'Why Rabat and Salé Reward Slow Exploration',
+            body: 'Many first-time visitors to Morocco rush straight from Casablanca or Tangier toward Marrakech or Fes, treating Rabat merely as a brief stopover or administrative capital. That pace misses one of the most balanced coastal and historic pairs in the country. Sitting directly across the Bouregreg river estuary from each other, Rabat and Salé offer a calmer rhythm where Atlantic breezes, centuries-old ramparts, quiet gardens, and everyday neighborhood life coexist without overwhelming crowds.\n\nExploring both cities thoughtfully is less about checking off dozens of monuments in a single afternoon and more about pacing your day around light, tides, and walking distances. Morning hours bring soft coastal light over the water and quieter lanes, while late afternoons are ideal for strolling along river promenades and historic quarters before sunset.'
+          },
+          {
+            heading: 'Quiet Corners Around the Kasbah of the Udayas and Bouregreg',
+            body: 'The Kasbah of the Udayas is famous for its blue-and-white painted walls and views over the Atlantic, yet stepping just a few turns away from the main entrance reveals much quieter alleyways. Early morning visits let you observe daily routines before tour groups arrive, enjoy the Andalusian gardens in relative stillness, and look out toward Salé across the river mouth.\n\nJust below the kasbah, the waterfront along the Bouregreg river provides a relaxed promenade where small boats cross between Rabat and Salé. Watching the shift in light between the river and the open ocean gives visitors a clear sense of how geography shaped trade, defense, and maritime life in this part of Morocco.'
+          },
+          {
+            heading: 'Crossing to Salé: Historic Depth Away from Tourist Crowds',
+            body: 'Salé sits right across the water, connected easily by tram, taxi, or river boat, yet it feels noticeably less commercialized for international sightseeing. Its medina preserves an authentic local atmosphere where residents shop for daily groceries, visit neighborhood bakeries, and move through traditional streets at an unhurried pace.\n\nTaking time to walk through Salé’s historic center and observe local craftsmanship offers a grounded perspective on Moroccan urban heritage. Unlike high-volume souvenir hubs, interactions here often feel more everyday and unhurried, rewarding travelers who appreciate genuine local character over polished tourist staging.'
+          },
+          {
+            heading: 'Chellah, Green Spaces, and Practical Planning Tips',
+            body: 'The archaeological site of Chellah blends Roman ruins, Marinid monuments, and lush gardens in one peaceful setting. Walking through its paths feels worlds away from busy city traffic, making it an ideal midday or late-afternoon stop when you want shade, history, and space to breathe.\n\nTo get the most out of Rabat and Salé, wear comfortable walking shoes suitable for uneven stone and paved streets, carry cash in local currency for small purchases and transport, and leave room in your schedule for unplanned pauses at a local café or coastal viewpoint.'
+          }
+        ]
+      },
+      {
+        id: 'surf-guide-rabat-temara',
+        categoryKey: 'surf',
+        readTime: '7 min read',
+        date: '2026-11-18',
+        image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1000&q=80',
+        title: 'Beginner’s Guide to Surfing in Rabat and Temara: Best Beaches & Seasons',
+        excerpt: 'Everything beginners need to know about beaches, seasonal conditions, gear choices, and safety along the Rabat and Temara Atlantic coast.',
+        sections: [
+          {
+            heading: 'Why the Rabat–Temara Coast Appeals to New Surfers',
+            body: 'Morocco’s Atlantic coast is well known among surfers, and the stretch running from Rabat through Temara and neighboring beaches offers accessible entry points without requiring a long overland journey into remote surf towns. For travelers staying in the capital area who want ocean time, combining city stays with coastal sessions is straightforward and flexible.\n\nFor beginners, progression depends heavily on finding forgiving waves, uncrowded space to practice pop-ups, and realistic expectations about ocean conditions. Starting with clear fundamentals—paddling control, wave judgment, and safe positioning—matters far more than chasing large swells on day one.'
+          },
+          {
+            heading: 'Choosing the Right Beach and Reading Conditions',
+            body: 'Along the Rabat and Temara coastline, conditions vary depending on swell direction, wind, and tide. Some stretches offer softer whitewater and gentler slopes suited to first-time riders, while other spots pick up stronger swell or currents that demand caution.\n\nAlways observe the water for several minutes before paddling out. Look at where waves are breaking, check for rip currents or rocky edges, and ask local instructors or experienced surfers about the day’s tide window rather than jumping in blindly.'
+          },
+          {
+            heading: 'Seasonal Weather and Wetsuit Essentials',
+            body: 'Even when air temperatures feel pleasant or sunny, Atlantic water in Morocco can feel cool, especially outside peak summer or during breezy mornings. Bringing or renting a well-fitting wetsuit makes a major difference in comfort and session length.\n\nLighter suits may work during warmer stretches, while cooler months call for thicker neoprene to stay warm and focused. Pair your session with sun protection—sunscreen, a hat or sunglasses on the beach, and plenty of water—because coastal sun and wind can dehydrate you quickly.'
+          },
+          {
+            heading: 'Practical Habits for a Safe, Enjoyable First Session',
+            body: 'A soft-top board is generally the best starting board for beginners because it offers stability, buoyancy, and greater forgiveness when learning to stand up. Respect right-of-way rules in the lineup, keep a safe distance from other swimmers and surfers, and listen closely to local guidance.\n\nFinish your session while you still have energy and good form rather than pushing through exhaustion, which is when mistakes and fatigue tend to happen.'
+          }
+        ]
+      },
+      {
+        id: 'marrakech-3-days-itinerary',
+        categoryKey: 'itinerary',
+        readTime: '8 min read',
+        date: '2026-11-15',
+        image: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1000&q=80',
+        title: '3-Day Marrakech Itinerary: Medina, Gardens & Atlas Mountains Day Trip',
+        excerpt: 'A balanced three-day Marrakech plan pairing historic sights and souks with calm gardens and a day trip into the Atlas foothills.',
+        sections: [
+          {
+            heading: 'Day 1: Historic Landmarks, Courtyards, and Evening Energy',
+            body: 'Three days in Marrakech goes quickly if you try to see everything at once, so pacing is essential. Dedicate your first morning to historic palaces, mosques, and structured architectural sites while temperatures are cooler and walking feels easy.\n\nIn the late afternoon, ease into the medina lanes and main square as the city transitions from daylight errands to evening activity. Pace yourself, take breaks in quiet courtyards, and avoid feeling pressured to buy on your very first walk through the souks.'
+          },
+          {
+            heading: 'Day 2: Gardens, Museums, and Slow Cultural Immersion',
+            body: 'After an energetic first day, use your second day to balance sensory stimulation with calmer spaces. Botanical gardens, museums, and shaded courtyards offer natural breathing room away from busy streets and traffic.\n\nThe afternoon is well suited to a hands-on cultural activity—such as a local culinary workshop or artisanal visit—followed by a relaxed evening meal. Giving yourself unhurried windows makes the city feel far more welcoming.'
+          },
+          {
+            heading: 'Day 3: Day Trip to the Atlas Mountains and Return',
+            body: 'A full-day excursion from Marrakech toward the Atlas foothills—such as the Ourika Valley or Imlil area—introduces dramatic mountain scenery, terraced slopes, and cooler mountain air in sharp contrast to the city.\n\nStart early to beat traffic and make the most of daylight on mountain roads, confirm transport arrangements and pickup times in advance, and allow comfortable buffer time for the return drive to Marrakech.'
+          },
+          {
+            heading: 'Smart Planning Tips for a Smooth 3-Day Stay',
+            body: 'Group nearby sights together rather than crisscrossing the city multiple times a day, agree on transport fares or tour details clearly before setting off, and keep your itinerary flexible enough to rest when needed.'
+          }
+        ]
+      },
+      {
+        id: 'rabat-sale-airport-transfer-guide',
+        categoryKey: 'transport',
+        readTime: '7 min read',
+        date: '2026-11-12',
+        image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1000&q=80',
+        title: 'How to Get from Rabat-Salé Airport to the City Center: Practical Guide',
+        excerpt: 'How to plan your arrival from Rabat-Salé Airport (RBA) into central Rabat or Salé smoothly, whether traveling solo, as a couple, or with luggage.',
+        sections: [
+          {
+            heading: 'Planning Your Arrival Before You Land',
+            body: 'Arriving in a new city is much smoother when your first transfer is already clear in your head. Whether you are landing at Rabat-Salé Airport after a long flight or arriving with family and luggage, knowing your exact drop-off neighborhood in Rabat or Salé prevents last-minute confusion.\n\nCheck your flight arrival time against local traffic patterns, keep your accommodation address written clearly, and make sure you have a practical way to stay connected once you step outside the terminal.'
+          },
+          {
+            heading: 'Comparing Transport Options from the Airport',
+            body: 'Travelers moving between Rabat-Salé Airport and central neighborhoods generally weigh convenience, luggage space, cost, and arrival time. Shared or metered options can work well for light travel, while pre-arranged private transfers offer direct door-to-door comfort without negotiating after a flight.\n\nIf you travel with surfboards, bulky bags, or late-night flights, prioritize directness and clear pricing upfront so you can head straight to your stay without extra hassle.'
+          },
+          {
+            heading: 'Avoiding Common Arrival Friction',
+            body: 'Tired travelers are most likely to overpay or get confused right after exiting baggage claim. Confirm fare expectations before getting into a vehicle, avoid rushing into unclear arrangements, and double-check whether your destination is on the Rabat side or the Salé side of the river.\n\nHaving a simple checklist—flight number, hotel/riad address, local cash plan, and contact details—turns arrival into a calm start to your trip.'
+          }
+        ]
+      }
+    ];
+
+    function Header({ lang, setLang, page, setPage }) {
+      const t = UI_TEXT[lang];
+      const navItems = [
+        { id: 'home', label: t.navHome },
+        { id: 'about', label: t.navAbout },
+        { id: 'contact', label: t.navContact },
+        { id: 'privacy', label: t.navPrivacy },
+        { id: 'terms', label: t.navTerms },
+      ];
+
+      return (
+        <header className="bg-ink text-white sticky top-0 z-40 shadow">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => setPage('home')}
+              className="flex items-center gap-3 text-start"
+            >
+              <span className="w-10 h-10 rounded-xl bg-ochre flex items-center justify-center text-white shrink-0">
+                <i className="fa-solid fa-book-open-reader"></i>
+              </span>
+              <div>
+                <div className="font-extrabold text-lg leading-tight">{t.brandName}</div>
+                <div className="text-xs text-amber-200/80">{t.brandSub}</div>
+              </div>
+            </button>
+
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <nav className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm font-bold">
+                {navItems.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setPage(item.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className={`px-3 py-2 rounded-lg transition ${
+                      page === item.id ? 'bg-ochre text-white' : 'text-white/85 hover:bg-white/10'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </nav>
+
+              <div className="flex items-center bg-white/10 rounded-xl p-1 text-xs font-extrabold">
+                {[
+                  { code: 'ar', label: 'AR' },
+                  { code: 'fr', label: 'FR' },
+                  { code: 'en', label: 'EN' },
+                ].map((l) => (
+                  <button
+                    key={l.code}
+                    type="button"
+                    onClick={() => setLang(l.code)}
+                    className={`px-2.5 py-1 rounded-lg transition ${
+                      lang === l.code ? 'bg-amber-300 text-ink' : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    function HomeArticlesView({ lang, onOpenArticle }) {
+      const t = UI_TEXT[lang];
+      const [query, setQuery] = useState('');
+      const [selectedCat, setSelectedCat] = useState('all');
+
+      const categories = [
+        { key: 'all', label: t.allCats },
+        { key: 'heritage', label: t.catHeritage },
+        { key: 'surf', label: t.catSurf },
+        { key: 'itinerary', label: t.catItinerary },
+        { key: 'transport', label: t.catTransport },
+      ];
+
+      const catLabelMap = {
+        heritage: t.catHeritage,
+        surf: t.catSurf,
+        itinerary: t.catItinerary,
+        transport: t.catTransport,
+      };
+
+      const filtered = useMemo(() => {
+        return ARTICLES.filter((art) => {
+          const matchCat = selectedCat === 'all' || art.categoryKey === selectedCat;
+          const q = query.trim().toLowerCase();
+          const matchQuery =
+            !q ||
+            art.title.toLowerCase().includes(q) ||
+            art.excerpt.toLowerCase().includes(q);
+          return matchCat && matchQuery;
+        });
+      }, [query, selectedCat]);
+
+      return (
+        <main className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+          <section className="bg-white rounded-3xl p-7 sm:p-10 border border-slate-200/80 shadow-sm space-y-5">
+            <span className="inline-block bg-amber-100 text-ochreDark text-xs font-extrabold px-3.5 py-1.5 rounded-full">
+              {t.badge}
+            </span>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-ink leading-tight">
+              {t.heroTitle}
+            </h1>
+            <p className="text-slate-600 text-sm sm:text-base max-w-3xl leading-relaxed">
+              {t.heroDesc}
+            </p>
+            <div className="bg-paper border border-amber-200/80 text-slate-700 text-xs sm:text-sm p-3.5 rounded-2xl">
+              {t.langNote}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t.searchPlaceholder}
+                className="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ochre"
+              />
+              <div className="flex flex-wrap gap-2">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.key}
+                    type="button"
+                    onClick={() => setSelectedCat(cat.key)}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition ${
+                      selectedCat === cat.key
+                        ? 'bg-ink text-white border-ink'
+                        : 'bg-paper text-ink border-slate-200 hover:border-ochre'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="grid md:grid-cols-2 gap-6">
+            {filtered.map((article) => (
+              <article
+                key={article.id}
+                className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between"
+              >
+                <div>
+                  <img src={article.image} alt={article.title} className="w-full h-52 object-cover" />
+                  <div className="p-6 space-y-3">
+                    <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
+                      <span className="text-ochreDark">{catLabelMap[article.categoryKey]}</span>
+                      <span>{article.readTime}</span>
+                    </div>
+                    <h2 className="text-xl font-extrabold text-ink leading-snug" dir="ltr">
+                      {article.title}
+                    </h2>
+                    <p className="text-sm text-slate-600 leading-relaxed" dir="ltr">
+                      {article.excerpt}
+                    </p>
+                  </div>
+                </div>
+                <div className="px-6 pb-6">
+                  <button
+                    type="button"
+                    onClick={() => onOpenArticle(article)}
+                    className="w-full bg-ink hover:bg-ochre text-white font-bold py-2.5 px-4 rounded-xl text-sm transition"
+                  >
+                    {t.readMore}
+                  </button>
+                </div>
+              </article>
+            ))}
+          </section>
+        </main>
+      );
+    }
+
+    function ArticleDetailView({ lang, article, onBack }) {
+      if (!article) return null;
+      const t = UI_TEXT[lang];
+      const catLabelMap = {
+        heritage: t.catHeritage,
+        surf: t.catSurf,
+        itinerary: t.catItinerary,
+        transport: t.catTransport,
+      };
+
+      return (
+        <main className="max-w-4xl mx-auto px-4 py-10">
+          <button
+            type="button"
+            onClick={onBack}
+            className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-ink hover:text-ochre"
+          >
+            <i className={`fa-solid ${lang === 'ar' ? 'fa-arrow-right' : 'fa-arrow-left'}`}></i>
+            {t.backToList}
+          </button>
+
+          <article className="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm" dir="ltr">
+            <img src={article.image} alt={article.title} className="w-full h-72 object-cover" />
+            <div className="p-6 sm:p-10 space-y-6">
+              <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-500">
+                <span className="bg-amber-100 text-ochreDark px-3 py-1 rounded-full">
+                  {catLabelMap[article.categoryKey]}
+                </span>
+                <span>{t.publishedOn}: {article.date}</span>
+                <span>• {article.readTime}</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-ink leading-snug">{article.title}</h1>
+              <p className="text-base text-slate-700 leading-relaxed border-l-4 border-ochre pl-4">{article.excerpt}</p>
+
+              <div className="space-y-6 pt-2">
+                {article.sections.map((sec, idx) => (
+                  <section key={idx} className="space-y-2">
+                    <h2 className="text-xl font-extrabold text-ink">{sec.heading}</h2>
+                    {sec.body.split('\n\n').map((para, pIdx) => (
+                      <p key={pIdx} className="text-slate-700 leading-8 text-sm sm:text-base">
+                        {para}
+                      </p>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            </div>
+          </article>
+        </main>
+      );
+    }
+
+    function StaticLegalPage({ lang, page }) {
+      const t = UI_TEXT[lang];
+      const [sent, setSent] = useState(false);
+
+      if (page === 'about') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8">
+              <h1 className="text-2xl font-extrabold text-ink">{t.aboutTitle}</h1>
+              <p>{t.aboutP1}</p>
+              <p>{t.aboutP2}</p>
+            </div>
+          </main>
+        );
+      }
+
+      if (page === 'contact') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-6">
+              <div>
+                <h1 className="text-2xl font-extrabold text-ink">{t.contactTitle}</h1>
+                <p className="text-sm text-slate-600 mt-1">
+                  {t.contactDesc}
+                  <span className="font-bold text-ochreDark mx-1" dir="ltr">contact@yourdomain.com</span>
+                </p>
+              </div>
+
+              {sent ? (
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl text-sm font-bold">
+                  {t.contactSent}
+                </div>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setSent(true);
+                  }}
+                  className="space-y-4"
+                >
+                  <input required type="text" placeholder={t.formName} className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm" />
+                  <input required type="email" placeholder={t.formEmail} className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm" />
+                  <textarea required rows="4" placeholder={t.formMsg} className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm"></textarea>
+                  <button type="submit" className="bg-ochre hover:bg-ochreDark text-white font-bold px-6 py-2.5 rounded-xl text-sm">
+                    {t.formBtn}
+                  </button>
+                </form>
+              )}
+            </div>
+          </main>
+        );
+      }
+
+      if (page === 'privacy') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8 text-sm sm:text-base">
+              <h1 className="text-2xl font-extrabold text-ink">{t.privacyTitle}</h1>
+              <p>{t.privacyP1}</p>
+              <h2 className="text-lg font-extrabold text-ink">{t.privacyH2}</h2>
+              <p>{t.privacyP2}</p>
+              <p>{t.privacyP3}</p>
+            </div>
+          </main>
+        );
+      }
+
+      return (
+        <main className="max-w-4xl mx-auto px-4 py-10">
+          <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8 text-sm sm:text-base">
+            <h1 className="text-2xl font-extrabold text-ink">{t.termsTitle}</h1>
+            <p>{t.termsP1}</p>
+            <p>{t.termsP2}</p>
+          </div>
+        </main>
+      );
+    }
+
+    function App() {
+      const [lang, setLang] = useState('ar');
+      const [page, setPage] = useState('home');
+      const [activeArticle, setActiveArticle] = useState(null);
+      const t = UI_TEXT[lang];
+
+      useEffect(() => {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      }, [lang]);
+
+      const openArticle = (article) => {
+        setActiveArticle(article);
+        setPage('article');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          <div>
+            <Header lang={lang} setLang={setLang} page={page} setPage={setPage} />
+            {page === 'home' && <HomeArticlesView lang={lang} onOpenArticle={openArticle} />}
+            {page === 'article' && <ArticleDetailView lang={lang} article={activeArticle} onBack={() => setPage('home')} />}
+            {['about', 'contact', 'privacy', 'terms'].includes(page) && <StaticLegalPage lang={lang} page={page} />}
+          </div>
+
+          <footer className="bg-ink text-white/85 py-8 px-4 mt-12 border-t border-white/10">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+              <div>{t.footerRights}</div>
+              <div className="flex flex-wrap items-center gap-4 font-bold">
+                <button type="button" onClick={() => setPage('about')} className="hover:text-amber-300">{t.navAbout}</button>
+                <button type="button" onClick={() => setPage('contact')} className="hover:text-amber-300">{t.navContact}</button>
+                <button type="button" onClick={() => setPage('privacy')} className="hover:text-amber-300">{t.navPrivacy}</button>
+                <button type="button" onClick={() => setPage('terms')} className="hover:text-amber-300">{t.navTerms}</button>
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
