@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guide de Voyage au Maroc | Rabat, Salé, Témara & Marrakech</title>
+  <meta name="description" content="Guides pratiques et itinéraires détaillés pour visiter Rabat, Salé, la côte de surf de Témara et Marrakech au Maroc." />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+          colors: {
+            paper: '#faf8f4',
+            ink: '#132a35',
+            ochre: '#b8502c',
+            ochreDark: '#8c3a1d',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #faf8f4;
+      color: #132a35;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    const UI_TEXT = {
+      brandName: 'Morocco Travel Guide',
+      brandSub: 'Guides pratiques & itinéraires • Rabat, Salé, Témara & Marrakech',
+      navHome: 'Accueil & Guides',
+      navAbout: 'À propos',
+      navContact: 'Contact',
+      navPrivacy: 'Confidentialité',
+      navTerms: 'Conditions',
+      badge: 'Ressource voyage indépendante • Édition francophone',
+      heroTitle: 'Guides pratiques et articles détaillés pour explorer les villes, côtes et cultures du Maroc',
+      heroDesc: 'Des repères clairs et structurés pour organiser votre séjour à Rabat, Salé, sur la côte de surf de Témara et à Marrakech : rythmes de visite, saisons, déplacements et expériences locales.',
+      searchPlaceholder: 'Rechercher un guide (ex. : Rabat, surf, Marrakech, budget)...',
+      allCats: 'Tout',
+      catHeritage: 'Villes & Patrimoine',
+      catSurf: 'Surf & Côte',
+      catItinerary: 'Itinéraires',
+      catTransport: 'Transport & Conseils',
+      readMore: 'Lire le guide complet',
+      loadMore: 'Plus d’articles',
+      showingCount: 'Affichage de',
+      ofCount: 'sur',
+      articlesWord: 'guides',
+      backToList: 'Retour à tous les guides',
+      publishedOn: 'Publié le',
+      aboutTitle: 'À propos de nous',
+      aboutP1: 'Morocco Travel Guide est une publication indépendante consacrée aux guides de voyage pratiques, repères culturels, itinéraires côtiers et conseils d’organisation au Maroc, avec un accent particulier sur Rabat, Salé, Témara et Marrakech.',
+      aboutP2: 'Notre objectif est d’aider les voyageurs européens et internationaux à préparer des séjours fluides, réalistes et respectueux des lieux et des habitants.',
+      contactTitle: 'Contactez-nous',
+      contactDesc: 'Pour toute question éditoriale, suggestion d’itinéraire ou demande de partenariat, écrivez-nous à :',
+      contactSent: 'Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.',
+      formName: 'Nom complet',
+      formEmail: 'Adresse e-mail',
+      formMsg: 'Votre message...',
+      formBtn: 'Envoyer le message',
+      privacyTitle: 'Politique de confidentialité',
+      privacyP1: 'Nous respectons la vie privée de nos visiteurs et expliquons ici de manière transparente comment les données de navigation et les cookies peuvent être utilisés.',
+      privacyH2: 'Cookies et régies publicitaires tierces',
+      privacyP2: 'Ce site peut utiliser des cookies pour analyser la fréquentation et améliorer l’expérience de lecture. Des régies publicitaires tierces telles que Google AdSense peuvent également diffuser des annonces et utiliser des cookies associés conformément à leurs règles.',
+      privacyP3: 'Vous pouvez gérer ou désactiver les cookies publicitaires à tout moment via les paramètres de votre navigateur ou les paramètres des annonces Google.',
+      termsTitle: 'Conditions d’utilisation',
+      termsP1: 'En consultant ce site, vous acceptez les présentes conditions d’utilisation. Tous les articles et itinéraires sont publiés à titre informatif général pour aider à la préparation de voyage.',
+      termsP2: 'La reproduction intégrale ou l’exploitation commerciale non autorisée des textes est interdite, et le contenu peut être mis à jour périodiquement.',
+      footerRights: '© 2026 Morocco Travel Guide • Tous droits réservés',
+    };
+
+    const ARTICLES = [
+      {
+        id: 'rabat-sale-hidden-gems',
+        categoryKey: 'heritage',
+        readTime: '9 min de lecture',
+        date: '2026-11-20',
+        image: 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1000&q=80',
+        title: '12 trésors cachés à Rabat et Salé que la plupart des touristes manquent',
+        excerpt: 'Un guide pratique et approfondi pour découvrir des ruelles calmes, des perspectives sur l’estuaire du Bouregreg, des jardins historiques et des quartiers authentiques entre Rabat et Salé.',
+        sections: [
+          {
+            heading: '1. Pourquoi Rabat et Salé gagnent à être explorés sans précipitation',
+            body: 'De nombreux voyageurs européens organisent un premier séjour au Maroc en enchaînant rapidement les destinations les plus médiatisées, en considérant parfois l’axe Rabat–Salé comme une simple étape de transition ou une parenthèse administrative. Cette approche passe à côté de l’un des duos côtiers et historiques les plus équilibrés du pays. Situées face à face de part et d’autre de l’embouchure du fleuve Bouregreg, Rabat et Salé offrent un rythme plus posé où la brise atlantique, les remparts anciens, les espaces verts et une vie urbaine quotidienne se côtoient sans saturation touristique.\n\nPour apprécier pleinement ces deux villes, la logique du rythme compte davantage que la vitesse. Plutôt que de multiplier les déplacements rapides d’un bout à l’autre de l’agglomération, il est souvent plus enrichissant d’organiser ses journées selon la lumière naturelle, les marées et les distances à pied. Les premières heures de la matinée offrent une clarté douce sur l’océan et des rues plus calmes, tandis que la fin d’après-midi se prête idéalement aux promenades le long des berges et des quartiers anciens.'
+          },
+          {
+            heading: '2. Coins paisibles autour de la Kasbah des Oudayas et du Bouregreg',
+            body: 'La Kasbah des Oudayas est célèbre pour ses façades bleues et blanches, ses ruelles étroites et ses panoramas sur l’Atlantique. Pourtant, dès que l’on s’écarte de quelques mètres de l’axe d’entrée principal, l’ambiance devient nettement plus feutrée. Arriver tôt le matin permet de découvrir les jardins andalous dans une atmosphère calme, d’observer les premiers mouvements du quartier et de profiter d’une vue dégagée sur Salé de l’autre côté de l’estuaire.\n\nEn contrebas de la kasbah, l’espace riverain le long du Bouregreg permet de suivre le passage des petites embarcations qui relient les deux rives. Ce face-à-face permanent entre le fleuve et l’océan éclaire la manière dont la géographie a façonné l’histoire maritime, les échanges et la défense de ce secteur du littoral atlantique.'
+          },
+          {
+            heading: '3. Traverser vers Salé : une profondeur historique authentique',
+            body: 'Juste en face de Rabat, Salé se rejoint facilement en quelques minutes grâce au tramway, à un taxi ou à la traversée sur le fleuve, tout en conservant une identité propre et une atmosphère moins marquée par les circuits touristiques classiques. Sa médina reflète un quotidien local vivant où les habitants font leurs courses de proximité, fréquentent les commerces de quartier et circulent selon un tempo naturel.\n\nPrendre le temps de marcher dans le tissu ancien de Salé et d’observer les ateliers et savoir-faire locaux apporte un regard concret et nuancé sur l’histoire urbaine marocaine. Les échanges y sont souvent plus spontanés et moins pressés, ce qui séduit les voyageurs sensibles à l’authenticité du quotidien plutôt qu’aux vitrines uniformisées.'
+          },
+          {
+            heading: '4. Chellah, espaces verts et repères pratiques pour votre séjour',
+            body: 'Le site archéologique de Chellah réunit ruines antiques, monuments mérinides et jardins apaisants dans un cadre verdoyant qui contraste fortement avec l’animation des artères urbaines. C’est un lieu idéal pour ralentir, respirer à l’ombre et consacrer un moment de lecture ou d’observation historique en milieu ou en fin de journée.\n\nPour profiter sereinement de Rabat et de Salé, prévoyez des chaussures de marche confortables adaptées aux pavés et passages irréguliers, gardez un peu de monnaie locale pour les petits achats ou déplacements ponctuels et conservez une marge de liberté dans votre emploi du temps afin de vous arrêter là où l’atmosphère vous plaît.'
+          },
+          {
+            heading: '5. Comment relier ces découvertes à un programme clair',
+            body: 'Que vous disposiez d’une journée complète ou de plusieurs jours sur place, le secret d’un séjour réussi réside dans la cohérence des enchaînements : regrouper les visites proches, éviter les heures de circulation les plus chargées et garder du temps pour la table locale et les pauses face à l’océan.'
+          }
+        ]
+      },
+      {
+        id: 'surf-guide-rabat-temara',
+        categoryKey: 'surf',
+        readTime: '8 min de lecture',
+        date: '2026-11-18',
+        image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1000&q=80',
+        title: 'Guide du surf pour débutants à Rabat et Témara : plages et saisons idéales',
+        excerpt: 'Tout ce qu’il faut savoir avant une première session de surf sur la côte atlantique entre Rabat et Témara : plages, conditions saisonnières, sécurité et équipement.',
+        sections: [
+          {
+            heading: '1. Pourquoi la côte de Rabat à Témara séduit les débutants',
+            body: 'La côte atlantique marocaine est reconnue pour la qualité de ses vagues, et le littoral qui s’étend de Rabat vers Témara et les plages voisines offre un accès pratique à l’océan sans imposer un long voyage vers des zones isolées. Pour les visiteurs installés à Rabat ou dans les environs qui souhaitent alterner découvertes culturelles et sessions à l’eau, cette proximité représente un avantage concret.\n\nLorsqu’on débute le surf, la progression repose avant tout sur des conditions accessibles, suffisamment d’espace pour répéter les gestes de base et des attentes réalistes. Apprendre à ramer efficacement, à lire la formation des vagues et à se déplacer avec prudence à l’eau compte bien davantage que de chercher de grosses houles dès les premiers essais.'
+          },
+          {
+            heading: '2. Choisir sa plage et observer l’océan avant d’entrer',
+            body: 'Entre Rabat et Témara, le comportement de l’océan varie selon la direction et la puissance de la houle, l’orientation du vent et la hauteur de marée. Certains secteurs proposent des mousses régulières et des pentes progressives adaptées à l’apprentissage, tandis que d’autres zones peuvent présenter des vagues plus creuses, des fonds rocheux ou des courants à surveiller.\n\nIl est indispensable de consacrer plusieurs minutes à l’observation du plan d’eau avant de se mettre à l’eau. Repérez où les vagues déferlent, identifiez les zones de courants éventuels et demandez l’avis d’un moniteur local ou d’un pratiquant expérimenté sur la meilleure fenêtre de marée.'
+          },
+          {
+            heading: '3. Saisons, température de l’eau et combinaison adaptée',
+            body: 'Même lorsque le ciel est dégagé ou que la température extérieure paraît douce, l’eau de l’Atlantique reste fraîche une grande partie de l’année, particulièrement hors plein été ou lors des matinées balayées par la brise marine. Porter une combinaison adaptée et bien ajustée transforme le confort thermique et permet de rester concentré.\n\nUne combinaison plus légère peut convenir lors des périodes les plus douces, alors que les mois plus frais nécessitent une épaisseur plus importante pour conserver la chaleur corporelle. Pensez également à protéger votre peau et vos lèvres contre le soleil et la réverbération sur l’eau, et hydratez-vous régulièrement.'
+          },
+          {
+            heading: '4. Bonnes pratiques pour une première mise à l’eau sereine',
+            body: 'Une planche en mousse est généralement le choix le plus pertinent pour débuter : elle apporte de la stabilité, de la flottabilité et une tolérance rassurante lors des premières tentatives de redressement. Respectez les règles de priorité, maintenez une distance sûre avec les autres personnes à l’eau et sortez de la session avant que la fatigue ne dégrade vos réflexes.'
+          }
+        ]
+      },
+      {
+        id: 'marrakech-3-days-itinerary',
+        categoryKey: 'itinerary',
+        readTime: '9 min de lecture',
+        date: '2026-11-15',
+        image: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1000&q=80',
+        title: 'Itinéraire Marrakech 3 jours : médina, jardins et excursion dans l’Atlas',
+        excerpt: 'Un programme détaillé et équilibré sur trois jours à Marrakech combinant patrimoine architectural, jardins apaisants, vie artisanale et escapade d’une journée dans les contreforts de l’Atlas.',
+        sections: [
+          {
+            heading: '1. Comment structurer trois jours à Marrakech sans s’épuiser',
+            body: 'Trois jours passent très vite à Marrakech lorsque l’on cherche à tout voir en même temps. La ville concentre une forte densité de monuments, de ruelles marchandes, de jardins et de lieux de vie qui sollicitent constamment l’attention. Pour que le séjour reste un plaisir plutôt qu’une course contre la montre, le choix du rythme et de l’ordre des visites est déterminant.\n\nL’approche la plus confortable consiste à réserver les matinées aux sites architecturaux et aux déplacements à pied lorsque l’air est encore frais, à garder le milieu de journée pour des espaces ombragés ou des pauses tranquilles, puis à profiter de la fin d’après-midi pour ressentir l’animation des quartiers historiques.'
+          },
+          {
+            heading: '2. Jour 1 : monuments historiques, cours intérieures et ambiance du soir',
+            body: 'Consacrez votre première matinée à la découverte des grands repères historiques du sud de la médina, notamment les palais, tombeaux historiques et abords de la Koutoubia. Arriver dès l’ouverture permet d’apprécier le travail du stuc, du cèdre sculpté et du zellige dans une atmosphère beaucoup plus calme.\n\nEn fin d’après-midi, dirigez-vous progressivement vers les ruelles commerçantes et la place Jemaa el-Fna au moment où la lumière décline et où la ville change de visage. Prenez le temps d’observer depuis une terrasse ou un café en hauteur avant de plonger dans l’animation, sans vous sentir obligé d’acheter dès la première promenade.'
+          },
+          {
+            heading: '3. Jour 2 : jardins, musées et immersion culturelle posée',
+            body: 'Après une première journée riche en sollicitations visuelles et sonores, le deuxième jour gagne à intégrer des lieux plus respirants. Les jardins historiques, les espaces botaniques et les musées installés dans d’anciens palais ou riads offrent une respiration bienvenue loin de l’agitation des axes principaux.\n\nL’après-midi se prête particulièrement bien à une expérience pratique à rythme doux : découverte de l’artisanat local dans des ateliers spécialisés, atelier de cuisine marocaine ou simple flânerie dans des quartiers plus résidentiels. Garder des plages libres permet d’absorber l’atmosphère de la ville sans fatigue.'
+          },
+          {
+            heading: '4. Jour 3 : excursion à la journée vers les vallées de l’Atlas',
+            body: 'Quitter Marrakech le troisième jour pour une excursion vers les contreforts du Haut Atlas — par exemple vers la vallée de l’Ourika ou les environs d’Imlil — apporte un contraste saisissant. En moins de deux heures de route, les plaines laissent place aux reliefs montagneux, aux villages accrochés aux pentes, aux cultures en terrasses et à un air nettement plus frais.\n\nUn départ matinal permet d’éviter le trafic de sortie de ville, de marcher tranquillement sur les sentiers locaux avec un accompagnement adapté et de rentrer à Marrakech en fin d’après-midi avec une marge confortable pour votre dernière soirée.'
+          },
+          {
+            heading: '5. Conseils pratiques pour optimiser votre organisation sur place',
+            body: 'Regroupez toujours vos visites par secteur géographique afin d’éviter les traversées inutiles, gardez un plan hors ligne sur votre téléphone pour vous repérer dans les ruelles de la médina et clarifiez systématiquement les tarifs et horaires avant le départ d’une excursion ou d’un trajet.'
+          }
+        ]
+      },
+      {
+        id: 'rabat-sale-airport-transfer-guide',
+        categoryKey: 'transport',
+        readTime: '8 min de lecture',
+        date: '2026-11-12',
+        image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1000&q=80',
+        title: 'Transfert aéroport Rabat-Salé vers le centre-ville : guide pratique complet',
+        excerpt: 'Comment organiser votre arrivée depuis l’aéroport de Rabat-Salé (RBA) vers le centre de Rabat, Agdal, Hay Riad ou Salé selon vos bagages, votre horaire et votre budget.',
+        sections: [
+          {
+            heading: '1. Bien situer l’aéroport de Rabat-Salé par rapport aux deux villes',
+            body: 'L’aéroport de Rabat-Salé (RBA) est situé à proximité immédiate de Salé et à quelques kilomètres seulement des quartiers centraux de Rabat, de l’autre côté du fleuve Bouregreg. Cette proximité constitue un vrai confort par rapport aux grands hubs éloignés des centres urbains : le temps de trajet reste généralement court, à condition de bien identifier la rive et le quartier exact de votre hébergement.\n\nAvant même d’embarquer, notez l’adresse complète de votre hôtel, riad ou appartement en précisant s’il se trouve côté Rabat (Centre-ville, Hassan, Agdal, Hay Riad, Souissi) ou côté Salé.'
+          },
+          {
+            heading: '2. Comparer les solutions de transport à la sortie du terminal',
+            body: 'Plusieurs options permettent de rejoindre votre destination depuis l’aéroport selon votre profil de voyage. Les navettes et transports collectifs offrent une solution économique lorsque vous voyagez léger en journée et que votre point d’arrivée se situe près des grands axes.\n\nLes taxis disponibles à la sortie du terminal assurent une liaison directe vers les différents quartiers, tandis qu’un transfert privé réservé à l’avance garantit un accueil nominatif, un véhicule adapté au volume de vos bagages et un tarif fixé avant l’atterrissage — une formule particulièrement appréciée après un vol tardif ou en famille.'
+          },
+          {
+            heading: '3. Gérer la monnaie locale, la connexion et les bagages dès l’arrivée',
+            body: 'Dès le passage des formalités, prévoyez de disposer d’un peu de dirhams marocains (MAD) en petites coupures pour régler les premiers déplacements ou achats courants sans difficulté de rendu de monnaie.\n\nActiver une carte SIM locale ou une eSIM dès l’aéroport facilite également le partage de votre position exacte avec votre hébergement ou votre chauffeur, surtout si votre logement se situe dans une ruelle piétonne de la médina où les véhicules s’arrêtent à la porte la plus proche.'
+          },
+          {
+            heading: '4. Réflexes simples pour éviter toute friction à l’atterrissage',
+            body: 'Prenez le temps de vérifier le point de dépose exact avant de démarrer, gardez vos documents de voyage et objets importants dans un sac à main plutôt que dans le coffre lors des arrêts, et prévoyez une marge de temps suffisante si vous devez enchaîner avec une correspondance ferroviaire vers Casablanca, Tanger ou Marrakech.'
+          }
+        ]
+      },
+      {
+        id: 'one-day-in-rabat-itinerary',
+        categoryKey: 'itinerary',
+        readTime: '8 min de lecture',
+        date: '2026-11-10',
+        image: 'https://images.unsplash.com/photo-1519181245277-cffeb31da2e3?auto=format&fit=crop&w=1000&q=80',
+        title: 'Visiter Rabat en 1 jour : itinéraire complet pour découvrir la capitale',
+        excerpt: 'Un parcours fluide et réaliste sur une journée à Rabat reliant l’océan Atlantique, les remparts historiques, le Bouregreg et les quartiers animés sans perdre de temps dans les transports.',
+        sections: [
+          {
+            heading: '1. Organiser une journée à Rabat selon une logique géographique',
+            body: 'Découvrir Rabat en une seule journée demande avant tout de suivre un fil conducteur géographique cohérent afin d’éviter les allers-retours inutiles entre des quartiers éloignés. Contrairement à d’autres grandes villes où les sites sont dispersés, les principaux repères historiques et côtiers de Rabat s’articulent naturellement autour de l’embouchure du fleuve Bouregreg et de la façade atlantique.\n\nEn commençant tôt le matin près de l’océan et en progressant progressivement vers les monuments et les avenues centrales, vous profitez d’une lumière douce, de températures agréables et d’une ambiance calme avant l’affluence de la mi-journée.'
+          },
+          {
+            heading: '2. Matinée : Kasbah des Oudayas et promenade le long de l’estuaire',
+            body: 'Démarrez votre journée vers 8h30 ou 9h00 à la Kasbah des Oudayas. À cette heure, les ruelles bleues et blanches sont paisibles, les jardins andalous respirent la fraîcheur matinale et la terrasse surplombant l’océan offre une vue dégagée sur l’embouchure et la ville voisine de Salé.\n\nDescendez ensuite vers les berges aménagées du Bouregreg pour marcher au bord de l’eau. Cette transition entre le quartier fortifié et le fleuve permet de prendre le pouls de la ville tout en rejoignant facilement la suite du parcours à pied.'
+          },
+          {
+            heading: '3. Fin de matinée : Tour Hassan, Mausolée et transition vers la médina',
+            body: 'Poursuivez en direction de l’esplanade de la Tour Hassan et du Mausolée Mohammed V, deux repères majeurs de l’architecture et de l’histoire de la capitale. L’esplanade dégagée permet d’apprécier la finesse des colonnes de pierre, les détails du marbre sculpté et la perspective sur le fleuve en contrebas.\n\nAvant le déjeuner, rejoignez la médina de Rabat par l’avenue Mohammed V ou les portes historiques afin d’observer l’animation des ruelles commerçantes, les étals d’épices, les artisans et l’architecture traditionnelle du centre ancien.'
+          },
+          {
+            heading: '4. Milieu de journée : pause déjeuner et respiration à Chellah',
+            body: 'Accordez-vous une véritable pause déjeuner à l’ombre autour de 13h00, que ce soit dans une table traditionnelle de la médina ou dans le quartier moderne de l’Agdal ou du centre-ville. Prendre ce temps de repos permet d’aborder l’après-midi avec énergie.\n\nVers 15h30, prenez un court trajet en taxi ou en tramway vers le site historique de Chellah. Ses remparts mérinides, ses vestiges antiques et ses jardins arborés offrent une atmosphère apaisante en fin d’après-midi, particulièrement agréable lorsque le soleil commence à décliner.'
+          },
+          {
+            heading: '5. Soirée : front de mer et conseils pratiques pour finir la journée',
+            body: 'Terminez la journée par une marche sur la corniche atlantique de Rabat au moment du coucher du soleil, lorsque la brise marine rafraîchit l’air et que les habitants se retrouvent face à l’océan.\n\nPour réussir cette journée sans stress, portez des chaussures confortables, privilégiez le tramway ou les petits taxis bleus pour les liaisons moyennes, et gardez toujours un peu de monnaie locale pour les entrées de sites et les pauses café.'
+          }
+        ]
+      },
+      {
+        id: 'kasbah-of-the-udayas-guide',
+        categoryKey: 'heritage',
+        readTime: '8 min de lecture',
+        date: '2026-11-08',
+        image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1000&q=80',
+        title: 'Guide de la Kasbah des Oudayas : histoire, points de vue et pauses thé',
+        excerpt: 'Tout ce qu’il faut savoir pour visiter la Kasbah des Oudayas à Rabat : repères historiques, meilleurs moments pour la photographie, jardins andalous et savoir-vivre sur place.',
+        sections: [
+          {
+            heading: '1. Une citadelle historique entre fleuve Bouregreg et océan Atlantique',
+            body: 'Perchée sur un promontoire rocheux à l’endroit exact où le fleuve Bouregreg rejoint l’océan Atlantique, la Kasbah des Oudayas occupe une position stratégique qui a façonné l’histoire de Rabat depuis le XIIe siècle. Sa porte monumentale almohade, Bab Oudaïa, impressionne dès l’arrivée par l’équilibre de ses proportions et la finesse de ses décors géométriques sculptés dans la pierre ocre.\n\nÀ l’intérieur des remparts, l’atmosphère change immédiatement : l’agitation urbaine laisse place à un ensemble résidentiel paisible aux murs blanchis à la chaux et soulignés de bleu, entouré de plantes grimpantes et de pots fleuris.'
+          },
+          {
+            heading: '2. Les points de vue incontournables et les ruelles discrètes',
+            body: 'En suivant la rue Jamaa jusqu’à la plateforme du Sémaphore, vous débouchez sur un large panorama embrassant l’estuaire, les plages de Rabat et Salé, ainsi que la houle atlantique. C’est l’un des meilleurs endroits de la capitale pour comprendre la géographie maritime de la région.\n\nPrenez également le temps d’explorer les ruelles latérales plus étroites, loin de l’axe principal. Chaque détour révèle des portes anciennes cloutées, des impasses silencieuses et des jeux d’ombre et de lumière particulièrement photogéniques.'
+          },
+          {
+            heading: '3. Les jardins andalous et la pause thé face à l’estuaire',
+            body: 'En contrebas des remparts intérieurs s’étendent les jardins andalous, aménagés au début du XXe siècle dans un style traditionnel mêlant orangers, bougainvilliers, cyprès et fontaines. C’est un espace ombragé idéal pour ralentir le rythme, écouter les oiseaux et observer l’architecture extérieure de l’ancien palais.\n\nJuste au-dessus, le célèbre café maure offre une terrasse ouverte sur le Bouregreg où l’on déguste un thé à la menthe accompagné de pâtisseries marocaines aux amandes tout en regardant passer les barques entre Rabat et Salé.'
+          },
+          {
+            heading: '4. Meilleurs horaires, lumière et respect de la vie locale',
+            body: 'Pour profiter pleinement de la kasbah, privilégiez une visite tôt le matin entre 8h30 et 10h30, ou en fin d’après-midi environ deux heures avant le coucher du soleil. La lumière rasante adoucit les contrastes et met en valeur les textures des murs.\n\nEnfin, gardez à l’esprit que la Kasbah des Oudayas est avant tout un quartier habité par des familles : marchez calmement, évitez le bruit dans les ruelles résidentielles et demandez toujours l’autorisation avant de photographier des habitants.'
+          }
+        ]
+      },
+      {
+        id: 'rabat-vs-marrakech-comparison',
+        categoryKey: 'itinerary',
+        readTime: '9 min de lecture',
+        date: '2026-11-05',
+        image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1000&q=80',
+        title: 'Rabat ou Marrakech : quelle ville choisir pour un premier voyage au Maroc ?',
+        excerpt: 'Comparatif détaillé entre Rabat et Marrakech selon l’ambiance recherchée, le climat côtier ou intérieur, le rythme de visite, le budget et le profil de voyageur.',
+        sections: [
+          {
+            heading: '1. Deux atmosphères contrastées au sein d’un même pays',
+            body: 'Lorsque l’on prépare un premier séjour au Maroc, la question revient souvent : faut-il privilégier l’énergie emblématique de Marrakech ou l’équilibre apaisé de Rabat ? En réalité, comparer ces deux villes revient moins à désigner une gagnante qu’à identifier le rythme de voyage qui vous correspond le mieux.\n\nMarrakech incarne l’intensité historique et sensorielle du sud marocain : une médina foisonnante, des souks spectaculaires, des palais ornés, des riads cachés et une ouverture directe vers les montagnes du Haut Atlas et les paysages arides. Rabat, capitale politique et culturelle posée au bord de l’océan Atlantique, cultive une atmosphère nettement plus fluide, verdoyante et respirante, où le patrimoine historique côtoie une vie quotidienne moderne et sereine.'
+          },
+          {
+            heading: '2. Climat, foule et confort de déplacement au quotidien',
+            body: 'Sur le plan climatique, la proximité immédiate de l’Atlantique adoucit les températures à Rabat tout au long de l’année, avec une brise marine agréable en été et des hivers tempérés. Marrakech, située à l’intérieur des terres, connaît des écarts thermiques beaucoup plus marqués : très chaude en plein été, très lumineuse au printemps et à l’automne, et plus fraîche en soirée durant l’hiver.\n\nLa différence se ressent aussi dans le rapport à la foule. À Marrakech, les quartiers touristiques sont très animés du matin jusqu’à tard le soir, ce qui plaît aux voyageurs en quête d’effervescence mais peut fatiguer ceux qui recherchent du calme. À Rabat, la marche dans la médina, autour des Oudayas ou le long du Bouregreg se fait à un rythme plus posé, avec moins de sollicitations commerciales.'
+          },
+          {
+            heading: '3. Quand privilégier Rabat pour votre séjour',
+            body: 'Rabat est le choix idéal si vous souhaitez une base côtière reposante, des promenades à pied agréables le long de l’océan et du fleuve, un accès rapide aux plages et spots de surf vers Témara et Harhoura, ainsi qu’un tramway moderne facilitant les déplacements entre Rabat et Salé.\n\nC’est également une destination particulièrement appréciée par les voyageurs qui souhaitent découvrir l’histoire marocaine — de Chellah à la Tour Hassan — tout en profitant d’un cadre urbain aéré, sûr et facile à appréhender dès le premier jour.'
+          },
+          {
+            heading: '4. Quand privilégier Marrakech — ou comment combiner les deux',
+            body: 'Marrakech s’impose naturellement si votre priorité est l’immersion dans une médina historique vibrante, la découverte des palais et jardins célèbres, l’artisanat traditionnel à grande échelle et les excursions d’une journée vers l’Ourika, Imlil ou le désert d’Agafay.\n\nSi vous disposez d’au moins cinq à sept jours au Maroc, la meilleure approche consiste souvent à combiner les deux : commencer ou terminer par deux ou trois jours à Rabat pour profiter de l’océan et de la détente, et consacrer trois ou quatre jours à Marrakech pour vivre l’intensité du sud.'
+          }
+        ]
+      },
+      {
+        id: 'rabat-to-marrakech-travel-guide',
+        categoryKey: 'transport',
+        readTime: '8 min de lecture',
+        date: '2026-11-03',
+        image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1000&q=80',
+        title: 'Trajet Rabat – Marrakech : train, voiture de location ou chauffeur privé ?',
+        excerpt: 'Comparatif complet des moyens de transport pour relier Rabat à Marrakech : temps de trajet réel, confort avec bagages, coûts estimés et conseils de réservation.',
+        sections: [
+          {
+            heading: '1. Évaluer le trajet global de porte à porte entre Rabat et Marrakech',
+            body: 'Relier Rabat à Marrakech fait partie des déplacements les plus fréquents lors d’un itinéraire combinant la côte atlantique et le sud marocain. Les deux villes sont séparées d’environ 320 kilomètres par l’autoroute via Casablanca et Settat, ce qui représente généralement entre 3h15 et 4h00 selon le moyen choisi et la fluidité du trafic urbain.\n\nPour bien choisir votre mode de transport, ne regardez pas uniquement la durée théorique entre deux gares ou péages : prenez en compte l’ensemble du trajet porte-à-porte, depuis la porte de votre hébergement à Rabat jusqu’à l’entrée de votre hôtel ou riad à Marrakech.'
+          },
+          {
+            heading: '2. Le train Al Atlas : régularité, simplicité et budget maîtrisé',
+            body: 'Le train interurbain direct (Al Atlas) relie régulièrement les gares de Rabat-Ville ou Rabat-Agdal à la gare de Marrakech en environ 3h45. C’est une option fiable, économique et confortable pour les voyageurs solos, les couples ou les petits groupes voyageant avec des bagages standards.\n\nIl est conseillé de réserver ses billets en ligne ou en gare à l’avance, surtout en fin de semaine et durant les périodes de vacances, et de privilégier la 1ère classe lorsque l’on souhaite une place numérotée garantie et davantage d’espace pour les valises.'
+          },
+          {
+            heading: '3. La voiture de location : liberté d’arrêt mais vigilance en ville',
+            body: 'Louer une voiture permet de gérer librement son heure de départ, de faire une pause sur la route ou de poursuivre ensuite vers l’Atlas ou la côte sud sans dépendre d’horaires fixes. L’autoroute entre Rabat et Marrakech est moderne, bien entretenue et jalonnée d’aires de repos.\n\nEn revanche, la conduite et le stationnement à l’approche des centres-villes et des médinas demandent de l’attention. Si vous logez dans un riad inaccessible en voiture, il faudra prévoir un parking gardé à proximité des remparts et terminer à pied.'
+          },
+          {
+            heading: '4. Le chauffeur privé ou transfert dédié : confort maximal porte-à-porte',
+            body: 'Réserver un transfert privé avec chauffeur représente la formule la plus fluide pour les familles avec enfants, les voyageurs chargés de plusieurs valises ou de matériel de surf, ainsi que pour ceux qui souhaitent voyager sans contrainte logistique.\n\nLe chauffeur vous prend en charge directement à votre adresse à Rabat à l’heure convenue, gère l’itinéraire et les péages, et vous dépose au point d’accès le plus proche de votre hébergement à Marrakech. Pensez simplement à confirmer le tarif global tout compris avant le départ.'
+          }
+        ]
+      },
+      {
+        id: 'best-surf-spots-near-rabat',
+        categoryKey: 'surf',
+        readTime: '9 min de lecture',
+        date: '2026-11-01',
+        image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80',
+        title: 'Les meilleurs spots de surf près de Rabat : Oudayas, Harhoura et Skhirat',
+        excerpt: 'Comparatif complet des plages et spots de surf le long de la côte de Rabat, Harhoura et Skhirat : configuration des vagues, accès, marées et niveau recommandé.',
+        sections: [
+          {
+            heading: '1. Une côte atlantique variée à quelques minutes du centre de Rabat',
+            body: 'L’un des atouts majeurs de Rabat pour les amateurs de glisse réside dans la proximité immédiate de plusieurs plages aux caractères bien distincts. En moins de trente minutes le long de la route côtière vers le sud, le littoral passe d’une embouchure abritée au pied d’une citadelle historique à des plages résidentielles bordées de criques rocheuses puis à de longues étendues sablonneuses.\n\nPlutôt que de se rendre systématiquement au même endroit, comprendre comment réagit chaque secteur face à la houle, au vent et à la marée permet de trouver des vagues adaptées à son niveau presque toute l’année.'
+          },
+          {
+            heading: '2. Plage des Oudayas : accessibilité urbaine et apprentissage en douceur',
+            body: 'Située directement au pied des remparts de la Kasbah des Oudayas et protégée partiellement par la jetée de l’estuaire du Bouregreg, la plage de Rabat offre un cadre unique pour découvrir le surf. Lorsque la houle atlantique est soutenue ailleurs, la digue filtre une partie de l’énergie et crée des vagues plus douces et régulières, particulièrement rassurantes pour les débutants et les enfants.\n\nL’accès à pied ou en tramway depuis le centre-ville en fait le spot le plus pratique pour une session matinale de deux heures avant de poursuivre sa journée de visite, avec plusieurs écoles locales proposant planches en mousse et combinaisons sur place.'
+          },
+          {
+            heading: '3. Harhoura et Témara : criques, bancs de sable et sessions polyvalentes',
+            body: 'En longeant la côte vers le sud à travers Harhoura et Témara, le rivage alterne petites plages encadrées de rochers et portions sablonneuses plus ouvertes à la houle. Ces spots captent davantage l’énergie de l’océan que la plage urbaine de Rabat, offrant des vagues plus dynamiques pour les surfeurs intermédiaires tout en conservant des zones de mousse accessibles à marée montante.\n\nLa vigilance reste essentielle autour des dalles rocheuses et des courants latéraux lorsque la houle grossit en automne ou en hiver : il convient d’observer attentivement les entrées et sorties d’eau et de privilégier les secteurs surveillés ou recommandés par les moniteurs locaux.'
+          },
+          {
+            heading: '4. Skhirat : grands espaces et vagues propres par houle moyenne',
+            body: 'Un peu plus au sud entre Témara et Bouznika, la longue plage de Skhirat séduit par son espace dégagé et ses pics répartis sur plusieurs centaines de mètres. Cette configuration permet d’éviter la concentration de surfeurs sur un seul pic et de travailler sereinement ses manœuvres.\n\nSkhirat fonctionne particulièrement bien par houle moyenne et vent léger d’est ou de sud-est le matin, offrant des vagues longues et bien dessinées qui plaisent aussi bien aux longboarders qu’aux pratiquants en shortboard.'
+          },
+          {
+            heading: '5. Conseils pratiques pour choisir son créneau et son équipement',
+            body: 'Consultez toujours les prévisions de houle et de marée la veille au soir, privilégiez les sessions matinales avant que la brise thermique de l’après-midi ne se lève, et adaptez l’épaisseur de votre combinaison (3/2 mm à la belle saison, 4/3 mm en hiver) pour profiter pleinement de l’Atlantique.'
+          }
+        ]
+      },
+      {
+        id: 'hiring-private-driver-morocco-guide',
+        categoryKey: 'transport',
+        readTime: '8 min de lecture',
+        date: '2026-10-29',
+        image: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=1000&q=80',
+        title: 'Louer une voiture avec chauffeur privé au Maroc : tarifs, sécurité et conseils',
+        excerpt: 'Guide complet pour réserver un chauffeur privé ou un transfert au Maroc : fourchettes de prix réalistes, avantages pour les familles et petits groupes, et points à vérifier avant le départ.',
+        sections: [
+          {
+            heading: '1. Dans quels cas un chauffeur privé apporte une vraie valeur ajoutée',
+            body: 'Faire appel à un chauffeur privé au Maroc constitue souvent la solution la plus confortable et la plus efficace dès que votre itinéraire dépasse un simple trajet urbain. Que ce soit pour un accueil à l’aéroport de Rabat-Salé ou Casablanca, une liaison interurbaine entre Rabat et Marrakech, ou une journée d’excursion vers les vallées de l’Atlas, disposer d’un véhicule dédié élimine les attentes, les correspondances multiples et la gestion des bagages.\n\nPour les familles avec enfants, les couples souhaitant voyager sans stress ou les petits groupes partageant les frais, le rapport confort-temps gagné devient particulièrement avantageux.'
+          },
+          {
+            heading: '2. Comprendre la structure des tarifs et éviter les mauvaises surprises',
+            body: 'Les tarifs d’une prestation avec chauffeur dépendent principalement de la distance parcourue, de la durée de mise à disposition (demi-journée, journée complète ou circuit sur plusieurs jours), du type de véhicule (berline climatisée, SUV ou minibus confortable) et de la saison.\n\nAvant de confirmer votre réservation, demandez toujours un devis clair précisant si le carburant, les péages d’autoroute, le stationnement et l’attente éventuelle à l’aéroport en cas de retard de vol sont inclus dans le prix final. Une tarification transparente dès le départ garantit une relation sereine.'
+          },
+          {
+            heading: '3. Critères de sécurité, ponctualité et qualité de service',
+            body: 'Un bon service de transport privé repose sur trois piliers simples : un véhicule récent, propre et régulièrement entretenu avec ceintures fonctionnelles à toutes les places ; une conduite souple et prudente respectant les limitations de vitesse ; et une communication claire avant le jour J.\n\nAssurez-vous d’échanger un contact direct (téléphone ou messagerie instantanée) la veille de votre arrivée afin de confirmer l’heure exacte de prise en charge, le numéro de vol ou le point de rendez-vous précis devant votre hébergement.'
+          },
+          {
+            heading: '4. Bonnes habitudes pour optimiser votre journée avec chauffeur',
+            body: 'Partagez à l’avance les étapes qui vous tiennent le plus à cœur afin que le chauffeur puisse organiser l’ordre logique des arrêts et vous conseiller sur les meilleurs créneaux horaires. Gardez toujours vos documents importants et effets personnels précieux avec vous lors des pauses, et profitez de la connaissance locale de votre accompagnateur pour repérer de bonnes adresses sur la route.'
+          }
+        ]
+      },
+      {
+        id: 'best-food-rabat-sale',
+        categoryKey: 'heritage',
+        readTime: '9 min de lecture',
+        date: '2026-10-27',
+        image: 'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=1000&q=80',
+        title: 'Où manger à Rabat et Salé : saveurs locales, pauses café et bonnes habitudes',
+        excerpt: 'Guide gourmand et pratique pour découvrir la cuisine quotidienne, les poissons de l’Atlantique, les spécialités de médina et les cafés de quartier entre Rabat et Salé.',
+        sections: [
+          {
+            heading: '1. Suivre le rythme culinaire quotidien entre Rabat et Salé',
+            body: 'À Rabat et Salé, la gastronomie se vit d’abord au rythme des habitudes locales plutôt que dans des adresses figées pour visiteurs de passage. La journée commence généralement autour de pains frais sortis du four de quartier — msemen feuilleté, batbout moelleux ou harcha à la semoule — accompagnés d’huile d’olive, de miel, de fromage frais et d’un thé à la menthe ou d’un café noir.\n\nÀ l’heure du déjeuner, entre 12h30 et 14h30, les tables familiales et les petites adresses de quartier s’animent autour de tajines mijotés, de couscous du vendredi et de plats du jour simples et généreux. Observer la fréquentation locale reste le meilleur indicateur de fraîcheur et de régularité.'
+          },
+          {
+            heading: '2. Poissons de l’Atlantique et spécialités côtières à savourer',
+            body: 'Grâce à leur ouverture directe sur l’océan Atlantique et l’estuaire du Bouregreg, Rabat et Salé offrent un accès privilégié aux produits de la mer. Sardines grillées à la braise, merlan frit, crevettes royales, calamars ou tajines de poisson aux épices douces et citron confit font partie des incontournables à goûter durant le séjour.\n\nPrès du littoral, de la marina du Bouregreg ou dans les marchés aux poissons populaires, vous pouvez aussi bien opter pour une friture conviviale servie sur le pouce que pour un restaurant posé face à l’eau.'
+          },
+          {
+            heading: '3. Médina de Rabat, ruelles de Salé et quartiers modernes : quelle ambiance choisir ?',
+            body: 'Chaque secteur propose une atmosphère culinaire distincte. Dans la médina de Rabat et autour du marché central, on trouve des comptoirs traditionnels, des rôtisseries parfumées, des jus d’orange pressés à la minute et des pâtisseries au miel et aux amandes. À Salé, l’ambiance est encore plus authentique et populaire, idéale pour découvrir des préparations de quartier à prix très doux.\n\nÀ l’inverse, les quartiers de l’Agdal, de Hassan ou de Hay Riad regroupent des cafés contemporains, des boulangeries-pâtisseries modernes et des tables mêlant cuisine marocaine revisitée et influences méditerranéennes.'
+          },
+          {
+            heading: '4. Conseils pratiques pour manger sereinement et respecter les usages',
+            body: 'Si vous avez des allergies ou un régime particulier (végétarien, sans gluten, peu épicé), précisez-le simplement avant de commander : les plats étant souvent préparés à la demande, il est facile d’adapter l’assaisonnement. Privilégiez l’eau en bouteille capsulée, gardez de la monnaie locale pour les petits cafés et marchés, et prenez le temps de savourer la convivialité du service.'
+          }
+        ]
+      },
+      {
+        id: 'what-to-pack-surf-coast-morocco',
+        categoryKey: 'surf',
+        readTime: '8 min de lecture',
+        date: '2026-10-25',
+        image: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?auto=format&fit=crop&w=1000&q=80',
+        title: 'Que mettre dans sa valise pour un séjour surf sur la côte marocaine ?',
+        excerpt: 'Checklist complète et saisonnière pour préparer votre sac avant un séjour surf et océan à Rabat, Témara ou sur le littoral atlantique marocain.',
+        sections: [
+          {
+            heading: '1. L’équipement indispensable pour les sessions dans l’Atlantique',
+            body: 'Préparer un bagage pour la côte atlantique marocaine demande d’anticiper le contraste entre le soleil généreux et la fraîcheur vivifiante de l’océan. Même si les écoles locales fournissent généralement les planches et les combinaisons lors des cours, emporter vos propres essentiels personnels améliore nettement votre confort à l’eau.\n\nPrévoyez au minimum deux maillots de bain afin d’en avoir toujours un sec, un lycra ou top anti-UV à manches longues pour éviter les irritations sur la planche et les coups de soleil, ainsi qu’un poncho de surf ou une serviette microfibre à séchage rapide très pratique sur la plage.'
+          },
+          {
+            heading: '2. Choisir la bonne combinaison selon la saison de votre voyage',
+            body: 'La température de l’eau entre Rabat, Témara et Skhirat oscille généralement entre 16 °C en hiver et 21–22 °C en fin d’été. De juin à septembre, une combinaison intégrale fine (2/2 mm ou 3/2 mm) ou un shorty suffit la plupart du temps pour rester à l’aise pendant deux heures.\n\nEn revanche, d’octobre à avril, une combinaison intégrale 4/3 mm bien ajustée au niveau du col et des poignets est vivement recommandée pour conserver votre énergie tout au long de la session, surtout lors des mises à l’eau matinales.'
+          },
+          {
+            heading: '3. Protection solaire, soins de la peau et récupération après l’eau',
+            body: 'La réverbération du soleil sur l’océan et le vent marin accentuent fortement l’exposition aux UV, même par temps légèrement voilé. Glissez dans votre sac un stick solaire haute protection (SPF 50+) résistant à l’eau pour le visage, un baume à lèvres protecteur, des lunettes de soleil polarisées et une casquette.\n\nAprès le surf, une crème hydratante simple ou une huile végétale douce aide à apaiser la peau et les cheveux desséchés par le sel marin, tandis qu’une gourde réutilisable vous rappelle de bien vous réhydrater.'
+          },
+          {
+            heading: '4. Vêtements polyvalents pour passer de la plage à la ville',
+            body: 'Sur la côte atlantique, les soirées deviennent rapidement fraîches dès que le soleil se couche et que la brise se lève. Appliquez la règle des couches superposables : t-shirts respirants en journée, sweat ou polaire légère en fin d’après-midi, et veste coupe-vent imperméable.\n\nAjoutez une paire de sandales robustes pour le sable et des baskets confortables pour explorer les médinas de Rabat et Salé sans avoir à transporter une valise surchargée.'
+          }
+        ]
+      },
+      {
+        id: 'coastal-day-trips-from-rabat',
+        categoryKey: 'surf',
+        readTime: '9 min de lecture',
+        date: '2026-10-23',
+        image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80',
+        title: 'Top 7 des excursions côtières au départ de Rabat : mer, falaises et air marin',
+        excerpt: 'Sept idées d’échappées le long du littoral atlantique autour de Rabat et vers le nord ou le sud pour profiter des plages, falaises, lagunes et villages côtiers sur une journée.',
+        sections: [
+          {
+            heading: '1. Pourquoi explorer le littoral atlantique depuis Rabat sur une journée',
+            body: 'Séjourner à Rabat ou à Salé offre un avantage précieux : la possibilité de rayonner le long de l’océan Atlantique tout en conservant un point d’attache stable et confortable. Selon la direction choisie — au sud vers Témara, Skhirat et Bouznika, ou un peu plus loin le long de la côte — les paysages alternent entre larges plages de sable doré, criques rocheuses, falaises et zones humides riches en oiseaux.\n\nUne excursion côtière à la journée permet de couper avec le rythme urbain, de respirer l’air marin et de découvrir une facette plus nature et ouverte du Maroc, sans avoir à refaire ses bagages tous les deux jours.'
+          },
+          {
+            heading: '2. Des plages urbaines aux criques et longues étendues sablonneuses',
+            body: 'À proximité immédiate de la ville, les plages bordant l’estuaire et les communes voisines de Témara et Harhoura constituent des sorties rapides et accessibles, idéales pour une demi-journée de marche face aux vagues ou une pause en fin d’après-midi.\n\nEn s’éloignant davantage vers des étendues plus larges et moins denses, on gagne en espace ouvert et en tranquillité, particulièrement appréciable en semaine ou hors haute saison estivale. Chaque plage a sa propre dynamique selon le vent, la houle et la marée.'
+          },
+          {
+            heading: '3. Observer la côte, les falaises et la vie locale du littoral',
+            body: 'Le littoral marocain n’est pas qu’un décor de baignade : c’est aussi un espace de travail et de vie lié à la pêche artisanale, aux promenades matinales et aux points de vue panoramiques sur l’Atlantique.\n\nPrendre le temps de marcher le long des sentiers côtiers, d’observer les nuances de bleu et d’écume de l’océan et de s’arrêter dans une petite adresse locale face à la mer donne beaucoup plus de relief à la sortie que de simplement poser sa serviette au premier endroit venu.'
+          },
+          {
+            heading: '4. Organiser une sortie côtière sereine et adaptable',
+            body: 'Pour réussir votre journée en bord de mer, partez relativement tôt afin de profiter de la douceur de l’air et d’une lumière agréable, emportez suffisamment d’eau, une protection solaire efficace et une couche coupe-vent pour la fin d’après-midi.\n\nGardez toujours une certaine souplesse dans votre programme : si le vent marin est fort ou si la mer est agitée sur une plage exposée, ajuster votre étape en fonction des conditions du jour garantit une sortie bien plus agréable.'
+          }
+        ]
+      },
+      {
+        id: 'surf-wellness-retreat-morocco',
+        categoryKey: 'surf',
+        readTime: '8 min de lecture',
+        date: '2026-10-21',
+        image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+        title: 'Séjour surf et bien-être au Maroc : organiser une parenthèse atlantique',
+        excerpt: 'Comment structurer une escapade alliant surf, mouvement doux, repos et déconnexion sur la côte atlantique marocaine sans transformer le séjour en marathon sportif.',
+        sections: [
+          {
+            heading: '1. Donner du sens à l’alliance entre glisse et récupération',
+            body: 'Un séjour surf et bien-être fonctionne particulièrement bien lorsque l’activité physique dans l’océan s’inscrit dans un rythme apaisé plutôt que dans la recherche de performance à tout prix. Le surf sollicite intensément les épaules, le haut du dos, la sangle abdominale et l’équilibre général, tout en demandant une vigilance constante face aux vagues et aux courants.\n\nAssocier des sessions d’océan à des temps calmes — étirements doux, lecture, sieste à l’ombre ou promenade tranquille au bord de l’eau — permet au corps de récupérer efficacement et à l’esprit de décrocher du quotidien.'
+          },
+          {
+            heading: '2. Structurer ses journées entre sessions matinales et après-midis calmes',
+            body: 'La matinée est souvent le moment le plus agréable pour aller à l’eau : les températures sont douces, la lumière est belle et l’océan offre généralement des conditions plus régulières avant l’installation des brises plus soutenues de l’après-midi.\n\nAprès une session d’une heure et demie à deux heures, prendre un vrai repas nourrissant et laisser l’après-midi ouvert au repos ou à une découverte culturelle douce évite l’accumulation de fatigue musculaire et nerveuse.'
+          },
+          {
+            heading: '3. Alimentation, hydratation et sommeil au rythme de l’océan',
+            body: 'L’exposition au soleil, au vent salé et à l’effort physique augmente naturellement les besoins en eau et en énergie. Boire régulièrement tout au long de la journée, éviter de partir à l’eau l’estomac totalement vide ou juste après un repas très lourd, et privilégier des aliments simples et équilibrés soutiennent durablement votre endurance.\n\nL’air marin favorise souvent un sommeil réparateur à condition de garder une soirée calme et de ne pas multiplier les journées surchargées.'
+          },
+          {
+            heading: '4. Choisir le bon cadre et le bon encadrement',
+            body: 'Avant de réserver, vérifiez la proximité réelle entre votre hébergement et les plages, la qualité de l’encadrement si vous prenez des cours ou louez du matériel, et l’ambiance générale du lieu afin qu’elle corresponde à votre besoin de calme ou de convivialité.'
+          }
+        ]
+      },
+      {
+        id: 'best-day-trips-from-marrakech',
+        categoryKey: 'itinerary',
+        readTime: '9 min de lecture',
+        date: '2026-10-19',
+        image: 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=1000&q=80',
+        title: 'Les meilleures excursions d’une journée depuis Marrakech : Atlas et vallées',
+        excerpt: 'Guide détaillé pour choisir et préparer une excursion d’une journée au départ de Marrakech : vallées de l’Atlas, villages de montagne, paysages minéraux et conseils pratiques.',
+        sections: [
+          {
+            heading: '1. Pourquoi faire une sortie d’une journée depuis Marrakech',
+            body: 'Marrakech constitue une base pratique pour découvrir des environnements très variés en un temps relativement court. Après deux ou trois jours passés au cœur des ruelles animées et des patios de la médina, quitter la ville pour une journée permet de changer d’horizon, d’observer d’autres modes de vie ruraux ou montagnards et de retrouver de grands espaces ouverts.\n\nSelon l’axe choisi, vous pouvez passer d’une vallée fluviale verdoyante et d’un village accroché à la montagne à des étendues plus sèches et minérales aux lumières changeantes. L’enjeu principal est de sélectionner une sortie cohérente avec votre forme physique, la saison et le temps de route souhaité.'
+          },
+          {
+            heading: '2. Vallées verdoyantes et contreforts du Haut Atlas',
+            body: 'Les itinéraires orientés vers les vallées proches du Haut Atlas — comme la vallée de l’Ourika ou les secteurs d’Asni et d’Imlil — séduisent par le relief montagneux, les cultures en terrasses, les noyers et l’air nettement plus frais que dans la plaine de Marrakech. C’est un choix apprécié pour marcher tranquillement, observer les villages en pierre et en terre et déjeuner face aux montagnes.\n\nGardez à l’esprit que les routes de vallée et de montagne comportent des virages et peuvent être plus fréquentées certains jours ou lors d’épisodes pluvieux : partir tôt le matin permet de voyager dans de meilleures conditions et de profiter pleinement de la lumière de la journée.'
+          },
+          {
+            heading: '3. Paysages arides et horizons ouverts aux portes de la ville',
+            body: 'D’autres escapades à la journée privilégient des paysages plus minéraux et dégagés, offrant une lecture différente des contrastes géographiques autour de Marrakech. Ces sorties conviennent bien aux voyageurs qui recherchent des panoramas vastes, des moments de calme ou une ambiance de fin d’après-midi sans passer de longues heures dans les transports.\n\nDans tous les cas, l’intérêt réside dans l’équilibre entre le temps de trajet, les arrêts d’observation et le temps libre sur place.'
+          },
+          {
+            heading: '4. Préparer sa journée d’excursion en toute sérénité',
+            body: 'Prévoyez des vêtements superposables adaptés aux écarts de température entre la plaine et l’altitude, des chaussures fermées et confortables si vous comptez marcher sur des sentiers pierreux, de l’eau en quantité suffisante et une protection solaire.\n\nClarifiez également à l’avance les horaires de départ et de retour, l’itinéraire exact et les conditions de transport afin que la journée reste fluide de bout en bout.'
+          }
+        ]
+      },
+      {
+        id: 'private-vs-group-tour-marrakech',
+        categoryKey: 'itinerary',
+        readTime: '8 min de lecture',
+        date: '2026-10-17',
+        image: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1000&q=80',
+        title: 'Visite privée ou en groupe à Marrakech : avantages, limites et choix',
+        excerpt: 'Comparatif clair entre visite privée et sortie en groupe à Marrakech pour choisir selon votre budget, votre rythme, la composition du groupe et votre niveau d’exigence.',
+        sections: [
+          {
+            heading: '1. Ce que change une visite ou excursion privée à Marrakech',
+            body: 'Opter pour une formule privée à Marrakech signifie que le véhicule, l’horaire et l’organisation de la journée sont dédiés à vous ou à votre groupe restreint. Vous pouvez ajuster le rythme des visites, marquer une pause supplémentaire lorsqu’un lieu vous intéresse ou raccourcir une étape en cas de fatigue ou de chaleur.\n\nCette formule est particulièrement pertinente pour les familles avec enfants, les couples qui souhaitent voyager à leur propre tempo ou les voyageurs qui préfèrent une prise en charge directe depuis leur hébergement sans attendre d’autres participants.'
+          },
+          {
+            heading: '2. Ce que propose une sortie en groupe',
+            body: 'Les circuits ou excursions en groupe reposent sur un programme fixé à l’avance, des horaires communs et un tarif généralement plus accessible par personne. Ils peuvent convenir aux voyageurs solos ou aux budgets plus contenus qui apprécient un cadre collectif structuré.\n\nEn contrepartie, il faut accepter de suivre la cadence générale du groupe, les éventuels temps d’attente lors des ramassages et un itinéraire moins modulable au fil de la journée.'
+          },
+          {
+            heading: '3. Critères concrets pour trancher selon votre profil',
+            body: 'Pour faire le bon choix, comparez quatre éléments simples : le coût total rapporté au nombre de personnes (parfois l’écart par personne se réduit lorsqu’on voyage à trois ou quatre), votre tolérance aux horaires imposés, le besoin de confort avec des bagages ou des enfants, et l’importance que vous accordez à la personnalisation du parcours.\n\nUn voyageur pressé ou fatigué appréciera davantage la souplesse du privé, tandis qu’un visiteur flexible et attentif au budget pourra se satisfaire d’une sortie groupée bien encadrée.'
+          },
+          {
+            heading: '4. Points essentiels à vérifier avant toute réservation',
+            body: 'Quel que soit le format retenu, vérifiez toujours ce qui est inclus dans le tarif annoncé (transport, accompagnement éventuel, repas, boissons, frais d’entrée), la durée approximative, le point exact de départ et la politique en cas de modification.'
+          }
+        ]
+      },
+      {
+        id: 'marrakech-souks-guide',
+        categoryKey: 'heritage',
+        readTime: '9 min de lecture',
+        date: '2026-10-15',
+        image: 'https://images.unsplash.com/photo-1531572753322-ad063cecc140?auto=format&fit=crop&w=1000&q=80',
+        title: 'Guide des souks de Marrakech : repères, négociation et artisanat',
+        excerpt: 'Conseils pratiques pour circuler dans les souks de Marrakech, comprendre les usages d’achat, repérer le travail artisanal et garder un rythme détendu au cœur de la médina.',
+        sections: [
+          {
+            heading: '1. Comprendre l’organisation des souks avant d’entrer',
+            body: 'Les souks de Marrakech forment un réseau dense et vivant de ruelles couvertes ou ombragées qui s’étendent au nord de la place Jemaa el-Fna. Traditionnellement, ces espaces se répartissent par spécialités et métiers : travail du cuivre et du laiton, maroquinerie et babouches, textiles et tapis, épices, vannerie ou poterie.\n\nPlutôt que d’y entrer comme dans un simple espace commercial, prenez le temps d’observer les gestes des artisans, les matières premières et la façon dont les ruelles s’articulent. Repérer deux ou trois axes principaux et garder une carte hors ligne vous aidera à circuler sans jamais vous sentir perdu.'
+          },
+          {
+            heading: '2. Repérer la qualité artisanale et faire des choix réfléchis',
+            body: 'Face à la diversité des objets proposés, il est facile de se laisser séduire par l’abondance des couleurs et des motifs. Pour acheter avec satisfaction, observez attentivement les finitions : régularité des coutures ou du tissage, épaisseur et souplesse du cuir, solidité des assemblages et caractère authentique de la matière.\n\nDemandez-vous toujours si l’objet a une place réelle dans votre quotidien ou dans vos bagages. Un achat raisonné, choisi parce qu’il vous plaît vraiment, a bien plus de valeur qu’un souvenir pris sous l’impulsion du moment.'
+          },
+          {
+            heading: '3. L’art de la discussion et de la négociation courtoise',
+            body: 'Dans les souks, le dialogue autour du prix fait souvent partie de l’échange humain. Garder une attitude souriante, calme et polie reste la meilleure méthode : montrez de l’intérêt sans précipitation, posez des questions simples et gardez en tête votre propre budget.\n\nSi le prix proposé reste au-dessus de ce que vous souhaitez mettre, déclinez simplement et courtoisement sans insister ni créer de tension. Une approche posée rend les échanges beaucoup plus agréables de part et d’autre.'
+          },
+          {
+            heading: '4. Gérer le rythme, les heures d’affluence et le transport des achats',
+            body: 'Les souks connaissent des moments d’animation très marqués en fin d’après-midi et en début de soirée, tandis que certaines heures plus calmes permettent de flâner à un rythme plus doux. Prévoyez des pauses régulières à l’écart des axes les plus fréquentés pour souffler et vous hydrater.\n\nEnfin, si vous envisagez d’acheter des pièces volumineuses ou fragiles, anticipez dès le départ comment elles seront protégées et transportées jusqu’à votre hébergement puis jusqu’à votre vol retour.'
+          }
+        ]
+      },
+      {
+        id: 'best-time-to-visit-morocco',
+        categoryKey: 'transport',
+        readTime: '8 min de lecture',
+        date: '2026-10-13',
+        image: 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?auto=format&fit=crop&w=1000&q=80',
+        title: 'Quand partir au Maroc : climat, affluence et organisation selon les saisons',
+        excerpt: 'Guide saisonnier pour choisir la meilleure période de voyage au Maroc selon vos étapes : côte atlantique à Rabat et Témara, Marrakech, vallées de l’Atlas et affluence européenne.',
+        sections: [
+          {
+            heading: '1. Pourquoi le climat marocain varie selon la géographie',
+            body: 'Le Maroc présente une grande diversité climatique sur des distances relativement courtes, principalement en raison de l’influence de l’océan Atlantique, du relief montagneux et de l’éloignement de la mer. Le littoral autour de Rabat, Salé et Témara bénéficie généralement d’un climat océanique plus tempéré, avec des étés adoucis par la brise marine et des hivers modérés.\n\nÀ l’inverse, des villes intérieures comme Marrakech enregistrent des écarts de température plus marqués entre le jour et la nuit, ainsi que des étés plus chauds et des matinées ou soirées fraîches en hiver. Choisir le bon moment passe donc par la mise en cohérence de la saison avec votre itinéraire.'
+          },
+          {
+            heading: '2. Printemps et automne : l’équilibre le plus polyvalent',
+            body: 'Les saisons intermédiaires (printemps et automne) figurent souvent parmi les périodes les plus confortables pour combiner visites urbaines, promenades, excursions vers les vallées et moments sur le littoral. Les températures permettent de marcher longuement sans chaleur excessive tout en profitant de belles journées lumineuses.\n\nCes périodes restent très prisées des voyageurs européens, il est donc recommandé d’anticiper vos réservations d’hébergement et de transport si vous visez des dates précises.'
+          },
+          {
+            heading: '3. Été et hiver : adapter ses attentes et sa garde-robe',
+            body: 'En été, la côte atlantique séduit particulièrement pour l’air marin, les plages et les activités nautiques, tandis que les régions intérieures demandent d’adapter ses horaires de visite aux heures les plus fraîches de la journée.\n\nEn hiver, le pays attire de nombreux visiteurs cherchant la lumière et des journées plus douces qu’en Europe du Nord, à condition de prévoir des vêtements chauds pour les soirées et pour les sorties en altitude vers l’Atlas.'
+          },
+          {
+            heading: '4. Périodes de forte affluence et souplesse d’organisation',
+            body: 'Les vacances scolaires européennes, les week-ends prolongés et les grandes périodes festives entraînent une hausse de la demande sur certains axes et hébergements. Réserver vos étapes clés à l’avance tout en gardant un peu de souplesse sur le détail des journées reste la stratégie la plus équilibrée.'
+          }
+        ]
+      },
+      {
+        id: '7-day-morocco-itinerary-balanced',
+        categoryKey: 'itinerary',
+        readTime: '9 min de lecture',
+        date: '2026-10-11',
+        image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1000&q=80',
+        title: 'Circuit Maroc 7 jours sans stress : côte atlantique, Rabat et Marrakech',
+        excerpt: 'Un itinéraire structuré sur une semaine au Maroc conçu pour éviter les changements d’hébergement incessants tout en associant océan, patrimoine, médina et échappée à la journée.',
+        sections: [
+          {
+            heading: '1. La règle d’or d’un séjour de sept jours réussi',
+            body: 'Sur une semaine, la tentation la plus fréquente consiste à vouloir enchaîner quatre ou cinq villes différentes en un temps très court. En pratique, multiplier les points de chute transforme souvent un séjour censé être reposant en une succession de trajets, de bouclages de valises et de formalités d’arrivée ou de départ.\n\nUne approche plus sereine consiste à limiter le nombre de bases d’hébergement à deux étapes complémentaires — par exemple une base côtière et historique autour de Rabat et une base méridionale à Marrakech — afin de consacrer davantage de temps réel à la découverte et au repos.'
+          },
+          {
+            heading: '2. Première partie du séjour : rythme côtier, patrimoine et air marin',
+            body: 'Commencer ou structurer une partie de votre semaine autour de Rabat et de ses environs permet d’entrer dans le voyage en douceur. Entre les remparts de la Kasbah des Oudayas, les rives du Bouregreg, le site de Chellah et les plages ou spots de surf vers Témara, vous pouvez varier les ambiances sans longs déplacements.\n\nGardez des matinées actives lorsque la lumière et l’air sont agréables, et laissez de la place pour des pauses café, des balades à pied et des repas tranquilles.'
+          },
+          {
+            heading: '3. Deuxième partie : Marrakech, jardins et excursion à la journée',
+            body: 'En rejoignant Marrakech sur la seconde partie de la semaine, vous profitez d’un changement d’atmosphère net : monuments historiques, ruelles animées des souks, jardins paisibles et une sortie d’une journée vers les vallées ou reliefs voisins.\n\nPlutôt que de charger chaque journée du matin au soir, conservez un équilibre entre visites structurées et moments libres pour ne pas saturer l’attention.'
+          },
+          {
+            heading: '4. Anticiper les transferts et garder une marge avant le retour',
+            body: 'Organisez vos liaisons interurbaines à l’avance, vérifiez les distances réelles entre vos hébergements et les points de départ, et évitez de programmer une longue excursion éloignée la veille d’un vol retour matinal afin de rentrer chez vous l’esprit tranquille.'
+          }
+        ]
+      },
+      {
+        id: 'essential-morocco-travel-tips-europeans',
+        categoryKey: 'transport',
+        readTime: '9 min de lecture',
+        date: '2026-10-09',
+        image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80',
+        title: 'Conseils essentiels pour voyager au Maroc : argent, connexion et déplacements',
+        excerpt: 'Les repères pratiques indispensables pour les voyageurs européens préparant un séjour au Maroc : dirham marocain, cartes bancaires, connexion mobile, transports et sérénité.',
+        sections: [
+          {
+            heading: '1. Monnaie locale, retrait d’espèces et paiements du quotidien',
+            body: 'La devise officielle au Maroc est le dirham marocain (MAD). Si les cartes bancaires internationales sont acceptées dans de nombreux hôtels, restaurants structurés et commerces établis, les espèces restent très utiles au quotidien pour les petits cafés, les marchés, les pourboires éventuels et certains trajets courts.\n\nÉvitez de vous retrouver uniquement avec de gros billets lors de vos premières heures sur place : demandez des coupures moyennes ou petites lorsque cela est possible et gardez un budget de poche bien réparti.'
+          },
+          {
+            heading: '2. Connexion internet, cartes hors ligne et contacts utiles',
+            body: 'Disposer d’une connexion mobile dès l’arrivée — via une carte SIM locale ou une eSIM — facilite grandement la consultation des cartes, la traduction, la vérification des horaires et le contact direct avec votre hébergement ou votre chauffeur.\n\nAvant de partir, enregistrez l’adresse exacte de votre logement sur une application cartographique accessible hors ligne et conservez un numéro de contact joignable même en cas de batterie faible.'
+          },
+          {
+            heading: '3. Se déplacer sereinement entre villes et quartiers',
+            body: 'Selon la configuration de chaque ville, combinez la marche à pied dans les zones piétonnes ou les médinas, le tramway là où il dessert vos étapes, et des taxis ou transferts organisés pour les trajets plus longs ou chargés de bagages.\n\nClarifiez toujours les conditions et points de rendez-vous à l’avance afin d’éviter les hésitations en fin de journée ou sous la chaleur.'
+          },
+          {
+            heading: '4. Attitude ouverte, courtoisie et préparation raisonnable',
+            body: 'Un voyage fluide repose souvent sur des habitudes simples : garder le sourire, rester courtois dans les échanges commerciaux, respecter la tranquillité des quartiers résidentiels et prévoir une trousse personnelle de base (protection solaire, hydratation, médicaments courants adaptés à vos besoins).\n\nAvec un rythme réaliste et des repères clairs, le voyage devient une expérience riche, lisible et mémorable.'
+          }
+        ]
+      }
+    ];
+
+    function parseHashRoute() {
+      const clean = (window.location.hash || '').replace(/^#\/?/, '');
+      if (!clean) {
+        return { page: 'home', articleId: null };
+      }
+      if (clean.startsWith('guide/')) {
+        const articleId = clean.replace('guide/', '').trim();
+        return { page: 'article', articleId: articleId || null };
+      }
+      if (['about', 'contact', 'privacy', 'terms'].includes(clean)) {
+        return { page: clean, articleId: null };
+      }
+      return { page: 'home', articleId: null };
+    }
+
+    function Header({ page, onNavigate }) {
+      const navItems = [
+        { id: 'home', label: UI_TEXT.navHome },
+        { id: 'about', label: UI_TEXT.navAbout },
+        { id: 'contact', label: UI_TEXT.navContact },
+        { id: 'privacy', label: UI_TEXT.navPrivacy },
+        { id: 'terms', label: UI_TEXT.navTerms },
+      ];
+
+      return (
+        <header className="bg-ink text-white sticky top-0 z-40 shadow">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => onNavigate('home')}
+              className="flex items-center gap-3 text-left"
+            >
+              <span className="w-10 h-10 rounded-xl bg-ochre flex items-center justify-center text-white shrink-0">
+                <i className="fa-solid fa-compass"></i>
+              </span>
+              <div>
+                <div className="font-extrabold text-lg leading-tight">{UI_TEXT.brandName}</div>
+                <div className="text-xs text-amber-200/85">{UI_TEXT.brandSub}</div>
+              </div>
+            </button>
+
+            <nav className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm font-bold">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => onNavigate(item.id)}
+                  className={`px-3 py-2 rounded-lg transition ${
+                    page === item.id ? 'bg-ochre text-white' : 'text-white/85 hover:bg-white/10'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </header>
+      );
+    }
+
+    function HomeArticlesView({ onOpenArticle }) {
+      const PAGE_SIZE = 6;
+      const [query, setQuery] = useState('');
+      const [selectedCat, setSelectedCat] = useState('all');
+      const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+      const categories = [
+        { key: 'all', label: UI_TEXT.allCats },
+        { key: 'heritage', label: UI_TEXT.catHeritage },
+        { key: 'surf', label: UI_TEXT.catSurf },
+        { key: 'itinerary', label: UI_TEXT.catItinerary },
+        { key: 'transport', label: UI_TEXT.catTransport },
+      ];
+
+      const catLabelMap = {
+        heritage: UI_TEXT.catHeritage,
+        surf: UI_TEXT.catSurf,
+        itinerary: UI_TEXT.catItinerary,
+        transport: UI_TEXT.catTransport,
+      };
+
+      const filtered = useMemo(() => {
+        return ARTICLES.filter((art) => {
+          const matchCat = selectedCat === 'all' || art.categoryKey === selectedCat;
+          const q = query.trim().toLowerCase();
+          const matchQuery =
+            !q ||
+            art.title.toLowerCase().includes(q) ||
+            art.excerpt.toLowerCase().includes(q);
+          return matchCat && matchQuery;
+        });
+      }, [query, selectedCat]);
+
+      const visibleArticles = useMemo(() => {
+        return filtered.slice(0, visibleCount);
+      }, [filtered, visibleCount]);
+
+      const remainingCount = Math.max(0, filtered.length - visibleArticles.length);
+
+      return (
+        <main className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+          <section className="bg-white rounded-3xl p-7 sm:p-10 border border-slate-200/80 shadow-sm space-y-5">
+            <span className="inline-block bg-amber-100 text-ochreDark text-xs font-extrabold px-3.5 py-1.5 rounded-full">
+              {UI_TEXT.badge}
+            </span>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-ink leading-tight">
+              {UI_TEXT.heroTitle}
+            </h1>
+            <p className="text-slate-600 text-sm sm:text-base max-w-3xl leading-relaxed">
+              {UI_TEXT.heroDesc}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setVisibleCount(PAGE_SIZE);
+                }}
+                placeholder={UI_TEXT.searchPlaceholder}
+                className="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ochre"
+              />
+              <div className="flex flex-wrap gap-2">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.key}
+                    type="button"
+                    onClick={() => {
+                      setSelectedCat(cat.key);
+                      setVisibleCount(PAGE_SIZE);
+                    }}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition ${
+                      selectedCat === cat.key
+                        ? 'bg-ink text-white border-ink'
+                        : 'bg-paper text-ink border-slate-200 hover:border-ochre'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="space-y-8">
+            <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-600 px-1">
+              <div>
+                {UI_TEXT.showingCount}{' '}
+                <span className="text-ink font-extrabold">{visibleArticles.length}</span>{' '}
+                {UI_TEXT.ofCount}{' '}
+                <span className="text-ink font-extrabold">{filtered.length}</span>{' '}
+                {UI_TEXT.articlesWord}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {visibleArticles.map((article) => (
+                <article
+                  key={article.id}
+                  className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between"
+                >
+                  <div>
+                    <img src={article.image} alt={article.title} className="w-full h-48 object-cover" />
+                    <div className="p-5 space-y-3">
+                      <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
+                        <span className="text-ochreDark">{catLabelMap[article.categoryKey]}</span>
+                        <span>{article.readTime}</span>
+                      </div>
+                      <h2 className="text-lg font-extrabold text-ink leading-snug">
+                        {article.title}
+                      </h2>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        {article.excerpt}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="px-5 pb-5">
+                    <button
+                      type="button"
+                      onClick={() => onOpenArticle(article)}
+                      className="w-full bg-ink hover:bg-ochre text-white font-bold py-2.5 px-4 rounded-xl text-sm transition"
+                    >
+                      {UI_TEXT.readMore}
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {remainingCount > 0 && (
+              <div className="flex justify-center pt-2">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+                  className="bg-ochre hover:bg-ochreDark text-white font-extrabold px-8 py-3.5 rounded-2xl text-sm sm:text-base shadow-md transition inline-flex items-center gap-2.5"
+                >
+                  <i className="fa-solid fa-layer-group"></i>
+                  <span>{UI_TEXT.loadMore}</span>
+                  <span className="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full">
+                    +{Math.min(PAGE_SIZE, remainingCount)}
+                  </span>
+                </button>
+              </div>
+            )}
+          </section>
+        </main>
+      );
+    }
+
+    function ArticleDetailView({ article, onBack }) {
+      if (!article) {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <button
+              type="button"
+              onClick={onBack}
+              className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-ink hover:text-ochre"
+            >
+              <i className="fa-solid fa-arrow-left"></i>
+              {UI_TEXT.backToList}
+            </button>
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-3">
+              <h1 className="text-2xl font-extrabold text-ink">Guide introuvable</h1>
+              <p className="text-sm text-slate-600">Le guide demandé n’existe pas ou le lien est incomplet.</p>
+            </div>
+          </main>
+        );
+      }
+
+      const catLabelMap = {
+        heritage: UI_TEXT.catHeritage,
+        surf: UI_TEXT.catSurf,
+        itinerary: UI_TEXT.catItinerary,
+        transport: UI_TEXT.catTransport,
+      };
+
+      return (
+        <main className="max-w-4xl mx-auto px-4 py-10">
+          <button
+            type="button"
+            onClick={onBack}
+            className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-ink hover:text-ochre"
+          >
+            <i className="fa-solid fa-arrow-left"></i>
+            {UI_TEXT.backToList}
+          </button>
+
+          <article className="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm">
+            <img src={article.image} alt={article.title} className="w-full h-72 object-cover" />
+            <div className="p-6 sm:p-10 space-y-6">
+              <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-500">
+                <span className="bg-amber-100 text-ochreDark px-3 py-1 rounded-full">
+                  {catLabelMap[article.categoryKey]}
+                </span>
+                <span>{UI_TEXT.publishedOn} {article.date}</span>
+                <span>• {article.readTime}</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-ink leading-snug">{article.title}</h1>
+              <p className="text-base text-slate-700 leading-relaxed border-l-4 border-ochre pl-4">{article.excerpt}</p>
+
+              <div className="space-y-6 pt-2">
+                {article.sections.map((sec, idx) => (
+                  <section key={idx} className="space-y-2">
+                    <h2 className="text-xl font-extrabold text-ink">{sec.heading}</h2>
+                    {sec.body.split('\n\n').map((para, pIdx) => (
+                      <p key={pIdx} className="text-slate-700 leading-8 text-sm sm:text-base">
+                        {para}
+                      </p>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            </div>
+          </article>
+        </main>
+      );
+    }
+
+    function StaticLegalPage({ page }) {
+      const [sent, setSent] = useState(false);
+
+      if (page === 'about') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8">
+              <h1 className="text-2xl font-extrabold text-ink">{UI_TEXT.aboutTitle}</h1>
+              <p>{UI_TEXT.aboutP1}</p>
+              <p>{UI_TEXT.aboutP2}</p>
+            </div>
+          </main>
+        );
+      }
+
+      if (page === 'contact') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-6">
+              <div>
+                <h1 className="text-2xl font-extrabold text-ink">{UI_TEXT.contactTitle}</h1>
+                <p className="text-sm text-slate-600 mt-1">
+                  {UI_TEXT.contactDesc}
+                  <span className="font-bold text-ochreDark mx-1">contact@yourdomain.com</span>
+                </p>
+              </div>
+
+              {sent ? (
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl text-sm font-bold">
+                  {UI_TEXT.contactSent}
+                </div>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setSent(true);
+                  }}
+                  className="space-y-4"
+                >
+                  <input required type="text" placeholder={UI_TEXT.formName} className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm" />
+                  <input required type="email" placeholder={UI_TEXT.formEmail} className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm" />
+                  <textarea required rows="4" placeholder={UI_TEXT.formMsg} className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm"></textarea>
+                  <button type="submit" className="bg-ochre hover:bg-ochreDark text-white font-bold px-6 py-2.5 rounded-xl text-sm">
+                    {UI_TEXT.formBtn}
+                  </button>
+                </form>
+              )}
+            </div>
+          </main>
+        );
+      }
+
+      if (page === 'privacy') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8 text-sm sm:text-base">
+              <h1 className="text-2xl font-extrabold text-ink">{UI_TEXT.privacyTitle}</h1>
+              <p>{UI_TEXT.privacyP1}</p>
+              <h2 className="text-lg font-extrabold text-ink">{UI_TEXT.privacyH2}</h2>
+              <p>{UI_TEXT.privacyP2}</p>
+              <p>{UI_TEXT.privacyP3}</p>
+            </div>
+          </main>
+        );
+      }
+
+      return (
+        <main className="max-w-4xl mx-auto px-4 py-10">
+          <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8 text-sm sm:text-base">
+            <h1 className="text-2xl font-extrabold text-ink">{UI_TEXT.termsTitle}</h1>
+            <p>{UI_TEXT.termsP1}</p>
+            <p>{UI_TEXT.termsP2}</p>
+          </div>
+        </main>
+      );
+    }
+
+    function App() {
+      const initialRoute = parseHashRoute();
+      const [page, setPage] = useState(initialRoute.page);
+      const [activeArticleId, setActiveArticleId] = useState(initialRoute.articleId);
+
+      const activeArticle = useMemo(() => {
+        if (!activeArticleId) return null;
+        return ARTICLES.find((a) => a.id === activeArticleId) || null;
+      }, [activeArticleId]);
+
+      useEffect(() => {
+        const handleHashChange = () => {
+          const next = parseHashRoute();
+          setPage(next.page);
+          setActiveArticleId(next.articleId);
+        };
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+      }, []);
+
+      useEffect(() => {
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (page === 'article' && activeArticle) {
+          document.title = `${activeArticle.title} | ${UI_TEXT.brandName}`;
+          if (metaDesc) metaDesc.setAttribute('content', activeArticle.excerpt);
+        } else if (page === 'about') {
+          document.title = `${UI_TEXT.aboutTitle} | ${UI_TEXT.brandName}`;
+          if (metaDesc) metaDesc.setAttribute('content', UI_TEXT.aboutP1);
+        } else if (page === 'contact') {
+          document.title = `${UI_TEXT.contactTitle} | ${UI_TEXT.brandName}`;
+          if (metaDesc) metaDesc.setAttribute('content', UI_TEXT.contactDesc);
+        } else if (page === 'privacy') {
+          document.title = `${UI_TEXT.privacyTitle} | ${UI_TEXT.brandName}`;
+          if (metaDesc) metaDesc.setAttribute('content', UI_TEXT.privacyP1);
+        } else if (page === 'terms') {
+          document.title = `${UI_TEXT.termsTitle} | ${UI_TEXT.brandName}`;
+          if (metaDesc) metaDesc.setAttribute('content', UI_TEXT.termsP1);
+        } else {
+          document.title = 'Guide de Voyage au Maroc | Rabat, Salé, Témara & Marrakech';
+          if (metaDesc) {
+            metaDesc.setAttribute(
+              'content',
+              'Guides pratiques et itinéraires détaillés pour visiter Rabat, Salé, la côte de surf de Témara et Marrakech au Maroc.'
+            );
+          }
+        }
+      }, [page, activeArticle]);
+
+      const navigateToPage = (targetPage) => {
+        setPage(targetPage);
+        setActiveArticleId(null);
+        window.location.hash = targetPage === 'home' ? '' : `#/${targetPage}`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const openArticle = (article) => {
+        setActiveArticleId(article.id);
+        setPage('article');
+        window.location.hash = `#/guide/${article.id}`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          <div>
+            <Header page={page} onNavigate={navigateToPage} />
+            {page === 'home' && <HomeArticlesView onOpenArticle={openArticle} />}
+            {page === 'article' && (
+              <ArticleDetailView article={activeArticle} onBack={() => navigateToPage('home')} />
+            )}
+            {['about', 'contact', 'privacy', 'terms'].includes(page) && (
+              <StaticLegalPage page={page} />
+            )}
+          </div>
+
+          <footer className="bg-ink text-white/85 py-8 px-4 mt-12 border-t border-white/10">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+              <div>{UI_TEXT.footerRights}</div>
+              <div className="flex flex-wrap items-center gap-4 font-bold">
+                <button type="button" onClick={() => navigateToPage('about')} className="hover:text-amber-300">{UI_TEXT.navAbout}</button>
+                <button type="button" onClick={() => navigateToPage('contact')} className="hover:text-amber-300">{UI_TEXT.navContact}</button>
+                <button type="button" onClick={() => navigateToPage('privacy')} className="hover:text-amber-300">{UI_TEXT.navPrivacy}</button>
+                <button type="button" onClick={() => navigateToPage('terms')} className="hover:text-amber-300">{UI_TEXT.navTerms}</button>
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
