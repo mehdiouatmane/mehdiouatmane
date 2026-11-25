@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>دليل السفر إلى المغرب | مقالات وأدلة سياحية شاملة للمسافرين</title>
+  <meta name="description" content="دليل سياحي شامل حول المغرب: أفضل الأماكن في الرباط وسلا، دليل السيرف في تمارة، وتخطيط رحلات مراكش والأطلس." />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+          colors: {
+            paper: '#faf8f4',
+            ink: '#132a35',
+            ochre: '#b8502c',
+            ochreDark: '#8c3a1d',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #faf8f4;
+      color: #132a35;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    const ARTICLES = [
+      {
+        id: 'rabat-sale-hidden-gems',
+        category: 'مدن وتراث',
+        title: 'أفضل 10 أماكن وتجارب أصيلة في الرباط وسلا بعيداً عن الزحام السياحي',
+        readTime: '7 دقائق قراءة',
+        date: '2026-11-20',
+        image: 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1000&q=80',
+        excerpt: 'دليل عملي لاستكشاف قصبة الأوداية، شالة، وأزقة المدينة العتيقة في سلا مع نصائح التنقل وأفضل أوقات الزيارة.',
+        sections: [
+          {
+            heading: '1. قصبة الأوداية ومطلات مصب أبي رقراق',
+            body: 'تجمع قصبة الأوداية بين المعمار الأندلسي والهدوء المطل على المحيط الأطلسي. أفضل وقت للزيارة هو الصباح الباكر قبل التاسعة صباحاً للاستمتاع بالأزقة الزرقاء والبيضاء وتناول الشاي المغربي في المقهى الأندلسي دون ازدحام.'
+          },
+          {
+            heading: '2. المدينة العتيقة في سلا والزاوية الحرفية',
+            body: 'على الضفة المقابلة لنهر أبي رقراق، تحتفظ سلا بطابعها التاريخي الأصيل بعيداً عن المسارات السياحية المزدحمة. يمكن للزائر استكشاف المدرسة المرينية، الأسواق التقليدية، وورشات الصناعة التقليدية المحلية.'
+          },
+          {
+            heading: '3. الموقع الأثري شالة وحدائقه التاريخية',
+            body: 'يعد موقع شالة من أغنى المحطات التاريخية في العاصمة، حيث تتجاور الآثار الرومانية والمرينية وسط حدائق هادئة تجعل منه محطة مثالية لعشاق التاريخ والتصوير.'
+          }
+        ]
+      },
+      {
+        id: 'surf-guide-rabat-temara',
+        category: 'سيرف وطبيعة',
+        title: 'دليل السيرف للمبتدئين على ساحل الرباط وتمارة: الشواطئ، المواسم، والتجهيزات',
+        readTime: '6 دقائق قراءة',
+        date: '2026-11-18',
+        image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1000&q=80',
+        excerpt: 'كل ما يحتاج المسافر معرفته قبل حجز أول حصة ركوب أمواج في شواطئ الأوداية، الهرهورة، وتمارة.',
+        sections: [
+          {
+            heading: 'أفضل الشواطئ لتعلم أساسيات التوازن',
+            body: 'يمتاز شاطئ الأوداية وشواطئ الهرهورة وتمارة بأمواج منتظمة مناسبة للمبتدئين خلال أغلب أشهر السنة، مع سهولة الوصول من وسط المدينة وقرب مرافق التأجير والتأطير.'
+          },
+          {
+            heading: 'التجهيزات الضرورية حسب الفصل',
+            body: 'خلال فصل الصيف يكفي لوح تدريب (Soft-top) وبدلة خفيفة، بينما ينصح في الخريف والشتاء بارتداء بدلة غطس بسماكة 3/2 مم أو 4/3 مم للحفاظ على حرارة الجسم طوال الحصة.'
+          }
+        ]
+      },
+      {
+        id: 'marrakech-3-days-itinerary',
+        category: 'تخطيط الرحلات',
+        title: 'كيف تخطط لبرنامج 3 أيام متوازن في مراكش ونواحي الأطلس خطوة بخطوة',
+        readTime: '8 دقائق قراءة',
+        date: '2026-11-15',
+        image: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1000&q=80',
+        excerpt: 'برنامج يومي منظم يجمع بين المعالم التاريخية، الأسواق، والهروب ليوم كامل نحو جبال الأطلس.',
+        sections: [
+          {
+            heading: 'اليوم الأول: المعالم التاريخية والمدينة القديمة',
+            body: 'ابدأ بزيارة قصر الباهية ومسجد الكتبية صباحاً، ثم خصص فترة بعد الزوال لاستكشاف الأسواق الحرفية وساحة جامع الفنا عند الغروب.'
+          },
+          {
+            heading: 'اليوم الثاني: الحدائق والمتاحف وتجارب الطهي',
+            body: 'خصص الصباح للحدائق والمتاحف الفنية، وبعد الظهيرة لتجربة ورشة طبخ مغربي أو استراحة في أحد الرياضات التقليدية.'
+          },
+          {
+            heading: 'اليوم الثالث: رحلة يوم كامل إلى جبال الأطلس',
+            body: 'الانطلاق صباحاً نحو أوريكا أو إمليل يمنح المسافر تغييراً كاملاً في الأجواء بين القرى الأمازيغية، الشلالات، والمناظر الجبلية.'
+          }
+        ]
+      }
+    ];
+
+    function Header({ page, setPage }) {
+      const navItems = [
+        { id: 'home', label: 'الرئيسية والمقالات' },
+        { id: 'about', label: 'من نحن' },
+        { id: 'contact', label: 'اتصل بنا' },
+        { id: 'privacy', label: 'سياسة الخصوصية' },
+        { id: 'terms', label: 'شروط الاستخدام' },
+      ];
+
+      return (
+        <header className="bg-ink text-white sticky top-0 z-40 shadow">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => setPage('home')}
+              className="flex items-center gap-3 text-right"
+            >
+              <span className="w-10 h-10 rounded-xl bg-ochre flex items-center justify-center text-white">
+                <i className="fa-solid fa-book-open-reader"></i>
+              </span>
+              <div>
+                <div className="font-extrabold text-lg leading-tight">Morocco Travel Guide</div>
+                <div className="text-xs text-amber-200/80">دليل السفر والثقافة والوجهات في المغرب</div>
+              </div>
+            </button>
+
+            <nav className="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-bold">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    setPage(item.id);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className={`px-3 py-2 rounded-lg transition ${
+                    page === item.id ? 'bg-ochre text-white' : 'text-white/85 hover:bg-white/10'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </header>
+      );
+    }
+
+    function HomeArticlesView({ onOpenArticle }) {
+      const [query, setQuery] = useState('');
+      const [selectedCat, setSelectedCat] = useState('الكل');
+
+      const categories = ['الكل', 'مدن وتراث', 'سيرف وطبيعة', 'تخطيط الرحلات'];
+
+      const filtered = useMemo(() => {
+        return ARTICLES.filter((art) => {
+          const matchCat = selectedCat === 'الكل' || art.category === selectedCat;
+          const matchQuery =
+            art.title.toLowerCase().includes(query.toLowerCase()) ||
+            art.excerpt.toLowerCase().includes(query.toLowerCase());
+          return matchCat && matchQuery;
+        });
+      }, [query, selectedCat]);
+
+      return (
+        <main className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+          <section className="bg-white rounded-3xl p-7 sm:p-10 border border-slate-200/80 shadow-sm space-y-5">
+            <span className="inline-block bg-amber-100 text-ochreDark text-xs font-extrabold px-3.5 py-1.5 rounded-full">
+              دليل المسافر المستقل • معلومات محدثة
+            </span>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-ink leading-tight">
+              أدلة سفر عملية ومقالات مفصلة لاكتشاف المدن والشواطئ والثقافة المغربية
+            </h1>
+            <p className="text-slate-600 text-sm sm:text-base max-w-3xl leading-relaxed">
+              نشارك هنا شروحات ميدانية تساعد الزوار على تخطيط رحلاتهم في الرباط، سلا، تمارة، ومراكش بوضوح، مع نصائح حول التنقل، المواسم، والتجارب المحلية.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="ابحث داخل الأدلة (مثال: الرباط، السيرف، مراكش)..."
+                className="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ochre"
+              />
+              <div className="flex flex-wrap gap-2">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCat(cat)}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition ${
+                      selectedCat === cat
+                        ? 'bg-ink text-white border-ink'
+                        : 'bg-paper text-ink border-slate-200 hover:border-ochre'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="grid md:grid-cols-3 gap-6">
+            {filtered.map((article) => (
+              <article
+                key={article.id}
+                className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-lg transition flex flex-col justify-between"
+              >
+                <div>
+                  <img src={article.image} alt={article.title} className="w-full h-48 object-cover" />
+                  <div className="p-5 space-y-3">
+                    <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
+                      <span className="text-ochreDark">{article.category}</span>
+                      <span>{article.readTime}</span>
+                    </div>
+                    <h2 className="text-lg font-extrabold text-ink leading-snug">{article.title}</h2>
+                    <p className="text-sm text-slate-600 leading-relaxed">{article.excerpt}</p>
+                  </div>
+                </div>
+                <div className="px-5 pb-5">
+                  <button
+                    type="button"
+                    onClick={() => onOpenArticle(article)}
+                    className="w-full bg-ink hover:bg-ochre text-white font-bold py-2.5 px-4 rounded-xl text-sm transition"
+                  >
+                    قراءة الدليل الكامل
+                  </button>
+                </div>
+              </article>
+            ))}
+          </section>
+        </main>
+      );
+    }
+
+    function ArticleDetailView({ article, onBack }) {
+      if (!article) return null;
+      return (
+        <main className="max-w-4xl mx-auto px-4 py-10">
+          <button
+            type="button"
+            onClick={onBack}
+            className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-ink hover:text-ochre"
+          >
+            <i className="fa-solid fa-arrow-right"></i>
+            العودة إلى جميع المقالات
+          </button>
+
+          <article className="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm">
+            <img src={article.image} alt={article.title} className="w-full h-72 object-cover" />
+            <div className="p-6 sm:p-10 space-y-6">
+              <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-500">
+                <span className="bg-amber-100 text-ochreDark px-3 py-1 rounded-full">{article.category}</span>
+                <span>تاريخ النشر: {article.date}</span>
+                <span>• {article.readTime}</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-ink leading-snug">{article.title}</h1>
+              <p className="text-base text-slate-700 leading-relaxed border-r-4 border-ochre pr-4">{article.excerpt}</p>
+
+              <div className="space-y-6 pt-2">
+                {article.sections.map((sec, idx) => (
+                  <section key={idx} className="space-y-2">
+                    <h2 className="text-xl font-extrabold text-ink">{sec.heading}</h2>
+                    <p className="text-slate-700 leading-8 text-sm sm:text-base">{sec.body}</p>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </article>
+        </main>
+      );
+    }
+
+    function StaticLegalPage({ page }) {
+      const [sent, setSent] = useState(false);
+
+      if (page === 'about') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8">
+              <h1 className="text-2xl font-extrabold text-ink">من نحن (About Us)</h1>
+              <p>
+                <strong>Morocco Travel Guide</strong> هي منصة تحريرية مستقلة متخصصة في نشر أدلة السفر العملية، المعلومات الثقافية، وبرامج الزيارة الميدانية في المغرب، خاصة في مدن الرباط، سلا، تمارة، ومراكش.
+              </p>
+              <p>
+                هدفنا هو تزويد المسافرين والمهتمين بمحتوى موثوق، واضح، ومبني على معرفة محلية حقيقية لمساعدتهم على التخطيط الجيد واكتشاف التجارب الأصيلة.
+              </p>
+            </div>
+          </main>
+        );
+      }
+
+      if (page === 'contact') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-6">
+              <div>
+                <h1 className="text-2xl font-extrabold text-ink">اتصل بنا (Contact Us)</h1>
+                <p className="text-sm text-slate-600 mt-1">
+                  للاستفسارات التحريرية، الاقتراحات، أو الشراكات الإعلامية، يمكنك مراسلتنا عبر البريد الإلكتروني:
+                  <span className="font-bold text-ochreDark mr-1" dir="ltr">contact@yourdomain.com</span>
+                </p>
+              </div>
+
+              {sent ? (
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl text-sm font-bold">
+                  تم استلام رسالتك بنجاح، سنرد عليك في أقرب وقت ممكن.
+                </div>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setSent(true);
+                  }}
+                  className="space-y-4"
+                >
+                  <input required type="text" placeholder="الاسم الكامل" className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm" />
+                  <input required type="email" placeholder="البريد الإلكتروني" className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm" />
+                  <textarea required rows="4" placeholder="نص الرسالة..." className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm"></textarea>
+                  <button type="submit" className="bg-ochre hover:bg-ochreDark text-white font-bold px-6 py-2.5 rounded-xl text-sm">
+                    إرسال الرسالة
+                  </button>
+                </form>
+              )}
+            </div>
+          </main>
+        );
+      }
+
+      if (page === 'privacy') {
+        return (
+          <main className="max-w-4xl mx-auto px-4 py-10">
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8 text-sm sm:text-base">
+              <h1 className="text-2xl font-extrabold text-ink">سياسة الخصوصية (Privacy Policy)</h1>
+              <p>
+                نحن نحترم خصوصية زوار موقعنا ونلتزم بحماية بياناتهم الشخصية. يوضح هذا المستند نوع المعلومات التي قد يتم جمعها وكيفية استخدامها.
+              </p>
+              <h2 className="text-lg font-extrabold text-ink">ملفات تعريف الارتباط (Cookies) وإعلانات الطرف الثالث</h2>
+              <p>
+                يستخدم هذا الموقع ملفات تعريف الارتباط لتحسين تجربة التصفح وتحليل حركة الزيارات. كما قد نستعين بشركات إعلانية خارجية مثل <strong>Google AdSense</strong> لعرض الإعلانات عند زيارة الموقع. تستخدم جوجل ملف تعريف الارتباط <strong>DART / DoubleClick</strong> لعرض إعلانات مخصصة للمستخدمين بناءً على زياراتهم لهذا الموقع ومواقع أخرى على الإنترنت.
+              </p>
+              <p>
+                يمكن للمستخدمين تعطيل استخدام ملفات تعريف الارتباط للإعلانات المخصصة من خلال زيارة إعدادات إعلانات جوجل (Google Ad Settings).
+              </p>
+            </div>
+          </main>
+        );
+      }
+
+      return (
+        <main className="max-w-4xl mx-auto px-4 py-10">
+          <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-4 leading-8 text-sm sm:text-base">
+            <h1 className="text-2xl font-extrabold text-ink">شروط الاستخدام (Terms & Conditions)</h1>
+            <p>
+              باستخدامك لهذا الموقع، فإنك توافق على الالتزام بشروط الاستخدام الموضحة أدناه. جميع المقالات والأدلة المنشورة مقدمة لأغراض إعلامية وتثقيفية عامة.
+            </p>
+            <p>
+              يُمنع نسخ أو إعادة نشر المحتوى التحريري للموقع بشكل كلي أو جزئي دون إذن مسبق أو الإشارة الواضحة إلى المصدر. نحتفظ بالحق في تحديث أو تعديل المحتوى والشروط في أي وقت دون إشعار مسبق.
+            </p>
+          </div>
+        </main>
+      );
+    }
+
+    function App() {
+      const [page, setPage] = useState('home');
+      const [activeArticle, setActiveArticle] = useState(null);
+
+      const openArticle = (article) => {
+        setActiveArticle(article);
+        setPage('article');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          <div>
+            <Header page={page} setPage={setPage} />
+            {page === 'home' && <HomeArticlesView onOpenArticle={openArticle} />}
+            {page === 'article' && <ArticleDetailView article={activeArticle} onBack={() => setPage('home')} />}
+            {['about', 'contact', 'privacy', 'terms'].includes(page) && <StaticLegalPage page={page} />}
+          </div>
+
+          <footer className="bg-ink text-white/85 py-8 px-4 mt-12 border-t border-white/10">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+              <div>© 2026 Morocco Travel Guide • جميع الحقوق محفوظة</div>
+              <div className="flex flex-wrap items-center gap-4 font-bold">
+                <button type="button" onClick={() => setPage('about')} className="hover:text-amber-300">من نحن</button>
+                <button type="button" onClick={() => setPage('contact')} className="hover:text-amber-300">اتصل بنا</button>
+                <button type="button" onClick={() => setPage('privacy')} className="hover:text-amber-300">سياسة الخصوصية</button>
+                <button type="button" onClick={() => setPage('terms')} className="hover:text-amber-300">شروط الاستخدام</button>
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
