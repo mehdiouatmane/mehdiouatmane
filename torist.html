@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atlas Escapes Morocco | جولات وتجارب خاصة في الرباط وسلا ومراكش</title>
+  <meta name="description" content="احجز جولات سياحية خاصة، تجارب السيرف والطبيعة، وكراء السيارات في المغرب (الرباط، سلا، تمارة، مراكش) مع تأكيد فوري وحجز مباشر." />
+  <meta name="keywords" content="Private tour Morocco, Rabat private tour, Surf retreat Morocco, Luxury car rental Marrakech, Morocco travel experiences" />
+  <meta property="og:title" content="Atlas Escapes Morocco | Private Tours & Experiences" />
+  <meta property="og:description" content="Curated private tours, coastal surf sessions, and seamless transfers across Morocco." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+          },
+          colors: {
+            sand: '#f7f3eb',
+            terracotta: '#b8502c',
+            terracottaDark: '#8f3b1e',
+            atlantic: '#163a4a',
+            atlanticDark: '#0e2631',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f7f3eb;
+      color: #0e2631;
+    }
+  </style>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelAgency",
+      "name": "Atlas Escapes Morocco",
+      "description": "Private tours, surf and wellness retreats, and car rentals across Rabat, Sale, Temara, and Marrakech.",
+      "areaServed": ["Rabat", "Sale", "Temara", "Marrakech", "Morocco"]
+    }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    const TELEGRAM_CONFIG = {
+      botToken: 'YOUR_TELEGRAM_BOT_TOKEN',
+      chatId: 'YOUR_TELEGRAM_CHAT_ID',
+    };
+
+    const EXPERIENCES = [
+      {
+        id: 'rabat-sale-heritage',
+        title: 'جولة الرباط وسلا الخاصة (تراث، قصبة الأوداية، وثقافة محلية)',
+        enTitle: 'Rabat & Sale Private Heritage & Local Culture Tour',
+        location: 'الرباط • سلا',
+        duration: '6 ساعات (نصف يوم كامل)',
+        pricePerPerson: 65,
+        badge: 'الأكثر طلباً للسياح',
+        image: 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1000&q=80',
+        summary: 'اكتشف قصبة الأوداية، صومعة حسان، الأزقة العتيقة في سلا، وتجربة أكل وشاي مغربي أصيل مع مرشد محلي يتحدث الإنجليزية والفرنسية والعربية.',
+        highlights: [
+          'نقل خاص مريح انطلاقاً من الرباط أو سلا أو تمارة',
+          'توقفات تصوير في أجمل الزوايا التاريخية والمطلات',
+          'تذوق أتاي مغربي وأطباق محلية مختارة بعناية',
+          'توقيت مرن حسب رغبة المسافر',
+        ],
+        languages: ['English', 'Français', 'العربية'],
+      },
+      {
+        id: 'atlantic-surf-escape',
+        title: 'تجربة السيرف والاستجمام على الساحل الأطلسي',
+        enTitle: 'Atlantic Coast Surf & Wellness Session',
+        location: 'ساحل الرباط • تمارة',
+        duration: '4 ساعات',
+        pricePerPerson: 50,
+        badge: 'مناسب للمبتدئين والمتوسطين',
+        image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1000&q=80',
+        summary: 'حصة تدريبية على ركوب الأمواج مع معدات كاملة (لوح + بدلة غطس) متبوعة بجلسة استرخاء قرب البحر.',
+        highlights: [
+          'توفير كامل لمعدات السيرف والبدلة الواقية',
+          'تأطير عملي خطوة بخطوة للمبتدئين',
+          'إمكانية التوصيل من الفندق أو نقطة الالتقاء',
+          'جلسة هادئة بعد التمرين أمام المحيط',
+        ],
+        languages: ['English', 'Français', 'العربية'],
+      },
+      {
+        id: 'marrakech-atlas-day',
+        title: 'رحلة خاصة إلى مراكش والأطلس مع سيارة مجهزة',
+        enTitle: 'Marrakech & Atlas Private Day Experience',
+        location: 'مراكش • نواحي الأطلس',
+        duration: 'يوم كامل (8 إلى 10 ساعات)',
+        pricePerPerson: 110,
+        badge: 'قيمة عالية',
+        image: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1000&q=80',
+        summary: 'برنامج خاص يجمع بين أجواء مراكش والمناظر الطبيعية للأطلس مع إمكانية تخصيص المحطات حسب اهتمامات الزبون.',
+        highlights: [
+          'سائق ومرشد مخصص للمجموعة فقط',
+          'مسار مرن بدون عجلة أو مجموعات كبيرة',
+          'توصيل مباشر من وإلى مكان الإقامة أو المطار',
+          'تأكيد سريع عبر واتساب وتيليغرام',
+        ],
+        languages: ['English', 'Français', 'العربية'],
+      },
+      {
+        id: 'private-car-transfer',
+        title: 'كراء سيارة خاصة مع سائق وتنقل بين المدن',
+        enTitle: 'Private Chauffeur & Intercity Transfer',
+        location: 'الرباط • الدار البيضاء • مراكش',
+        duration: 'حسب المسار أو اليوم',
+        pricePerPerson: 85,
+        badge: 'تنقل آمن ومريح',
+        image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1000&q=80',
+        summary: 'خدمة تنقل خاصة وموثوقة للسياح والزوار الأجانب بين المدن والمطارات والمواقع السياحية براحة تامة.',
+        highlights: [
+          'تسعيرة واضحة ومعلنة قبل الحجز',
+          'مواعيد دقيقة واستقبال منظم',
+          'مناسب للأفراد، الأزواج، والعائلات',
+          'دعم مباشر قبل وأثناء الرحلة',
+        ],
+        languages: ['English', 'Français', 'العربية'],
+      },
+    ];
+
+    function Navbar({ currentView, setCurrentView, cartCount }) {
+      return (
+        <header className="sticky top-0 z-40 bg-atlanticDark text-white shadow-md border-b border-white/10">
+          <div className="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => setCurrentView('home')}
+              className="flex items-center gap-3 text-right focus:outline-none"
+            >
+              <span className="w-10 h-10 rounded-xl bg-terracotta flex items-center justify-center text-white text-lg shadow">
+                <i className="fa-solid fa-compass"></i>
+              </span>
+              <div>
+                <div className="font-extrabold text-base sm:text-lg leading-tight">Atlas Escapes Morocco</div>
+                <div className="text-xs text-amber-200/90">جولات وتجارب خاصة • حجز مباشر</div>
+              </div>
+            </button>
+
+            <nav className="flex items-center gap-2 sm:gap-3 text-sm font-semibold">
+              <button
+                type="button"
+                onClick={() => setCurrentView('home')}
+                className={`px-3.5 py-2 rounded-lg transition ${
+                  currentView === 'home'
+                    ? 'bg-white text-atlanticDark'
+                    : 'text-white/90 hover:bg-white/10'
+                }`}
+              >
+                <i className="fa-solid fa-map-location-dot ml-1.5"></i>
+                التجارب
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCurrentView('checkout')}
+                className={`px-4 py-2 rounded-lg transition flex items-center gap-2 ${
+                  currentView === 'checkout'
+                    ? 'bg-terracotta text-white'
+                    : 'bg-terracotta hover:bg-terracottaDark text-white'
+                }`}
+              >
+                <i className="fa-solid fa-bag-shopping"></i>
+                <span>سلة الحجز</span>
+                <span className="bg-white text-atlanticDark text-xs font-extrabold px-2 py-0.5 rounded-full">
+                  {cartCount}
+                </span>
+              </button>
+            </nav>
+          </div>
+        </header>
+      );
+    }
+
+    function HomeView({ experiences, onSelectExperience, onQuickAdd }) {
+      const [selectedCity, setSelectedCity] = useState('الكل');
+      const cities = ['الكل', 'الرباط • سلا', 'ساحل الرباط • تمارة', 'مراكش • نواحي الأطلس', 'الرباط • الدار البيضاء • مراكش'];
+
+      const filtered = useMemo(() => {
+        if (selectedCity === 'الكل') return experiences;
+        return experiences.filter((item) => item.location === selectedCity);
+      }, [experiences, selectedCity]);
+
+      return (
+        <div>
+          <section className="bg-gradient-to-bl from-atlanticDark via-atlantic to-terracottaDark text-white py-14 px-4">
+            <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-5">
+                <span className="inline-flex items-center gap-2 bg-white/15 text-amber-100 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full">
+                  <i className="fa-solid fa-earth-europe"></i>
+                  موجه للسياح والمسافرين الأجانب في المغرب
+                </span>
+                <h1 className="text-3xl sm:text-5xl font-extrabold leading-tight">
+                  تجارب سياحية خاصة في المغرب بتنظيم واضح وتأكيد فوري
+                </h1>
+                <p className="text-white/90 text-base sm:text-lg leading-relaxed max-w-2xl">
+                  منصة حجز مباشرة للجولات الخاصة، السيرف، والتنقلات في الرباط وسلا ومراكش. اختر التجربة المناسبة، حدد التاريخ وعدد المسافرين، وأرسل طلبك مباشرة ليتم تأكيده بسرعة.
+                </p>
+                <div className="flex flex-wrap gap-3 pt-1">
+                  <a
+                    href="#experiences-list"
+                    className="bg-terracotta hover:bg-terracottaDark text-white font-bold px-6 py-3 rounded-xl shadow-lg transition inline-flex items-center gap-2"
+                  >
+                    <i className="fa-solid fa-arrow-down"></i>
+                    تصفح التجارب المتاحة
+                  </a>
+                  <div className="bg-white/10 border border-white/15 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                    <i className="fa-solid fa-shield-check text-emerald-300"></i>
+                    بدون رسوم مخفية • مرونة في المواعيد
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5">
+                <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-6 space-y-4 shadow-2xl">
+                  <div className="text-sm font-bold text-amber-200">كيفاش كيخدم نظام الحجز؟</div>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-start gap-3 bg-black/20 p-3 rounded-xl">
+                      <span className="w-7 h-7 rounded-full bg-terracotta text-white font-extrabold flex items-center justify-center shrink-0">1</span>
+                      <div>
+                        <div className="font-bold">اختيار الجولة أو الخدمة</div>
+                        <div className="text-white/80 text-xs mt-0.5">اطلع على التفاصيل، المدة، واللغات المتوفرة.</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 bg-black/20 p-3 rounded-xl">
+                      <span className="w-7 h-7 rounded-full bg-terracotta text-white font-extrabold flex items-center justify-center shrink-0">2</span>
+                      <div>
+                        <div className="font-bold">تحديد التاريخ وعدد الأشخاص</div>
+                        <div className="text-white/80 text-xs mt-0.5">أضف الحجز إلى السلة وعدّل الكمية بسهولة.</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 bg-black/20 p-3 rounded-xl">
+                      <span className="w-7 h-7 rounded-full bg-terracotta text-white font-extrabold flex items-center justify-center shrink-0">3</span>
+                      <div>
+                        <div className="font-bold">إرسال الطلب الفوري</div>
+                        <div className="text-white/80 text-xs mt-0.5">يصل الطلب مباشرة إلى فريق التنسيق عبر Telegram.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="experiences-list" className="max-w-6xl mx-auto px-4 py-12">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-atlanticDark">الجولات والتجارب المتاحة</h2>
+                <p className="text-slate-600 text-sm mt-1">اختر الوجهة أو اضغط على أي تجربة لعرض التفاصيل الكاملة والحجز.</p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {cities.map((city) => (
+                  <button
+                    key={city}
+                    type="button"
+                    onClick={() => setSelectedCity(city)}
+                    className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition border ${
+                      selectedCity === city
+                        ? 'bg-atlanticDark text-white border-atlanticDark'
+                        : 'bg-white text-atlanticDark border-slate-200 hover:border-terracotta'
+                    }`}
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {filtered.map((exp) => (
+                <article
+                  key={exp.id}
+                  className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-200/80 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative h-56 overflow-hidden">
+                      <img
+                        src={exp.image}
+                        alt={exp.title}
+                        className="w-full h-full object-cover hover:scale-105 transition duration-500"
+                      />
+                      <span className="absolute top-3 right-3 bg-atlanticDark/90 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+                        {exp.badge}
+                      </span>
+                      <span className="absolute bottom-3 left-3 bg-white/95 text-atlanticDark text-xs font-extrabold px-3 py-1.5 rounded-xl shadow">
+                        ${exp.pricePerPerson} / شخص
+                      </span>
+                    </div>
+
+                    <div className="p-5 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 font-semibold">
+                        <span><i className="fa-solid fa-location-dot text-terracotta ml-1"></i>{exp.location}</span>
+                        <span><i className="fa-regular fa-clock text-terracotta ml-1"></i>{exp.duration}</span>
+                      </div>
+
+                      <h3 className="text-xl font-extrabold text-atlanticDark leading-snug">{exp.title}</h3>
+                      <p className="text-xs font-semibold text-slate-400" dir="ltr">{exp.enTitle}</p>
+                      <p className="text-sm text-slate-600 leading-relaxed">{exp.summary}</p>
+                    </div>
+                  </div>
+
+                  <div className="px-5 pb-5 pt-2 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onSelectExperience(exp)}
+                      className="flex-1 bg-slate-100 hover:bg-slate-200 text-atlanticDark font-bold py-2.5 px-4 rounded-xl text-sm transition"
+                    >
+                      <i className="fa-solid fa-circle-info ml-1.5"></i>
+                      التفاصيل والحجز
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onQuickAdd(exp)}
+                      className="bg-terracotta hover:bg-terracottaDark text-white font-bold py-2.5 px-4 rounded-xl text-sm transition inline-flex items-center gap-1.5"
+                    >
+                      <i className="fa-solid fa-plus"></i>
+                      أضف للسلة
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+      );
+    }
+
+    function ProductDetailsView({ experience, onBack, onAddToCart, onGoCheckout }) {
+      const [guests, setGuests] = useState(2);
+      const [date, setDate] = useState('2026-12-10');
+      const [notes, setNotes] = useState('');
+      const [addedFeedback, setAddedFeedback] = useState(false);
+
+      if (!experience) return null;
+
+      const totalEstimate = guests * experience.pricePerPerson;
+
+      const handleAdd = (goToCheckoutAfter = false) => {
+        onAddToCart({
+          id: `${experience.id}-${date}`,
+          experienceId: experience.id,
+          title: experience.title,
+          location: experience.location,
+          unitPrice: experience.pricePerPerson,
+          quantity: guests,
+          date,
+          notes,
+        });
+        setAddedFeedback(true);
+        setTimeout(() => setAddedFeedback(false), 2000);
+        if (goToCheckoutAfter) {
+          onGoCheckout();
+        }
+      };
+
+      return (
+        <section className="max-w-5xl mx-auto px-4 py-10">
+          <button
+            type="button"
+            onClick={onBack}
+            className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-atlanticDark hover:text-terracotta transition"
+          >
+            <i className="fa-solid fa-arrow-right"></i>
+            العودة إلى قائمة التجارب
+          </button>
+
+          <div className="bg-white rounded-3xl shadow-md border border-slate-200/80 overflow-hidden grid lg:grid-cols-12">
+            <div className="lg:col-span-6">
+              <img
+                src={experience.image}
+                alt={experience.title}
+                className="w-full h-72 lg:h-full object-cover"
+              />
+            </div>
+
+            <div className="lg:col-span-6 p-6 sm:p-8 space-y-5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="bg-amber-100 text-terracottaDark text-xs font-extrabold px-3 py-1 rounded-full">
+                  {experience.badge}
+                </span>
+                <span className="text-xl font-extrabold text-atlanticDark">
+                  ${experience.pricePerPerson} <span className="text-xs font-normal text-slate-500">/ شخص</span>
+                </span>
+              </div>
+
+              <div>
+                <h1 className="text-2xl font-extrabold text-atlanticDark leading-snug">{experience.title}</h1>
+                <p className="text-xs text-slate-400 mt-1" dir="ltr">{experience.enTitle}</p>
+              </div>
+
+              <p className="text-sm text-slate-600 leading-relaxed">{experience.summary}</p>
+
+              <div className="space-y-2">
+                <div className="text-sm font-extrabold text-atlanticDark">أبرز مميزات التجربة:</div>
+                <ul className="space-y-1.5 text-sm text-slate-700">
+                  {experience.highlights.map((point, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <i className="fa-solid fa-check-circle text-emerald-600 mt-1"></i>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-600">
+                <span>اللغات المتاحة:</span>
+                {experience.languages.map((lang) => (
+                  <span key={lang} className="bg-slate-100 px-2.5 py-1 rounded-lg">{lang}</span>
+                ))}
+              </div>
+
+              <div className="border-t pt-5 space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">تاريخ الجولة المقترح</label>
+                    <input
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-terracotta"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">عدد الأشخاص</label>
+                    <div className="flex items-center border border-slate-300 rounded-xl overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setGuests((g) => Math.max(1, g - 1))}
+                        className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 font-extrabold text-atlanticDark"
+                      >
+                        -
+                      </button>
+                      <span className="flex-1 text-center font-extrabold text-sm">{guests}</span>
+                      <button
+                        type="button"
+                        onClick={() => setGuests((g) => g + 1)}
+                        className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 font-extrabold text-atlanticDark"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">ملاحظات إضافية (اختياري)</label>
+                  <input
+                    type="text"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="مثال: الانطلاق من الفندق في حي الرياض أو طلب مرشد بالفرنسية..."
+                    className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-terracotta"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between bg-sand p-3.5 rounded-xl border border-amber-200/70">
+                  <span className="text-sm font-bold text-slate-700">المجموع التقديري:</span>
+                  <span className="text-xl font-extrabold text-terracottaDark">${totalEstimate}</span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleAdd(false)}
+                    className="flex-1 bg-atlanticDark hover:bg-atlantic text-white font-bold py-3 px-4 rounded-xl text-sm transition"
+                  >
+                    <i className="fa-solid fa-cart-plus ml-1.5"></i>
+                    {addedFeedback ? 'تمت الإضافة للسلة' : 'أضف إلى السلة'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAdd(true)}
+                    className="flex-1 bg-terracotta hover:bg-terracottaDark text-white font-bold py-3 px-4 rounded-xl text-sm transition"
+                  >
+                    إتمام الحجز الآن
+                    <i className="fa-solid fa-arrow-left mr-1.5"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function CheckoutFlow({ cart, onUpdateQuantity, onRemoveItem, onClearCart, onBackHome }) {
+      const [step, setStep] = useState(1);
+      const [customer, setCustomer] = useState({
+        fullName: '',
+        email: '',
+        phone: '',
+        nationality: 'France / Europe',
+        pickupCity: 'Rabat',
+      });
+      const [submitting, setSubmitting] = useState(false);
+      const [errorMsg, setErrorMsg] = useState('');
+      const [orderSuccess, setOrderSuccess] = useState(null);
+
+      const subtotal = useMemo(
+        () => cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0),
+        [cart]
+      );
+
+      const steps = [
+        { num: 1, label: 'مراجعة السلة' },
+        { num: 2, label: 'بيانات المسافر' },
+        { num: 3, label: 'التأكيد والإرسال' },
+      ];
+
+      const handleSendToTelegram = async () => {
+        setErrorMsg('');
+
+        if (!customer.fullName.trim() || !customer.phone.trim()) {
+          setErrorMsg('يرجى إدخال الاسم الكامل ورقم الهاتف أو واتساب لتأكيد الحجز.');
+          setStep(2);
+          return;
+        }
+
+        const itemsLines = cart
+          .map(
+            (item, i) =>
+              `${i + 1}. ${item.title}\n   • التاريخ: ${item.date}\n   • الأشخاص: ${item.quantity} × $${item.unitPrice} = $${item.quantity * item.unitPrice}${
+                item.notes ? `\n   • ملاحظة: ${item.notes}` : ''
+              }`
+          )
+          .join('\n\n');
+
+        const messageText = [
+          '🧳 *طلب حجز سياحي جديد - Atlas Escapes Morocco*',
+          '----------------------------------------',
+          `👤 *الاسم:* ${customer.fullName}`,
+          `📞 *الهاتف / WhatsApp:* ${customer.phone}`,
+          `✉️ *البريد الإلكتروني:* ${customer.email || 'غير مذكور'}`,
+          `🌍 *المنطقة / الجنسية:* ${customer.nationality}`,
+          `📍 *نقطة الانطلاق:* ${customer.pickupCity}`,
+          '----------------------------------------',
+          '📌 *التجارب المحجوزة:*',
+          itemsLines,
+          '----------------------------------------',
+          `💰 *المجموع الإجمالي التقديري:* $${subtotal}`,
+        ].join('\n');
+
+        if (
+          TELEGRAM_CONFIG.botToken === 'YOUR_TELEGRAM_BOT_TOKEN' ||
+          TELEGRAM_CONFIG.chatId === 'YOUR_TELEGRAM_CHAT_ID'
+        ) {
+          setOrderSuccess({
+            demoMode: true,
+            total: subtotal,
+            preview: messageText,
+          });
+          onClearCart();
+          setStep(3);
+          return;
+        }
+
+        setSubmitting(true);
+        try {
+          const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: TELEGRAM_CONFIG.chatId,
+              text: messageText,
+              parse_mode: 'Markdown',
+            }),
+          });
+          const data = await response.json();
+          if (!response.ok || !data.ok) {
+            throw new Error(data.description || 'تعذر إرسال الطلب إلى بوت تيليغرام');
+          }
+          setOrderSuccess({
+            demoMode: false,
+            total: subtotal,
+            preview: messageText,
+          });
+          onClearCart();
+          setStep(3);
+        } catch (err) {
+          setErrorMsg(err.message || 'حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.');
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      return (
+        <section className="max-w-4xl mx-auto px-4 py-10">
+          <div className="bg-white rounded-3xl shadow-md border border-slate-200/80 p-6 sm:p-8 space-y-8">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-atlanticDark">إتمام طلب الحجز</h1>
+              <p className="text-sm text-slate-600 mt-1">خطوات بسيطة لإرسال طلب الحجز مباشرة إلى فريق التنسيق.</p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+              {steps.map((s) => {
+                const active = step === s.num;
+                const done = step > s.num || Boolean(orderSuccess);
+                return (
+                  <div
+                    key={s.num}
+                    className={`p-3 rounded-2xl border text-center transition ${
+                      active
+                        ? 'bg-atlanticDark text-white border-atlanticDark'
+                        : done
+                        ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
+                        : 'bg-slate-50 text-slate-500 border-slate-200'
+                    }`}
+                  >
+                    <div className="text-xs font-extrabold">الخطوة {s.num}</div>
+                    <div className="text-xs sm:text-sm font-bold mt-0.5">{s.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {errorMsg && (
+              <div className="bg-red-50 border border-red-200 text-red-700 text-sm font-bold p-4 rounded-xl flex items-center gap-2">
+                <i className="fa-solid fa-circle-exclamation"></i>
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            {step === 1 && (
+              <div className="space-y-5">
+                {cart.length === 0 ? (
+                  <div className="text-center py-10 space-y-4">
+                    <div className="text-4xl text-slate-300">
+                      <i className="fa-solid fa-suitcase-rolling"></i>
+                    </div>
+                    <p className="text-slate-600 font-bold">سلة الحجز فارغة حالياً.</p>
+                    <button
+                      type="button"
+                      onClick={onBackHome}
+                      className="bg-terracotta hover:bg-terracottaDark text-white font-bold px-5 py-2.5 rounded-xl text-sm"
+                    >
+                      استعراض التجارب المتاحة
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-3">
+                      {cart.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-sand border border-slate-200/80"
+                        >
+                          <div className="space-y-1">
+                            <div className="font-extrabold text-atlanticDark">{item.title}</div>
+                            <div className="text-xs text-slate-600">
+                              الوجهة: {item.location} • التاريخ: {item.date} • السعر: ${item.unitPrice}/شخص
+                            </div>
+                            {item.notes && (
+                              <div className="text-xs text-terracottaDark font-semibold">ملاحظة: {item.notes}</div>
+                            )}
+                          </div>
+
+                          <div className="flex items-center justify-between sm:justify-end gap-3">
+                            <div className="flex items-center border border-slate-300 bg-white rounded-xl overflow-hidden">
+                              <button
+                                type="button"
+                                onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                                className="px-3 py-1.5 font-extrabold hover:bg-slate-100"
+                              >
+                                -
+                              </button>
+                              <span className="px-3 font-extrabold text-sm">{item.quantity}</span>
+                              <button
+                                type="button"
+                                onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                                className="px-3 py-1.5 font-extrabold hover:bg-slate-100"
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            <div className="font-extrabold text-atlanticDark min-w-[65px] text-left">
+                              ${item.unitPrice * item.quantity}
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => onRemoveItem(item.id)}
+                              className="text-red-600 hover:bg-red-50 p-2 rounded-lg transition"
+                              title="حذف"
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between border-t pt-4">
+                      <span className="font-bold text-slate-700">المجموع الإجمالي:</span>
+                      <span className="text-2xl font-extrabold text-terracottaDark">${subtotal}</span>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setStep(2)}
+                        className="bg-atlanticDark hover:bg-atlantic text-white font-bold px-6 py-3 rounded-xl text-sm transition inline-flex items-center gap-2"
+                      >
+                        متابعة إلى بيانات المسافر
+                        <i className="fa-solid fa-arrow-left"></i>
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">الاسم الكامل *</label>
+                    <input
+                      type="text"
+                      value={customer.fullName}
+                      onChange={(e) => setCustomer({ ...customer, fullName: e.target.value })}
+                      placeholder="مثال: Claire Laurent"
+                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-terracotta"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">رقم الهاتف / WhatsApp *</label>
+                    <input
+                      type="tel"
+                      value={customer.phone}
+                      onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
+                      placeholder="مثال: +33 6 12 34 56 78"
+                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-terracotta"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">البريد الإلكتروني</label>
+                    <input
+                      type="email"
+                      value={customer.email}
+                      onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                      placeholder="name@example.com"
+                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-terracotta"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">السوق / المنطقة</label>
+                    <select
+                      value={customer.nationality}
+                      onChange={(e) => setCustomer({ ...customer, nationality: e.target.value })}
+                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm bg-white focus:outline-none focus:border-terracotta"
+                    >
+                      <option value="France / Europe">فرنسا / أوروبا</option>
+                      <option value="Gulf / UAE / KSA">الخليج / الإمارات / السعودية</option>
+                      <option value="UK / North America">بريطانيا / أمريكا الشمالية</option>
+                      <option value="Other International">وجهة دولية أخرى</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">مدينة أو مكان الانطلاق</label>
+                  <input
+                    type="text"
+                    value={customer.pickupCity}
+                    onChange={(e) => setCustomer({ ...customer, pickupCity: e.target.value })}
+                    placeholder="مثال: Rabat, Sale, Temara, Marrakech"
+                    className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-terracotta"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="bg-slate-100 hover:bg-slate-200 text-atlanticDark font-bold px-5 py-2.5 rounded-xl text-sm"
+                  >
+                    رجوع للسلة
+                  </button>
+                  <button
+                    type="button"
+                    disabled={submitting}
+                    onClick={handleSendToTelegram}
+                    className="bg-terracotta hover:bg-terracottaDark disabled:opacity-60 text-white font-bold px-6 py-3 rounded-xl text-sm transition inline-flex items-center gap-2"
+                  >
+                    <i className="fa-brands fa-telegram text-base"></i>
+                    {submitting ? 'جاري الإرسال...' : 'تأكيد وإرسال الطلب عبر Telegram'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && orderSuccess && (
+              <div className="text-center py-6 space-y-5">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto">
+                  <i className="fa-solid fa-check"></i>
+                </div>
+                <h2 className="text-2xl font-extrabold text-atlanticDark">تم تسجيل طلب الحجز بنجاح</h2>
+                <p className="text-sm text-slate-600 max-w-lg mx-auto">
+                  {orderSuccess.demoMode
+                    ? 'تم تجهيز نص الطلب بنجاح. أضف botToken و chatId الحقيقيين داخل TELEGRAM_CONFIG باش يوصل الطلب مباشرة لبوت تيليغرام.'
+                    : 'تم إرسال تفاصيل الحجز مباشرة إلى بوت تيليغرام وسيتم التواصل معك لتأكيد الموعد.'}
+                </p>
+
+                <pre className="text-right bg-slate-900 text-emerald-300 text-xs p-4 rounded-2xl overflow-x-auto max-w-xl mx-auto leading-relaxed" dir="ltr">
+                  {orderSuccess.preview}
+                </pre>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOrderSuccess(null);
+                    setStep(1);
+                    onBackHome();
+                  }}
+                  className="bg-atlanticDark hover:bg-atlantic text-white font-bold px-6 py-3 rounded-xl text-sm"
+                >
+                  العودة إلى الصفحة الرئيسية
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    function App() {
+      const [currentView, setCurrentView] = useState('home');
+      const [selectedExperience, setSelectedExperience] = useState(null);
+      const [cart, setCart] = useState([
+        {
+          id: 'rabat-sale-heritage-2026-12-10',
+          experienceId: 'rabat-sale-heritage',
+          title: 'جولة الرباط وسلا الخاصة (تراث، قصبة الأوداية، وثقافة محلية)',
+          location: 'الرباط • سلا',
+          unitPrice: 65,
+          quantity: 2,
+          date: '2026-12-10',
+          notes: 'جولة صباحية باللغة الإنجليزية',
+        },
+      ]);
+
+      const cartCount = useMemo(
+        () => cart.reduce((acc, item) => acc + item.quantity, 0),
+        [cart]
+      );
+
+      const handleSelectExperience = (exp) => {
+        setSelectedExperience(exp);
+        setCurrentView('details');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const handleAddToCart = (newItem) => {
+        setCart((prev) => {
+          const existingIndex = prev.findIndex((item) => item.id === newItem.id);
+          if (existingIndex > -1) {
+            const copy = [...prev];
+            copy[existingIndex] = {
+              ...copy[existingIndex],
+              quantity: copy[existingIndex].quantity + newItem.quantity,
+              notes: newItem.notes || copy[existingIndex].notes,
+            };
+            return copy;
+          }
+          return [...prev, newItem];
+        });
+      };
+
+      const handleQuickAdd = (exp) => {
+        handleAddToCart({
+          id: `${exp.id}-2026-12-15`,
+          experienceId: exp.id,
+          title: exp.title,
+          location: exp.location,
+          unitPrice: exp.pricePerPerson,
+          quantity: 1,
+          date: '2026-12-15',
+          notes: '',
+        });
+      };
+
+      const handleUpdateQuantity = (id, nextQty) => {
+        if (nextQty <= 0) {
+          setCart((prev) => prev.filter((item) => item.id !== id));
+          return;
+        }
+        setCart((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, quantity: nextQty } : item))
+        );
+      };
+
+      const handleRemoveItem = (id) => {
+        setCart((prev) => prev.filter((item) => item.id !== id));
+      };
+
+      const handleClearCart = () => {
+        setCart([]);
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          <div>
+            <Navbar
+              currentView={currentView}
+              setCurrentView={(view) => {
+                setCurrentView(view);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              cartCount={cartCount}
+            />
+
+            {currentView === 'home' && (
+              <HomeView
+                experiences={EXPERIENCES}
+                onSelectExperience={handleSelectExperience}
+                onQuickAdd={handleQuickAdd}
+              />
+            )}
+
+            {currentView === 'details' && (
+              <ProductDetailsView
+                experience={selectedExperience}
+                onBack={() => setCurrentView('home')}
+                onAddToCart={handleAddToCart}
+                onGoCheckout={() => setCurrentView('checkout')}
+              />
+            )}
+
+            {currentView === 'checkout' && (
+              <CheckoutFlow
+                cart={cart}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={handleRemoveItem}
+                onClearCart={handleClearCart}
+                onBackHome={() => setCurrentView('home')}
+              />
+            )}
+          </div>
+
+          <footer className="bg-atlanticDark text-white/80 py-6 px-4 mt-12 border-t border-white/10">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <div>Atlas Escapes Morocco • جولات وتجارب خاصة في الرباط، سلا، تمارة، ومراكش</div>
+              <div className="text-amber-200/90">حجز مباشر • استجابة سريعة للزوار الأجانب</div>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
