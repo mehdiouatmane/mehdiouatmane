@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Koora Live | جدول المباريات والبث المباشر</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eceef2;--card:#f4f5f7;--text:#111827;--muted:#6b7280;--line:#d1d5db;--red:#8b140d;--red2:#730f09;--blue:#173b74;--panel:#fff}
+:root[data-theme=dark]{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;--line:#334155;--panel:#0f172a}
+*{box-sizing:border-box;margin:0}
+body{font-family:Cairo,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+.wrap{width:100%;max-width:680px;margin:auto;padding:0 12px}
+button{font-family:inherit;cursor:pointer;border:0;color:#fff;font-weight:900;border-radius:8px}
+header .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:12px;gap:8px}
+.ib{width:44px;height:44px;background:#4b5563;font-size:18px}
+.logo{background:var(--red);padding:6px 26px;text-align:center}
+.logo b{display:block;font-size:24px;line-height:1.2}.logo small{font-size:11px;color:#fecaca}
+.bar{color:#fff;text-align:center;padding:10px;border-radius:8px;font-weight:900;margin-top:14px}
+.grid{display:grid;gap:10px;margin-top:12px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.ch{background:var(--card);color:var(--text);border:1px solid var(--line);padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:right}
+.ch:hover,.match:hover{border-color:var(--red)}
+.ch img{width:40px;height:40px;object-fit:contain}.ch small{color:var(--muted);display:block}
+.badge{font-size:11px;font-weight:900;padding:3px 10px;border-radius:5px;color:#fff;background:#991b1b}
+.badge.upcoming{background:#b45309}.badge.ended{background:#4b5563}
+.tab{background:#d1d5db;color:#1f2937;padding:10px 4px;font-size:14px}
+.tab.on[data-d=yesterday]{background:#173b74;color:#fff}.tab.on[data-d=today]{background:var(--red);color:#fff}.tab.on[data-d=tomorrow]{background:#9a5514;color:#fff}
+.match{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin-top:12px;cursor:pointer}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center;align-items:center;gap:6px}
+.row img{width:48px;height:48px;object-fit:contain;display:block;margin:0 auto 6px}
+.score{font-size:20px;font-weight:900;direction:ltr;margin-bottom:6px}
+.meta{display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:12px;padding-top:10px;font-size:13px;font-weight:700}
+.article{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px;text-align:center;margin-top:14px}
+.article h1{font-size:21px;line-height:1.5}.article p{margin-top:10px;line-height:2;font-size:14px}.article .m{color:var(--muted);font-size:12px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.sm{padding:7px 14px;font-size:12px;background:var(--red)}.sm.alt{background:#e5e7eb;color:#1f2937}.sm.blue{background:var(--blue)}
+.player{background:#0b0f17;border-radius:8px;overflow:hidden;margin-top:14px}
+.srv{background:#111827;padding:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.srv button{min-width:36px;height:28px;border-radius:99px;background:#1d4ed8;font-size:12px}.srv button.on{background:#b91c1c;outline:2px solid #f87171}
+.frame{position:relative;height:300px;background:#000}
+.frame iframe{width:100%;height:100%;border:0}
+.foot{background:#111827;color:#d1d5db;font-size:11px;padding:7px 12px;display:flex;justify-content:space-between}.foot a{color:#38bdf8;font-weight:700}
+.alert{background:var(--red);color:#fff;padding:14px;border-radius:8px;text-align:center;font-weight:700;line-height:1.9;font-size:14px;margin-top:14px}
+.share a{color:#fff;text-align:center;padding:10px;border-radius:6px;font-weight:700;text-decoration:none;font-size:14px}
+.empty{text-align:center;color:var(--muted);padding:24px}
+footer{margin-top:30px;border-top:1px solid var(--line);background:var(--panel);padding:14px 0}
+footer .wrap{display:flex;justify-content:space-between;font-weight:700;font-size:13px}
+footer button{background:none;color:var(--text)}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal.open{display:flex}
+.box{background:var(--panel);width:100%;max-width:420px;border-radius:12px;padding:18px;border:1px solid var(--line)}
+.box label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 4px}
+.box select,.box input,.box textarea{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit}
+.drawer{position:fixed;inset:0;background:#0008;display:none;justify-content:flex-start;z-index:50}.drawer.open{display:flex}
+.drawer nav{width:260px;background:var(--panel);height:100%;padding:18px;display:flex;flex-direction:column;gap:10px}
+.drawer nav button{padding:11px;text-align:right;background:var(--card);color:var(--text)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;font-size:12px;font-weight:700;padding:10px 18px;border-radius:99px;display:none;z-index:60}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <button class="ib" id="theme" title="الوضع الليلي">🌙</button>
+  <button class="logo" id="logo"><b>koora live</b><small>kooralive.la</small></button>
+  <div style="display:flex;gap:6px"><button class="ib" style="background:var(--red)" id="rep1" title="بلاغ">✈</button><button class="ib" id="menu">☰</button></div>
+</div></header>
+
+<main class="wrap" style="flex:1;padding-bottom:10px">
+  <section id="home">
+    <div class="bar" style="background:var(--blue)">قنوات مغربية بث مباشر</div>
+    <div class="grid g2" id="channels"></div>
+    <div class="bar" style="background:#7f1610;margin-top:22px">جدول المباريات</div>
+    <div class="grid g3" id="tabs"></div>
+    <div id="matches"></div>
+  </section>
+
+  <section id="watch" class="hidden">
+    <div class="toolbar">
+      <button class="sm alt" id="back">→ الرئيسية</button>
+      <div id="chtabs" style="display:flex;gap:6px"></div>
+      <button class="sm" id="rep2">إبلاغ / طلب بث</button>
+    </div>
+    <article class="article"><h1 id="wTitle"></h1><p class="m" id="wMeta"></p><p id="wSum"></p></article>
+    <button class="sm" id="refresh" style="width:100%;padding:11px;font-size:16px;margin-top:14px">تحديث ↻</button>
+    <div class="player">
+      <div class="srv" id="servers"></div>
+      <div class="frame" id="frame"></div>
+      <div class="foot"><span id="wActive"></span><a id="wOpen" target="_blank" rel="noopener">فتح في نافذة جديدة</a></div>
+    </div>
+    <div class="alert">تنبيه: إذا توقف البث أو لم يظهر داخل المشغل اضغط على تحديث، أو اختر مشغلاً آخر، أو افتح الرابط في نافذة جديدة</div>
+    <div class="grid share" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))" id="share"></div>
+  </section>
+</main>
+
+<footer><div class="wrap"><button id="f1">koora live</button><button id="f2">تواصل عبر تيليجرام</button></div></footer>
+
+<div class="drawer" id="drawer"><nav id="dnav"></nav></div>
+
+<div class="modal" id="modal"><form class="box" id="form">
+  <h3 style="margin-bottom:6px">إرسال بلاغ أو طلب</h3>
+  <label>نوع الرسالة</label>
+  <select id="rType"><option>بلاغ عن توقف البث</option><option>طلب إضافة مباراة أو قناة</option><option>ملاحظة عامة</option></select>
+  <label>الاسم (اختياري)</label><input id="rName" maxlength="50">
+  <label>التفاصيل</label><textarea id="rMsg" rows="3" required maxlength="500"></textarea>
+  <input id="rHp" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
+  <div style="display:flex;gap:8px;margin-top:14px">
+    <button type="button" class="sm alt" id="rCancel" style="flex:1;padding:11px">إلغاء</button>
+    <button class="sm" id="rSend" style="flex:2;padding:11px">إرسال الآن</button>
+  </div>
+</form></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== إعدادات ===== */
+// رابط Cloudflare Worker الذي يرسل إلى تيليجرام (التوكن يبقى سرّياً داخل الـ Worker)
+const REPORT_ENDPOINT = ""; // مثال: "https://koora-report.YOURNAME.workers.dev"
+
+const FLAG = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flag_of_Morocco.svg/240px-Flag_of_Morocco.svg.png";
+const CHANNELS = [
+  {id:"2m",name:"قناة 2M",channel:"2M Monde",logo:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/2M_Maroc_logo.svg/240px-2M_Maroc_logo.svg.png",
+   title:"مشاهدة قناة دوزيم 2M بث مباشر",sum:"متابعة البث المباشر لقناة 2M المغربية عبر المشغل المدمج مع إمكانية التحديث وتغيير السيرفر.",
+   servers:["https://www.elahmad.ru/tv/live/shahid_shaka.php?id=2mmonde"]},
+  {id:"1",name:"قناة الأولى",channel:"Al Aoula Europe",logo:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Al_Aoula_logo.svg/240px-Al_Aoula_logo.svg.png",
+   title:"مشاهدة القناة الأولى المغربية بث مباشر",sum:"متابعة البث المباشر للقناة الأولى المغربية داخل نفس الصفحة.",
+   servers:["https://www.elahmad.ru/tv/arabic-tv-online.php?id=alaoulaeurope"]}
+];
+const MATCHES = [
+  {id:1,day:"today",h:"جلطة سراي",a:"أستون فيلا",score:"0 - 1",st:"live",stT:"جارية الآن",ch:"beIN SPORTS HD 3",lg:"دوري أبطال أوروبا"},
+  {id:2,day:"today",h:"النصر",a:"السد",score:"1 - 2",st:"live",stT:"جارية الآن",ch:"beIN SPORTS HD 2",lg:"دوري أبطال آسيا للنخبة"},
+  {id:4,day:"yesterday",h:"ريال مدريد",a:"بايرن ميونخ",score:"2 - 1",st:"ended",stT:"انتهت",ch:"beIN SPORTS HD 1",lg:"دوري أبطال أوروبا"},
+  {id:5,day:"tomorrow",h:"إنتر ميلان",a:"مانشستر سيتي",score:"PM 08:00",st:"upcoming",stT:"غداً",ch:"beIN SPORTS HD 1",lg:"دوري أبطال أوروبا"}
+];
+const DAYS = [["yesterday","مباريات الأمس"],["today","مباريات اليوم"],["tomorrow","مباريات الغد"]];
+
+/* ===== أدوات ===== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let state = {tab:"today",item:null,srv:0,key:0};
+const toast = m => { const t=$("toast"); t.textContent=m; t.style.display="block"; clearTimeout(toast.t); toast.t=setTimeout(()=>t.style.display="none",2500); };
+const safeGet = k => { try{return localStorage.getItem(k)}catch{return null} };
+const safeSet = (k,v) => { try{localStorage.setItem(k,v)}catch{} };
+
+/* ===== الوضع الليلي ===== */
+function setTheme(d){ document.documentElement.dataset.theme=d?"dark":"light"; $("theme").textContent=d?"☀️":"🌙"; safeSet("theme",d?"dark":"light"); }
+setTheme(safeGet("theme")==="dark");
+$("theme").onclick=()=>setTheme(document.documentElement.dataset.theme!=="dark");
+
+/* ===== الصفحة الرئيسية ===== */
+function renderHome(){
+  $("channels").innerHTML = CHANNELS.map(c=>`<button class="ch" data-c="${c.id}"><span style="display:flex;gap:10px;align-items:center"><img src="${c.logo}" alt="" onerror="this.style.display='none'"><span><b>${esc(c.name)}</b><small>${esc(c.channel)}</small></span></span><span class="badge">مباشر</span></button>`).join("");
+  $("tabs").innerHTML = DAYS.map(([d,l])=>`<button class="tab${d===state.tab?" on":""}" data-d="${d}">${l}</button>`).join("");
+  const list = MATCHES.filter(m=>m.day===state.tab);
+  $("matches").innerHTML = list.length ? list.map(m=>`<div class="match" data-m="${m.id}">
+    <div class="row"><div><b>${esc(m.h)}</b></div><div><div class="score">${esc(m.score)}</div><span class="badge ${m.st}">${esc(m.stT)}</span></div><div><b>${esc(m.a)}</b></div></div>
+    <div class="meta"><span dir="ltr">📺 ${esc(m.ch)}</span><span>🏆 ${esc(m.lg)}</span></div></div>`).join("") : `<p class="empty">لا توجد مباريات في هذا اليوم</p>`;
+}
+$("channels").onclick=e=>{const b=e.target.closest("[data-c]"); if(b) openItem(CHANNELS.find(c=>c.id===b.dataset.c));};
+$("tabs").onclick=e=>{const b=e.target.closest("[data-d]"); if(b){state.tab=b.dataset.d; renderHome();}};
+$("matches").onclick=e=>{const b=e.target.closest("[data-m]"); if(!b) return; const m=MATCHES.find(x=>x.id==b.dataset.m);
+  openItem({id:"m"+m.id,name:m.h+" × "+m.a,channel:m.ch,title:`مشاهدة مباراة ${m.h} ضد ${m.a} على ${m.ch}`,sum:`${m.lg} — ${m.stT}. إذا لم يتوفر مشغل لهذه المباراة بعد، أرسل طلباً عبر زر الإبلاغ.`,servers:m.servers||[]});};
+
+/* ===== صفحة المشاهدة ===== */
+function openItem(it){
+  state.item=it; state.srv=0; state.key++;
+  $("home").classList.add("hidden"); $("watch").classList.remove("hidden"); $("drawer").classList.remove("open");
+  $("wTitle").textContent=it.title; $("wMeta").textContent="القناة: "+it.channel; $("wSum").textContent=it.sum;
+  $("chtabs").innerHTML=CHANNELS.map(c=>`<button class="sm ${c.id===it.id?"blue":"alt"}" data-c="${c.id}">${esc(c.name)}</button>`).join("");
+  const url=encodeURIComponent(location.href), txt=encodeURIComponent(it.name+" - "+it.channel);
+  $("share").innerHTML=[["telegram","#56a8dc",`https://t.me/share/url?url=${url}&text=${txt}`],["whatsapp","#64a84c",`https://api.whatsapp.com/send?text=${txt}%20${url}`],["twitter","#5ca9e6",`https://twitter.com/intent/tweet?text=${txt}&url=${url}`],["facebook","#48679c",`https://www.facebook.com/sharer/sharer.php?u=${url}`]]
+    .map(([n,c,h])=>`<a style="background:${c}" href="${h}" target="_blank" rel="noopener noreferrer">${n}</a>`).join("");
+  renderPlayer(); scrollTo({top:0,behavior:"smooth"});
+}
+function renderPlayer(){
+  const it=state.item, list=it.servers, src=list[state.srv];
+  $("servers").innerHTML=list.length>1 ? list.map((_,i)=>`<button class="${i===state.srv?"on":""}" data-s="${i}">${i+1}</button>`).join("") : "";
+  $("servers").classList.toggle("hidden",list.length<2);
+  const f=$("frame");
+  if(!src){ f.innerHTML=`<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#d1d5db;text-align:center;padding:20px">لا يوجد مشغل متاح لهذا البث حالياً</div>`; $("wOpen").classList.add("hidden"); $("wActive").textContent=""; return; }
+  f.innerHTML=""; const ifr=document.createElement("iframe");
+  ifr.src=src; ifr.title=it.name; ifr.allowFullscreen=true;
+  ifr.allow="autoplay; fullscreen; encrypted-media; picture-in-picture";
+  ifr.referrerPolicy="strict-origin-when-cross-origin"; // الإصلاح: السماح بإرسال الـ Referrer
+  ifr.loading="lazy"; f.appendChild(ifr);
+  $("wOpen").href=src; $("wOpen").classList.remove("hidden"); $("wActive").textContent=`المشغل النشط: ${state.srv+1} — ${it.channel}`;
+}
+$("servers").onclick=e=>{const b=e.target.closest("[data-s]"); if(b){state.srv=+b.dataset.s; renderPlayer(); toast("تم تبديل المشغل");}};
+$("refresh").onclick=()=>{renderPlayer(); toast("تم تحديث المشغل");};
+$("chtabs").onclick=e=>{const b=e.target.closest("[data-c]"); if(b) openItem(CHANNELS.find(c=>c.id===b.dataset.c));};
+function goHome(){ $("watch").classList.add("hidden"); $("home").classList.remove("hidden"); $("frame").innerHTML=""; $("drawer").classList.remove("open"); renderHome(); scrollTo({top:0,behavior:"smooth"}); }
+$("back").onclick=$("logo").onclick=$("f1").onclick=goHome;
+
+/* ===== القائمة الجانبية ===== */
+$("dnav").innerHTML=CHANNELS.map(c=>`<button style="background:var(--blue);color:#fff" data-c="${c.id}">${esc(c.name)} — مباشر</button>`).join("")+DAYS.slice().reverse().map(([d,l])=>`<button data-d="${d}">${l}</button>`).join("")+`<button style="background:var(--red);color:#fff" id="dRep">إرسال بلاغ / طلب</button>`;
+$("menu").onclick=()=>$("drawer").classList.add("open");
+$("drawer").onclick=e=>{ if(e.target===$("drawer")) $("drawer").classList.remove("open"); const c=e.target.closest("[data-c]"),d=e.target.closest("[data-d]");
+  if(c) openItem(CHANNELS.find(x=>x.id===c.dataset.c)); else if(d){state.tab=d.dataset.d; goHome();} else if(e.target.id==="dRep"){ $("drawer").classList.remove("open"); openModal(); } };
+
+/* ===== البلاغات (عبر Worker وليس مباشرة) ===== */
+function openModal(){ $("rMsg").value=state.item&&!$("watch").classList.contains("hidden")?`بخصوص: ${state.item.name} (${state.item.channel})`:""; $("modal").classList.add("open"); }
+["rep1","rep2","f2"].forEach(id=>$(id).onclick=openModal);
+$("rCancel").onclick=()=>$("modal").classList.remove("open");
+$("modal").onclick=e=>{ if(e.target===$("modal")) $("modal").classList.remove("open"); };
+$("form").onsubmit=async e=>{
+  e.preventDefault();
+  if($("rHp").value) return;                                   // فخ للبوتات
+  if(!REPORT_ENDPOINT){ toast("لم يتم ضبط رابط الإرسال بعد"); return; }
+  if(Date.now()-(+safeGet("lastReport")||0)<30000){ toast("انتظر قليلاً قبل إرسال رسالة أخرى"); return; }
+  const btn=$("rSend"); btn.disabled=true; btn.textContent="جاري الإرسال...";
+  try{
+    const r=await fetch(REPORT_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({type:$("rType").value,name:$("rName").value.trim(),message:$("rMsg").value.trim()})});
+    if(!r.ok) throw 0;
+    safeSet("lastReport",Date.now()); toast("تم الإرسال بنجاح"); $("form").reset(); $("modal").classList.remove("open");
+  }catch{ toast("تعذر الإرسال، حاول لاحقاً"); }
+  btn.disabled=false; btn.textContent="إرسال الآن";
+};
+
+renderHome();
+</script>
+</body>
+</html>
